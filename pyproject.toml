@@ -1,0 +1,53 @@
+[project]
+name = "spam-email-classifier"
+version = "1.0.0"
+description = "A production-grade machine learning system for classifying emails as Spam or Ham"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    {name = "themanoj-025", email = "themanoj025@example.com"},
+]
+keywords = ["spam-detection", "machine-learning", "nlp", "email-classification"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Communications :: Email :: Filters",
+]
+
+dependencies = [
+    "scikit-learn>=1.3.0",
+    "pandas>=2.0.0",
+    "streamlit>=1.28.0",
+    "beautifulsoup4>=4.12.0",
+    "matplotlib>=3.7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+"Source Code" = "https://github.com/themanoj-025/spam-email-classifier"
+"Bug Tracker" = "https://github.com/themanoj-025/spam-email-classifier/issues"
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
