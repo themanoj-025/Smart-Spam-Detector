@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [
-    {name = "themanoj-025", email = "themanoj025@example.com"},
+    {name = "Spam Email Classifier Contributors"},
 ]
 keywords = ["spam-detection", "machine-learning", "nlp", "email-classification"]
 classifiers = [
@@ -27,6 +27,14 @@ dependencies = [
     "streamlit>=1.28.0",
     "beautifulsoup4>=4.12.0",
     "matplotlib>=3.7.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.23.0",
+    "slowapi>=0.1.9",
+    "shap>=0.42.0",
+    "plotly>=5.15.0",
+    "openpyxl>=3.1.0",
+    "xlsxwriter>=3.1.0",
+    "python-multipart>=0.0.6",
 ]
 
 [project.optional-dependencies]
@@ -39,8 +47,8 @@ dev = [
 ]
 
 [project.urls]
-"Source Code" = "https://github.com/themanoj-025/spam-email-classifier"
-"Bug Tracker" = "https://github.com/themanoj-025/spam-email-classifier/issues"
+"Source Code" = "https://github.com/spam-email-classifier/spam-email-detection"
+"Bug Tracker" = "https://github.com/spam-email-classifier/spam-email-detection/issues"
 
 [tool.black]
 line-length = 100
