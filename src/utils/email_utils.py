@@ -2,7 +2,7 @@ import re
 from html import unescape
 from email.message import Message
 from email.utils import getaddresses
-from typing import Optional, Union
+from typing import Union
 from bs4 import BeautifulSoup
 
 # ----------------------------------------------------------------------------

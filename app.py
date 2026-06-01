@@ -18,7 +18,7 @@ from src.pipeline.prediction_pipeline import PredictionPipeline
 from src.utils.email_utils import clean_text
 from src.utils.model_comparison import ModelComparison
 from src.utils.history_manager import HistoryManager
-from src.utils.url_analyzer import analyze_urls_in_text, get_url_risk_badge
+from src.utils.url_analyzer import analyze_urls_in_text
 from src.utils.report_generator import generate_classification_report, generate_email_report
 
 # ---------------------------------------------------------------------------
