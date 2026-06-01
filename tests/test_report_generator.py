@@ -1,6 +1,5 @@
 """Tests for the report generator module."""
 
-import pytest
 from src.utils.report_generator import (
     generate_classification_report,
     generate_email_report,

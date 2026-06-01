@@ -13,7 +13,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from src.utils.state import PredictionState
 from src.utils.logger import get_logger
 from src.config.config import Config
 from src.utils.email_utils import extract_body, all_recipients, clean_text
@@ -544,18 +543,3 @@ class PredictionPipeline:
 
         return df
 
-
-def run_legacy_pipeline(state: PredictionState) -> None:
-    """Legacy function for backward compatibility.
-
-    Args:
-        state: Prediction state with mailbox path.
-    """
-    pipeline = PredictionPipeline(load_models=False)
-    pipeline.load_mailbox(state.mailbox_path)
-    mail_data = pipeline.process_mailbox()
-    state.mail_data = mail_data
-    state.mail_data = pipeline.run_prediction(state.mail_data)
-    df = pd.DataFrame(state.mail_data)
-    df.to_csv("data/predictions.csv", index=False)
-    logger.info("Legacy prediction completed and saved to data/predictions.csv")

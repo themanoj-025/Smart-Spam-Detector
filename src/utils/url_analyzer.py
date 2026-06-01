@@ -212,23 +212,3 @@ def _is_ip_address(hostname: str) -> bool:
         except (socket.error, OSError):
             return False
 
-
-def get_url_risk_badge(risk_score: float) -> str:
-    """Get an HTML badge string for a URL risk score."""
-    style_base = 'padding:2px 8px;border-radius:10px;font-size:0.75rem;font-weight:600'
-    if risk_score >= 50:
-        return (
-            f'<span style="background:#f44336;color:#fff;{style_base}">'
-            f'{risk_score:.0f}% High</span>'
-        )
-    elif risk_score >= 20:
-        return (
-            f'<span style="background:#ffa726;color:#fff;{style_base}">'
-            f'{risk_score:.0f}% Medium</span>'
-        )
-    elif risk_score > 0:
-        return (
-            f'<span style="background:#66bb6a;color:#fff;{style_base}">'
-            f'{risk_score:.0f}% Low</span>'
-        )
-    return ""

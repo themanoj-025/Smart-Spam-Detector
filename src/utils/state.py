@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Optional, List, Dict, Any
+from typing import Optional, Dict, Any
 import pandas as pd
 
 
@@ -23,9 +23,3 @@ class TrainingState:
     best_params: Optional[Dict[str, Any]] = field(default=None)
     cv_results: Optional[Dict[str, Any]] = field(default=None)
 
-
-@dataclass
-class PredictionState:
-    """State object for the prediction pipeline (legacy MBOX workflow)."""
-    mailbox_path: Optional[str] = None
-    mail_data: Optional[List[Dict[str, str]]] = None

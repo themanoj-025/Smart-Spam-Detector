@@ -3,8 +3,6 @@
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-import pytest
-
 from src.utils.email_utils import extract_body, clean_text
 
 

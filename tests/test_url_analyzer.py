@@ -1,6 +1,5 @@
 """Tests for the URL analyzer module."""
 
-import pytest
 from src.utils.url_analyzer import (
     extract_urls,
     analyze_url,

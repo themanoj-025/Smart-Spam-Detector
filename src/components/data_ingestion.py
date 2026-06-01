@@ -1,5 +1,7 @@
 """Data ingestion module for loading and validating the email dataset."""
 
+import os
+
 import pandas as pd
 from src.utils.logger import get_logger
 from src.config.config import Config
@@ -39,7 +41,6 @@ class DataIngestion:
             logger.info(f"Loading data from: {self.config.training_data_path}")
 
             # Check if file exists
-            import os
             if not os.path.exists(self.config.training_data_path):
                 raise FileNotFoundError(
                     f"Training data not found at: {self.config.training_data_path}. "

@@ -2,12 +2,10 @@
 
 import os
 import tempfile
-import pickle
 from pathlib import Path
 
 import pytest
 import pandas as pd
-import numpy as np
 
 from src.utils.utils import (
     ensure_dir,

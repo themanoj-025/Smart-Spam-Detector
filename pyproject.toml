@@ -30,7 +30,7 @@ dependencies = [
     "fastapi>=0.100.0",
     "uvicorn>=0.23.0",
     "slowapi>=0.1.9",
-    "shap>=0.42.0",
+    "shap>=0.45.0",
     "plotly>=5.15.0",
     "openpyxl>=3.1.0",
     "xlsxwriter>=3.1.0",
@@ -47,8 +47,8 @@ dev = [
 ]
 
 [project.urls]
-"Source Code" = "https://github.com/spam-email-classifier/spam-email-detection"
-"Bug Tracker" = "https://github.com/spam-email-classifier/spam-email-detection/issues"
+"Source Code" = "https://github.com/themanoj-025/Smart-Spam-Detector"
+"Bug Tracker" = "https://github.com/themanoj-025/Smart-Spam-Detector/issues"
 
 [tool.black]
 line-length = 100
