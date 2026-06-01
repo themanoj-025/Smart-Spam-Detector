@@ -475,25 +475,30 @@ def get_pipeline():
     return PredictionPipeline(load_models=True)
 
 
-# Try to load models, show helpful error if not found
+# Try to load models; auto-train if not found (needed for Streamlit Cloud)
 try:
     pipeline = get_pipeline()
     model_loaded = True
     model_name = Path(pipeline.config.model_path).name if pipeline.config.model_path else "Unknown"
-except FileNotFoundError as e:
-    st.error(f"""
-        ### 🚫 Models Not Found
-
-        No trained models were found. You need to train the models first:
-
-        ```bash
-        python -m src.pipeline.training_pipeline
-        ```
-
-        Or place trained model files in the `outputs/` directory.
-
-        **Error:** {str(e)}
-    """)
+except FileNotFoundError:
+    # No trained models found — offer to train automatically
+    st.warning("⚠️ No trained models found. Training is required before the app can work.")
+    if st.button("🚀 Train Models Now", type="primary", use_container_width=True):
+        with st.spinner("🔄 Training models (this may take several minutes on first deploy)..."):
+            try:
+                from src.pipeline.training_pipeline import TrainingPipeline
+                tp = TrainingPipeline()
+                tp.run_pipeline()
+                st.success("✅ Models trained successfully! Reloading...")
+                st.cache_resource.clear()
+                st.rerun()
+            except Exception as train_err:
+                st.error(f"⚠️ Training failed: {str(train_err)}")
+                st.stop()
+    st.info(
+        "💡 Click the button above to train models. "
+        "This is only needed on the first deployment or when models are missing."
+    )
     st.stop()
 except Exception as e:
     st.error(f"⚠️ Unexpected error loading models: {str(e)}")

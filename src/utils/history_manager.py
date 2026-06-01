@@ -16,8 +16,11 @@ from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-# Default path for the history database
-HISTORY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "history")
+# Default path for the history database.
+# Use __file__ to resolve to the project root (src/utils → src → root)
+# so the history dir is always colocated with the repo, regardless of CWD.
+_PROJECT_ROOT = str(Path(__file__).resolve().parents[2])
+HISTORY_DIR = os.path.join(_PROJECT_ROOT, "history")
 DB_PATH = os.path.join(HISTORY_DIR, "classifications.db")
 
 
