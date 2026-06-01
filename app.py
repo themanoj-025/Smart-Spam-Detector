@@ -102,8 +102,10 @@ THEME_CSS = """
         --spam-title: #c62828;
         --ham-title: #2e7d32;
 
-    /* Transition timing */
-    --theme-transition: 0.35s ease;
+    /* Transition timing — fast for snappy feel */
+    --theme-transition: 0.2s ease;
+    --hover-transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+
 
     /* Gauge */
     --gauge-bg: #e0e0e0;
@@ -346,6 +348,69 @@ THEME_CSS = """
     @keyframes gaugeFill {
         from { stroke-dashoffset: 251; }
         to   { stroke-dashoffset: var(--gauge-offset); }
+    }
+
+    @keyframes slideRight {
+        from { opacity: 0; transform: translateX(-20px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+
+
+    /* ================================================================
+       Email Stats Bar
+       ================================================================ */
+    .email-stats {
+        display: flex;
+        gap: 16px;
+        padding: 10px 16px;
+        background: var(--metric-bg);
+        border-radius: 10px;
+        margin: 0.5rem 0;
+        animation: fadeIn 0.3s ease;
+        transition: background-color var(--theme-transition);
+    }
+    .email-stat-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        transition: color var(--theme-transition);
+    }
+    .email-stat-item span.stat-val {
+        font-weight: 600;
+        color: var(--text-primary);
+        transition: color var(--theme-transition);
+    }
+
+    /* ================================================================
+       Toast / Notification
+       ================================================================ */
+    .toast-notification {
+        padding: 12px 20px;
+        border-radius: 12px;
+        margin: 0.5rem 0;
+        animation: slideRight 0.3s ease;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all var(--hover-transition);
+    }
+    .toast-success {
+        background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+        border-left: 4px solid var(--accent-green);
+        color: #2e7d32;
+    }
+    .toast-warning {
+        background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+        border-left: 4px solid var(--accent-yellow);
+        color: #e65100;
+    }
+    .toast-danger {
+        background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        border-left: 4px solid var(--accent-red);
+        color: #c62828;
     }
 
     /* ================================================================
@@ -897,7 +962,37 @@ with tab1:
         "click **Classify** for a full analysis with SHAP explanation."
     )
 
-    # Text input with callback for live analysis
+    # --- Quick Example Buttons ---
+    st.markdown(
+        "<div style='margin-bottom:0.5rem;'><span style='font-size:0.85rem;color:var(--text-muted);font-weight:500;'>"
+        "⚡ Quick test:</span></div>",
+        unsafe_allow_html=True,
+    )
+    ex_col1, ex_col2, ex_col3, ex_col4 = st.columns(4)
+    EXAMPLE_EMAILS = {
+        "spam": "Congratulations! You have won a $1000 Walmart gift card. Click here to claim your prize now! Act fast, this offer expires in 24 hours!",
+        "ham": "Hey, are we still meeting for lunch tomorrow at the cafe? Let me know what time works for you.",
+        "phish": "URGENT: Your account has been compromised. Please verify your identity immediately at http://secure-bank-login.xyz/verify to avoid suspension.",
+        "scam": "Dear friend, I am a prince from Nigeria and I have $15,000,000 USD that I need to transfer to your bank account. Please send your bank details."
+    }
+    with ex_col1:
+        if st.button("🚨 Spam", use_container_width=True, key="ex_spam"):
+            st.session_state.email_input = EXAMPLE_EMAILS["spam"]
+            st.rerun()
+    with ex_col2:
+        if st.button("✅ Ham", use_container_width=True, key="ex_ham"):
+            st.session_state.email_input = EXAMPLE_EMAILS["ham"]
+            st.rerun()
+    with ex_col3:
+        if st.button("🔗 Phishing", use_container_width=True, key="ex_phish"):
+            st.session_state.email_input = EXAMPLE_EMAILS["phish"]
+            st.rerun()
+    with ex_col4:
+        if st.button("💰 Scam", use_container_width=True, key="ex_scam"):
+            st.session_state.email_input = EXAMPLE_EMAILS["scam"]
+            st.rerun()
+
+    # Text input
     email_text = st.text_area(
         "Email Content",
         height=200,
@@ -906,7 +1001,20 @@ with tab1:
         key="email_input",
     )
 
-    # Real-time typing analysis
+    # --- Email Stats Bar ---
+    if email_text and email_text.strip():
+        words = len(email_text.split())
+        chars = len(email_text)
+        sentences = email_text.count('.') + email_text.count('!') + email_text.count('?')
+        st.markdown(
+            f"<div class='email-stats'>"
+            f"<div class='email-stat-item'>📝 <span class='stat-val'>{words}</span> words</div>"
+            f"<div class='email-stat-item'>🔤 <span class='stat-val'>{chars}</span> chars</div>"
+            f"<div class='email-stat-item'>📑 <span class='stat-val'>{sentences}</span> sentences</div>"
+            f"<div class='email-stat-item'>⏱️ ~{max(1, -(-words // 200))} min read</div>"
+            f"</div>",
+            unsafe_allow_html=True,
+        )    # Real-time typing analysis
     if enable_live and email_text and email_text.strip():
         live_label, live_conf, live_risk = compute_live_prediction(email_text)
         if live_label is not None:
@@ -941,6 +1049,17 @@ with tab1:
                         source="manual",
                         url_count=url_analysis["total_urls"],
                         suspicious_urls=url_analysis["suspicious_count"],
+                    )
+
+                    # Toast notification
+                    toast_class = "toast-danger" if prediction == "Spam" else "toast-success"
+                    toast_icon = "🚨" if prediction == "Spam" else "✅"
+                    toast_msg = f"{toast_icon} Classified as <strong>{prediction}</strong>"
+                    if confidence:
+                        toast_msg += f" with <strong>{confidence:.1f}%</strong> confidence"
+                    st.markdown(
+                        f"<div class='toast-notification {toast_class}'>{toast_msg}</div>",
+                        unsafe_allow_html=True,
                     )
 
                     # Display result with styling
