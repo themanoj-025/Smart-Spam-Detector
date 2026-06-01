@@ -153,10 +153,11 @@ app = FastAPI(
     dependencies=[Depends(verify_api_key)] if API_KEY else [],
 )
 
-# CORS — allow cross-origin requests from any frontend
+# CORS — configurable via env var, defaults to permissive for dev
+CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "*").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

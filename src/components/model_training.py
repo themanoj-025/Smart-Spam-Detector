@@ -22,6 +22,13 @@ from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, f1_score,
 )
 
+# Optional: XGBoost (graceful fallback if not installed)
+try:
+    from xgboost import XGBClassifier
+    HAS_XGBOOST = True
+except ImportError:
+    HAS_XGBOOST = False
+
 from src.utils.logger import get_logger
 from src.utils.state import TrainingState
 from src.config.config import Config, ModelConfig
@@ -48,13 +55,27 @@ class ModelTraining:
         Returns:
             Dictionary mapping model names to sklearn estimators.
         """
-        return {
-            'LogisticRegression': LogisticRegression(random_state=self.config.random_state),
-            'DecisionTree': DecisionTreeClassifier(random_state=self.config.random_state),
-            'SVM': SVC(random_state=self.config.random_state, probability=True),
+        models = {
+            'LogisticRegression': LogisticRegression(
+                random_state=self.config.random_state, class_weight='balanced'
+            ),
+            'DecisionTree': DecisionTreeClassifier(
+                random_state=self.config.random_state, class_weight='balanced'
+            ),
+            'SVM': SVC(
+                random_state=self.config.random_state, probability=True, class_weight='balanced'
+            ),
             'KNN': KNeighborsClassifier(),
-            'RandomForest': RandomForestClassifier(random_state=self.config.random_state),
+            'RandomForest': RandomForestClassifier(
+                random_state=self.config.random_state, class_weight='balanced'
+            ),
         }
+        if HAS_XGBOOST:
+            models['XGBoost'] = XGBClassifier(
+                random_state=self.config.random_state,
+                eval_metric='logloss',
+            )
+        return models
 
     def _evaluate_model(self, model, X_test, y_test, y_pred) -> Dict[str, Any]:
         """Compute comprehensive evaluation metrics for a model.

@@ -122,6 +122,12 @@ class ModelConfig:
             'min_samples_split': [2, 5, 10],
             'min_samples_leaf': [1, 2, 4],
             'max_features': ['sqrt', 'log2']
+        },
+        'XGBoost': {
+            'n_estimators': [100, 200],
+            'max_depth': [3, 6, 10],
+            'learning_rate': [0.01, 0.1, 0.2],
+            'subsample': [0.8, 1.0],
         }
     })
 

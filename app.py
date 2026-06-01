@@ -965,16 +965,19 @@ with tab1:
 
             # --- Report Download ---
             if confidence:
+                explanation_summary = None
+                if enable_explanation and 'explanation' in locals() and isinstance(explanation, dict) and explanation.get('status') == 'available':
+                    top_spam = explanation.get('top_spam_words', [])
+                    if top_spam:
+                        explanation_summary = f"Top spam word: {top_spam[0].get('word', 'N/A')} ({top_spam[0].get('contribution', 0):+.4f})"
+
                 report_html = generate_email_report(
                     email_text=email_text,
                     prediction=prediction,
                     confidence=confidence,
                     spam_risk=spam_risk_val,
                     url_analysis=url_analysis if url_analysis["total_urls"] > 0 else None,
-                    explanation_summary=(
-                        f"Top spam word: {explanation.get('top_spam_words', [{}])[0].get('word', 'N/A')} "
-                        f"({explanation.get('top_spam_words', [{}])[0].get('contribution', 0):+.4f})"
-                    ) if enable_explanation and 'explanation' in dir() and explanation.get('status') == 'available' else None,
+                    explanation_summary=explanation_summary,
                 )
                 st.download_button(
                     "📥 Download Report (HTML)",

@@ -1,6 +1,8 @@
 import re
 from html import unescape
+from email.message import Message
 from email.utils import getaddresses
+from typing import Optional, Union
 from bs4 import BeautifulSoup
 
 # ----------------------------------------------------------------------------
@@ -8,8 +10,19 @@ from bs4 import BeautifulSoup
 # ----------------------------------------------------------------------------
 
 
-def extract_body(msg):
-    texts = []
+def extract_body(msg: Message) -> str:
+    """Extract the readable text body from an email message.
+
+    Handles both multipart and single-part emails. Strips HTML tags and
+    normalizes whitespace.
+
+    Args:
+        msg: An email.message.Message object.
+
+    Returns:
+        Cleaned text body of the email.
+    """
+    texts: list[str] = []
 
     if msg.is_multipart():
         for part in msg.walk():
@@ -38,18 +51,38 @@ def extract_body(msg):
 # ----------------------------------------------------------------------------
 
 
-def all_recipients(msg):
-    fields = []
+def all_recipients(msg: Message) -> str:
+    """Extract all unique recipient email addresses from an email message.
+
+    Args:
+        msg: An email.message.Message object.
+
+    Returns:
+        Comma-separated string of unique email addresses.
+    """
+    fields: list[str] = []
     for h in ["From", "To", "Cc", "Bcc"]:
         fields.extend(getaddresses([msg.get(h, "")]))
     return ", ".join(sorted(set(addr for _, addr in fields if addr)))
 
 # ----------------------------------------------------------------------------
-# Function to clean text for Excel compatibility
+# Function to clean text for Excel compatibility and model input
 # ----------------------------------------------------------------------------
 
 
-def clean_text(text):
+def clean_text(text: Union[str, None]) -> Union[str, None]:
+    """Clean text for model input and Excel compatibility.
+
+    Removes control characters, zero-width spaces, and truncates to
+    Excel's cell limit. Also escapes characters that trigger formula
+    injection in spreadsheets.
+
+    Args:
+        text: The text to clean. If not a string, returned as-is.
+
+    Returns:
+        Cleaned string, or the original value if not a string.
+    """
     if not isinstance(text, str):
         return text
     text = re.sub(r'[\x00-\x08\x0B-\x0C\x0E-\x1F\u200B\u200C\u200D\u200E\u200F\uFEFF]', '', text)

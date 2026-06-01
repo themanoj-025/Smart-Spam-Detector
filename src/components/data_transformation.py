@@ -90,10 +90,15 @@ class DataTransformation:
             logger.info(f"Train/test split ({train_pct}:{test_pct})")
             logger.info(f"Train size: {len(X_train)}, Test size: {len(X_test)}")
 
-            # Apply TF-IDF vectorization (proven settings from notebook experiments)
+            # Apply TF-IDF vectorization with optimized settings
             tfidf_vectorizer = TfidfVectorizer(
                 lowercase=True,
                 stop_words='english',
+                ngram_range=(1, 2),       # unigrams + bigrams for better feature quality
+                max_features=15000,        # limit vocabulary size for faster training
+                min_df=2,                  # ignore very rare terms (appear < 2 times)
+                max_df=0.95,               # ignore terms in > 95% of documents
+                sublinear_tf=True,         # apply sublinear TF scaling (1 + log(tf))
             )
 
             X_train_tfidf = tfidf_vectorizer.fit_transform(X_train)

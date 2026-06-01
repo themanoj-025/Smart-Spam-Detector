@@ -12,10 +12,6 @@ Usage:
 
 import sys
 import argparse
-from pathlib import Path
-
-# Ensure we can import from src
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from src.pipeline.prediction_pipeline import PredictionPipeline
 

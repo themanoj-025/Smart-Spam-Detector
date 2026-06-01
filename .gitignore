@@ -40,5 +40,11 @@ Thumbs.db
 outputs/
 data/models/
 
+# Classification history (ephemeral on Streamlit Cloud)
+history/classifications.db
+
 # Coverage
 .coverage
+
+# Stray files
+=*
