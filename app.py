@@ -614,10 +614,7 @@ st.markdown(
     "Classify emails as **Spam** 🚨 or **Ham** ✅ (Safe) using "
     "Machine Learning with **scikit-learn** & **SHAP** explainability."
 )
-st.markdown(
-    "<div style='margin-top:0.5rem;'><a href='https://smart-spam-detector.streamlit.app' target='_blank' style='color:var(--input-focus-border);font-weight:600;text-decoration:none;'>🌐 Live App: smart-spam-detector.streamlit.app</a></div>",
-    unsafe_allow_html=True,
-)
+
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
