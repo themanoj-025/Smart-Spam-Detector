@@ -1,3 +1,9 @@
+# ============================================================
+# Streamlit Cloud — Minimal Dependencies
+# Only packages required by app.py (Streamlit web app).
+# For the full dev/API environment, use pyproject.toml instead.
+# ============================================================
+
 # Core ML & Data
 scikit-learn==1.5.2
 pandas==2.2.3
@@ -6,16 +12,14 @@ numpy==1.26.4
 # Web UI
 streamlit==1.41.1
 
-# NLP & Parsing
+# NLP & Parsing (email body extraction from HTML)
 beautifulsoup4==4.12.3
 
-# Explainability
+# Explainability (SHAP word-level explanations)
 shap>=0.42.0
 
-# Visualization
-matplotlib==3.9.2
+# Visualization (radar charts, confusion matrices in Model Comparison tab)
 plotly==5.24.1
 
-# Excel support
+# Excel upload support (pd.read_excel in Batch Processing tab)
 openpyxl==3.1.5
-xlsxwriter==3.2.0
