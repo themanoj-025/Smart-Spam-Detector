@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup
 # ----------------------------------------------------------------------------
 # Function to extract email body content
 # ----------------------------------------------------------------------------
+
+
 def extract_body(msg):
     texts = []
 
@@ -34,6 +36,8 @@ def extract_body(msg):
 # ----------------------------------------------------------------------------
 # Function to extract all recipients from email headers
 # ----------------------------------------------------------------------------
+
+
 def all_recipients(msg):
     fields = []
     for h in ["From", "To", "Cc", "Bcc"]:
@@ -43,6 +47,8 @@ def all_recipients(msg):
 # ----------------------------------------------------------------------------
 # Function to clean text for Excel compatibility
 # ----------------------------------------------------------------------------
+
+
 def clean_text(text):
     if not isinstance(text, str):
         return text

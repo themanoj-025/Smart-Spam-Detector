@@ -9,7 +9,7 @@ import sqlite3
 import time
 import json
 from typing import Dict, List, Optional, Any
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 
 from src.utils.logger import get_logger

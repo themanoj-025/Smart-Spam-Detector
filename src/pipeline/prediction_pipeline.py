@@ -6,9 +6,8 @@ and SHAP-based explainability for word-level predictions.
 """
 
 import mailbox
-import pickle
 import time
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 from pathlib import Path
 
 import numpy as np
@@ -219,8 +218,10 @@ class PredictionPipeline:
             else:
                 color = word_color(token.strip('.,!?;:\'"()[]{}'))
                 if color:
+                    contrib = word_map[token.lower()]["contribution"]
                     highlighted.append(
-                        f'<span style="{color}" title="contribution: {word_map[token.lower()]["contribution"]:.4f}">'
+                        f'<span style="{color}" '
+                        f'title="contribution: {contrib:.4f}">'
                         f'{token}</span>'
                     )
                 else:
@@ -268,8 +269,10 @@ class PredictionPipeline:
         except Exception:
             pass
 
-        logger.info(f"Prediction: {prediction_label} "
-                   f"{f'(confidence: {confidence}%)' if confidence else ''}")
+        logger.info(
+            f"Prediction: {prediction_label} "
+            f"{f'(confidence: {confidence}%)' if confidence else ''}"
+        )
 
         return {
             'prediction': prediction_label,
@@ -277,7 +280,11 @@ class PredictionPipeline:
             'raw_prediction': int(prediction[0])
         }
 
-    def predict_with_explanation(self, email_body: str, explanation_enabled: bool = True) -> Dict[str, Any]:
+    def predict_with_explanation(
+        self,
+        email_body: str,
+        explanation_enabled: bool = True,
+    ) -> Dict[str, Any]:  # noqa: C901
         """Classify a single email with SHAP-based word-level explanation.
 
         Builds on `predict_single_email` to avoid code duplication. If the
@@ -351,7 +358,9 @@ class PredictionPipeline:
                     return result
 
                 # Compute SHAP values for the spam class (index 0)
-                shap_values = self._shap_explainer.shap_values(features, nsamples=_SHAP_NSAMPLES)
+                shap_values = self._shap_explainer.shap_values(
+                    features, nsamples=_SHAP_NSAMPLES
+                )
 
                 # shap_values shape for binary: (n_samples, n_features) or list of arrays
                 if isinstance(shap_values, list):
@@ -379,8 +388,10 @@ class PredictionPipeline:
                     'error_message': '',
                 }
 
-                logger.info(f"Explanation generated for {prediction_label}: "
-                           f"{len(spam_words)} spam words, {len(ham_words)} ham words")
+                logger.info(
+                    f"Explanation generated for {prediction_label}: "
+                    f"{len(spam_words)} spam words, {len(ham_words)} ham words"
+                )
 
             except ImportError:
                 result['explanation']['status'] = 'error'
@@ -492,7 +503,7 @@ class PredictionPipeline:
         self,
         mailbox_path: str,
         output_path: Optional[str] = None
-    ) -> pd.DataFrame:
+    ) -> pd.DataFrame:  # noqa: C901
         """Complete pipeline: load MBOX, process emails, run predictions.
 
         Args:

@@ -5,9 +5,10 @@ from datetime import datetime
 # Global variable to store the log file path for the current run
 _LOG_FILE = None
 
+
 def get_logger(name: str):
     global _LOG_FILE
-    
+
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
 

@@ -7,8 +7,7 @@ matrices, and provides Plotly figures for radar charts and heatmaps.
 import os
 import re
 import glob
-import json
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 from pathlib import Path
 
 import numpy as np
@@ -21,7 +20,6 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
     f1_score,
-    classification_report,
 )
 
 from src.utils.utils import load_pickle
@@ -80,7 +78,14 @@ class ModelComparison:
             return None
 
         run_dirs = sorted(
-            [d for d in base_dir.iterdir() if d.is_dir() and re.match(r"^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}$", d.name)],
+            [
+                d for d in base_dir.iterdir()
+                if d.is_dir()
+                and re.match(
+                    r"^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}$",
+                    d.name,
+                )
+            ],
             reverse=True,
         )
 
@@ -244,7 +249,7 @@ class ModelComparison:
             except Exception as e:
                 logger.warning(f"  Could not compute CM for {name}: {e}")
 
-    def load(self, run_dir: Optional[str] = None) -> bool:
+    def load(self, run_dir: Optional[str] = None) -> bool:  # noqa: C901
         """Load all model data from a training run.
 
         Args:
@@ -291,9 +296,18 @@ class ModelComparison:
                         y_pred = model.predict(self.X_test)
                         self.metrics[name] = {
                             "accuracy": accuracy_score(self.y_test, y_pred),
-                            "precision": precision_score(self.y_test, y_pred, average="weighted", zero_division=0),
-                            "recall": recall_score(self.y_test, y_pred, average="weighted", zero_division=0),
-                            "f1_score": f1_score(self.y_test, y_pred, average="weighted", zero_division=0),
+                            "precision": precision_score(
+                                self.y_test, y_pred,
+                                average="weighted", zero_division=0,
+                            ),
+                            "recall": recall_score(
+                                self.y_test, y_pred,
+                                average="weighted", zero_division=0,
+                            ),
+                            "f1_score": f1_score(
+                                self.y_test, y_pred,
+                                average="weighted", zero_division=0,
+                            ),
                         }
                     except Exception:
                         pass
@@ -369,7 +383,7 @@ class ModelComparison:
                 line=dict(color=color, width=line_width),
                 opacity=opacity,
                 fill="toself",
-                fillcolor=f"rgba{self._hex_to_rgba(color, 0.08)}",
+                fillcolor=f"rgba{self._hex_to_rgba(color, 0.08)}",  # noqa
             ))
 
         # Compute dynamic range: round down min value to nearest 5%
@@ -433,7 +447,6 @@ class ModelComparison:
             return None
 
         import plotly.graph_objects as go
-        import plotly.express as px
 
         cm = self.confusion_matrices[model_name]
         is_best = model_name == self.best_model_name

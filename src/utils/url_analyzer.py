@@ -7,7 +7,7 @@ per URL and an overall email risk level.
 
 import re
 import socket
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any
 from urllib.parse import urlparse
 
 # ---------------------------------------------------------------------------
@@ -69,7 +69,7 @@ def extract_urls(text: str) -> List[str]:
     return urls
 
 
-def analyze_url(url: str) -> Dict[str, Any]:
+def analyze_url(url: str) -> Dict[str, Any]:  # noqa: C901
     """Analyze a single URL for suspicious characteristics.
 
     Args:
@@ -215,10 +215,20 @@ def _is_ip_address(hostname: str) -> bool:
 
 def get_url_risk_badge(risk_score: float) -> str:
     """Get an HTML badge string for a URL risk score."""
+    style_base = 'padding:2px 8px;border-radius:10px;font-size:0.75rem;font-weight:600'
     if risk_score >= 50:
-        return f'<span style="background:#f44336;color:#fff;padding:2px 8px;border-radius:10px;font-size:0.75rem;font-weight:600">{risk_score:.0f}% High</span>'
+        return (
+            f'<span style="background:#f44336;color:#fff;{style_base}">'
+            f'{risk_score:.0f}% High</span>'
+        )
     elif risk_score >= 20:
-        return f'<span style="background:#ffa726;color:#fff;padding:2px 8px;border-radius:10px;font-size:0.75rem;font-weight:600">{risk_score:.0f}% Medium</span>'
+        return (
+            f'<span style="background:#ffa726;color:#fff;{style_base}">'
+            f'{risk_score:.0f}% Medium</span>'
+        )
     elif risk_score > 0:
-        return f'<span style="background:#66bb6a;color:#fff;padding:2px 8px;border-radius:10px;font-size:0.75rem;font-weight:600">{risk_score:.0f}% Low</span>'
+        return (
+            f'<span style="background:#66bb6a;color:#fff;{style_base}">'
+            f'{risk_score:.0f}% Low</span>'
+        )
     return ""

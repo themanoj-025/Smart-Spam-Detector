@@ -45,3 +45,4 @@ Dockerfile
 Dockerfile.streamlit
 docker-compose.yml
 .dockerignore
+.coverage

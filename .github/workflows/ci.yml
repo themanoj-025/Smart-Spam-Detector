@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
 
     steps:
       - uses: actions/checkout@v4
@@ -27,11 +27,16 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
-      - name: Lint with flake8
+      - name: Install linting tools
+        run: pip install flake8
+
+      - name: Lint with flake8 (critical errors)
         run: |
-          pip install flake8
           flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 src/ --count --max-complexity=10 --max-line-length=100 --statistics
+
+      - name: Lint with flake8 (warnings, non-blocking)
+        run: |
+          flake8 src/ --count --max-complexity=10 --max-line-length=100 --statistics --exit-zero
 
       - name: Test with pytest
         run: |

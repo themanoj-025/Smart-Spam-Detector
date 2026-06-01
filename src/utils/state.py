@@ -1,6 +1,7 @@
 from typing import Optional, List, Dict, Any
 import pandas as pd
 
+
 class TrainingState:
     training_data_path: Optional[str] = None
     training_data: Optional[pd.DataFrame] = None
@@ -18,6 +19,7 @@ class TrainingState:
     best_model: Optional[Any] = None
     best_params: Optional[Dict[str, Any]] = None
     cv_results: Optional[Dict[str, Any]] = None
+
 
 class PredictionState:
     mailbox_path: Optional[str] = None
