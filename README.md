@@ -252,6 +252,67 @@ The pipeline automatically:
 
 ---
 
+## ☁️ Deploy to Streamlit Cloud
+
+Host the app for free on [Streamlit Cloud](https://share.streamlit.io) in under 5 minutes.
+
+### Step 1 — Fork the Repository
+
+Click **Fork** on GitHub to create your own copy, or push this repo to your own GitHub account.
+
+### Step 2 — Go to Streamlit Cloud
+
+1. Visit [share.streamlit.io](https://share.streamlit.io)
+2. Sign in with your GitHub account
+3. Click **"New app"**
+
+### Step 3 — Configure the App
+
+Fill in the settings:
+
+| Field | Value |
+|-------|-------|
+| **Repository** | `your-username/Smart-Spam-Detector` |
+| **Branch** | `main` |
+| **Main file path** | `app.py` |
+
+> `runtime.txt` (Python 3.11) and `.streamlit/config.toml` are auto-detected.
+
+### Step 4 — Deploy
+
+Click **"Deploy"**. Streamlit Cloud will:
+1. Install dependencies from `requirements.txt`
+2. Start the app on a public URL
+
+### Step 5 — Train Models (First Run)
+
+Since trained models are not committed to the repo, the first launch shows:
+
+```
+⚠️ No trained models found. Training is required before the app can work.
+```
+
+Click **"🚀 Train Models Now"** — training takes ~2–5 minutes on the free tier. Models are cached for the session via `@st.cache_resource`.
+
+> **Note:** Streamlit Cloud has an ephemeral filesystem. Trained models and classification history (SQLite) are lost on app restart. The app handles this gracefully — just click **Train Models Now** again.
+
+### Deployment Checklist
+
+| Requirement | Status |
+|-------------|--------|
+| `app.py` at repo root | ✅ |
+| `requirements.txt` at repo root | ✅ |
+| `runtime.txt` → `python-3.11` | ✅ |
+| `.streamlit/config.toml` (headless mode) | ✅ |
+| Training dataset in git (`data/dataset/dataset.csv`) | ✅ |
+| Auto-train fallback when models are missing | ✅ |
+
+### Environment Variables (Optional)
+
+No environment variables are required for basic usage. If you add a `.streamlit/secrets.toml` file, you can access secrets via `st.secrets`.
+
+---
+
 ## ✨ Feature Deep Dive
 
 ### 🌓 Dark/Light Theme
