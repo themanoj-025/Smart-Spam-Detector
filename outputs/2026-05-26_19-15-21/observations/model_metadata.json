@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-05-26_19-15-21",
+  "best_model_name": "StackingClassifier",
+  "best_model_params": "{'estimators': 'LR+DT+RF', 'final_estimator': 'SVC(linear)'}",
+  "best_model_f1_score": 0.9797903458303121,
+  "best_model_accuracy": 0.9802690582959641,
+  "all_models_trained": [
+    "LogisticRegression",
+    "DecisionTree",
+    "SVM",
+    "KNN",
+    "RandomForest",
+    "StackingClassifier"
+  ],
+  "tfidf_features": 3434,
+  "vocabulary_size": 3434,
+  "train_samples": 4457,
+  "test_samples": 1115
+}

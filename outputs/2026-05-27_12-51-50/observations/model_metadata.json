@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-05-27_12-51-50",
+  "best_model_name": "SVM",
+  "best_model_params": "{'C': 10, 'gamma': 'scale', 'kernel': 'linear'}",
+  "best_model_f1_score": 0.9807993117310897,
+  "best_model_accuracy": 0.9811659192825112,
+  "all_models_trained": [
+    "LogisticRegression",
+    "DecisionTree",
+    "SVM",
+    "KNN",
+    "RandomForest",
+    "StackingClassifier"
+  ],
+  "tfidf_features": 7490,
+  "vocabulary_size": 7490,
+  "train_samples": 4457,
+  "test_samples": 1115
+}

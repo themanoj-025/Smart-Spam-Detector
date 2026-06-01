@@ -37,7 +37,7 @@ Thumbs.db
 .ipynb_checkpoints/
 
 # Model artifacts (auto-trained on first run)
-outputs/
+# outputs/
 data/models/
 
 # Classification history (ephemeral on Streamlit Cloud)

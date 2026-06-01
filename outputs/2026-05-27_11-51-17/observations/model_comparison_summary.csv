@@ -1,0 +1,7 @@
+Model,Accuracy,Precision,Recall,F1_Score,CV_Score,Is_Best_Model
+SVM,0.9812,0.981,0.9812,0.9808,0.9883,✓
+StackingClassifier,0.9803,0.9801,0.9803,0.9799,0.0,
+LogisticRegression,0.9794,0.9795,0.9794,0.9788,0.9873,
+RandomForest,0.9749,0.9753,0.9749,0.9739,0.988,
+DecisionTree,0.9659,0.9651,0.9659,0.9651,0.982,
+KNN,0.9408,0.9446,0.9408,0.9334,0.9624,
