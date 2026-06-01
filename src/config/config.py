@@ -11,13 +11,24 @@ from typing import Dict, Any, Optional, Tuple
 from pathlib import Path
 
 
-def find_latest_artifacts() -> Tuple[Optional[str], Optional[str]]:
+# Project root resolved once at import time — works regardless of CWD.
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+
+def find_latest_artifacts(project_root: Optional[Path] = None) -> Tuple[Optional[str], Optional[str]]:
     """Auto-discover the latest trained model and vectorizer from the outputs directory.
+
+    Args:
+        project_root: Override for the project root directory.  When *None* the
+            root is resolved relative to this file.
 
     Returns:
         Tuple of (model_path, feature_path) or (None, None) if no artifacts found.
     """
-    base_dir = Path("outputs")
+    if project_root is None:
+        project_root = _PROJECT_ROOT
+
+    base_dir = project_root / "outputs"
     if not base_dir.exists():
         return None, None
 
@@ -51,16 +62,29 @@ class Config:
         test_size: Fraction of data to use for testing.
         random_state: Random seed for reproducibility.
     """
-    training_data_path: str = "data/dataset/dataset.csv"
-    OUTPUT_BASE_DIR: str = "outputs"
+    training_data_path: str = ""
+    OUTPUT_BASE_DIR: str = ""
     model_path: str = ""
     feature_path: str = ""
     test_size: float = 0.2
     random_state: int = 42
 
     def __post_init__(self):
-        """Auto-discover latest model artifacts after initialization."""
-        model_path, feature_path = find_latest_artifacts()
+        """Auto-discover latest model artifacts after initialization.
+
+        All paths are resolved relative to the project root (two directories
+        above this file) so that the application works correctly regardless
+        of the current working directory — critical for Streamlit Cloud.
+        """
+        project_root = _PROJECT_ROOT
+
+        # Resolve default paths to absolute locations
+        if not self.training_data_path:
+            self.training_data_path = str(project_root / "data" / "dataset" / "dataset.csv")
+        if not self.OUTPUT_BASE_DIR:
+            self.OUTPUT_BASE_DIR = str(project_root / "outputs")
+
+        model_path, feature_path = find_latest_artifacts(project_root)
         if model_path and feature_path:
             self.model_path = model_path
             self.feature_path = feature_path

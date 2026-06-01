@@ -13,10 +13,12 @@ class TestConfig:
     """Test the Config dataclass."""
 
     def test_config_defaults(self):
-        """Test that Config has correct default values."""
+        """Test that Config resolves absolute paths from project root."""
         config = Config()
-        assert config.training_data_path == "data/dataset/dataset.csv"
-        assert config.OUTPUT_BASE_DIR == "outputs"
+        # Paths are now resolved relative to the project root (via __file__)
+        project_root = Path(__file__).resolve().parents[1]
+        assert config.training_data_path == str(project_root / "data" / "dataset" / "dataset.csv")
+        assert config.OUTPUT_BASE_DIR == str(project_root / "outputs")
         assert config.test_size == 0.2
         assert config.random_state == 42
 
@@ -67,41 +69,29 @@ class TestFindLatestArtifacts:
             Path(os.path.join(models_dir, "vectorizer.pkl")).touch()
 
     def test_no_outputs_dir(self):
-        """Test when outputs directory doesn't exist."""
+        """Test when outputs directory doesn't exist (via project_root override)."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            original = os.getcwd()
-            try:
-                os.chdir(tmpdir)
-                model_path, feature_path = find_latest_artifacts()
-                assert model_path is None
-                assert feature_path is None
-            finally:
-                os.chdir(original)
+            tmp_root = Path(tmpdir)
+            model_path, feature_path = find_latest_artifacts(project_root=tmp_root)
+            assert model_path is None
+            assert feature_path is None
 
     def test_empty_outputs_dir(self):
-        """Test when outputs directory is empty."""
+        """Test when outputs directory exists but has no model artifacts."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            original = os.getcwd()
-            try:
-                os.chdir(tmpdir)
-                os.makedirs("outputs/empty_run")
-                model_path, feature_path = find_latest_artifacts()
-                assert model_path is None
-                assert feature_path is None
-            finally:
-                os.chdir(original)
+            tmp_root = Path(tmpdir)
+            os.makedirs(tmp_root / "outputs" / "empty_run")
+            model_path, feature_path = find_latest_artifacts(project_root=tmp_root)
+            assert model_path is None
+            assert feature_path is None
 
     def test_with_model_artifacts(self):
-        """Test when valid model artifacts exist."""
+        """Test when valid model artifacts exist (via project_root override)."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            original = os.getcwd()
-            try:
-                os.chdir(tmpdir)
-                self._create_output_structure(tmpdir, has_models=True)
-                model_path, feature_path = find_latest_artifacts()
-                assert model_path is not None
-                assert feature_path is not None
-                assert model_path.endswith("SVM_model.pkl")
-                assert feature_path.endswith("vectorizer.pkl")
-            finally:
-                os.chdir(original)
+            tmp_root = Path(tmpdir)
+            self._create_output_structure(str(tmp_root), has_models=True)
+            model_path, feature_path = find_latest_artifacts(project_root=tmp_root)
+            assert model_path is not None
+            assert feature_path is not None
+            assert model_path.endswith("SVM_model.pkl")
+            assert feature_path.endswith("vectorizer.pkl")

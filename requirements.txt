@@ -3,7 +3,7 @@
 # ============================================================
 
 # Core ML & Data
-numpy>=1.24.0
+numpy>=1.24.0,<2.1.0
 scikit-learn>=1.3.0
 pandas>=2.0.0,<3.0
 
@@ -14,7 +14,10 @@ streamlit>=1.28.0
 beautifulsoup4>=4.12.0
 
 # Explainability (SHAP word-level explanations)
-shap>=0.42.0,<0.52.0
+# NOTE: shap>=0.45.0 ships manylinux wheels so no C compilation needed on
+# Streamlit Cloud. We intentionally omit an upper bound so pip can resolve
+# a version compatible with the installed numpy/scipy.
+shap>=0.45.0
 
 # Visualization (radar charts, confusion matrices in Model Comparison tab)
 plotly>=5.15.0

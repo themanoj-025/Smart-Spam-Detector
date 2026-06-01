@@ -119,11 +119,19 @@ class PredictionPipeline:
         try:
             import shap
             logger.info("Initializing SHAP KernelExplainer...")
-            self._shap_explainer = shap.KernelExplainer(
-                self.model.predict_proba,
-                background,
-                link="logit",
-            )
+            try:
+                self._shap_explainer = shap.KernelExplainer(
+                    self.model.predict_proba,
+                    background,
+                    link="logit",
+                )
+            except TypeError:
+                # Some shap versions removed the 'link' parameter
+                logger.info("SHAP KernelExplainer does not accept 'link' param, retrying without it")
+                self._shap_explainer = shap.KernelExplainer(
+                    self.model.predict_proba,
+                    background,
+                )
             self._feature_names = self.feature_transformer.get_feature_names_out()
             logger.info(f"✓ SHAP explainer initialized ({len(self._feature_names)} features)")
         except Exception as e:
@@ -137,14 +145,27 @@ class PredictionPipeline:
     ) -> List[Dict[str, Any]]:
         """Convert raw SHAP values into per-word contribution records.
 
+        Handles both numpy arrays and ``shap.Explanation`` objects so the
+        function works with shap >= 0.42 and shap >= 0.45+.
+
         Args:
-            shap_values: SHAP values array for one sample, shape (n_features,) or (n_features, n_classes).
+            shap_values: SHAP values array for one sample, shape
+                (n_features,) or (n_features, n_classes), **or** a
+                ``shap.Explanation`` instance from newer SHAP versions.
             class_index: Index of the class to explain (0=Spam, 1=Ham).
 
         Returns:
             List of dicts with 'word', 'contribution', and 'class' keys,
             sorted by absolute contribution descending.
         """
+        # Newer SHAP versions (>= 0.45) return Explanation objects.
+        # Extract the underlying numpy array when that happens.
+        if hasattr(shap_values, 'values'):
+            shap_values = shap_values.values
+
+        # Ensure we have a numpy array from here on
+        shap_values = np.asarray(shap_values)
+
         # shap_values shape: (n_samples, n_features) for binary classification
         if shap_values.ndim == 2:
             values = shap_values[0]  # first (only) sample

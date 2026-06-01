@@ -501,7 +501,11 @@ except FileNotFoundError:
     )
     st.stop()
 except Exception as e:
-    st.error(f"⚠️ Unexpected error loading models: {str(e)}")
+    st.error(
+        f"⚠️ Unexpected error loading models: {str(e)}\n\n"
+        "If you just deployed, try clicking **Rerun** from the upper-right menu. "
+        "If the error persists, check the Streamlit Cloud logs for details."
+    )
     st.stop()
 
 # ---------------------------------------------------------------------------
