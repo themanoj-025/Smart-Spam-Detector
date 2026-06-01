@@ -1,0 +1,12 @@
+Attribute,Value
+Best Model Name,LogisticRegression
+Accuracy,0.9821
+Precision,0.9819
+Recall,0.9821
+F1-Score,0.9817
+CV Score,0.9919
+Best Parameters,"{
+  ""C"": 100,
+  ""max_iter"": 100,
+  ""solver"": ""lbfgs""
+}"
