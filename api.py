@@ -57,7 +57,7 @@ limiter = Limiter(
 )
 
 # ---------------------------------------------------------------------------
-# Logging — respect LOG_LEVEL env var for Docker/container environments
+# Logging — respect LOG_LEVEL env var
 # ---------------------------------------------------------------------------
 log_level = os.environ.get("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(
