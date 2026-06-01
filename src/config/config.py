@@ -133,4 +133,4 @@ class ModelConfig:
 
     cv_folds: int = 5
     scoring: str = 'f1'
-    n_jobs: int = -1
+    n_jobs: int = 1  # Set to 1 to prevent OOM kills on Streamlit Cloud
