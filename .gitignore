@@ -37,8 +37,14 @@ Thumbs.db
 .ipynb_checkpoints/
 
 # Model artifacts (auto-trained on first run)
-# outputs/
+# Keep only the latest training run in outputs/
+outputs/
 data/models/
+
+# Keep only the most recent run (manually un-ignore if needed)
+!outputs/
+outputs/*/
+!outputs/2026-06-01_18-54-30/
 
 # Classification history (ephemeral on Streamlit Cloud)
 history/classifications.db
@@ -48,3 +54,9 @@ history/classifications.db
 
 # Stray files
 =*
+
+# Virtual environments (uv)
+.venv2/
+
+# Lock files (Streamlit Cloud uses pip, not uv)
+uv.lock

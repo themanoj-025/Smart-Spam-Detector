@@ -1,6 +1,0 @@
-Model,Best_CV_Score,Best_Parameters
-LogisticRegression,0.99,"{""C"": 100, ""max_iter"": 100, ""solver"": ""liblinear""}"
-DecisionTree,0.9807,"{""criterion"": ""gini"", ""max_depth"": null, ""min_samples_leaf"": 1, ""min_samples_split"": 10}"
-SVM,0.9898,"{""C"": 1, ""gamma"": ""scale"", ""kernel"": ""linear""}"
-KNN,0.9651,"{""metric"": ""manhattan"", ""n_neighbors"": 3, ""weights"": ""distance""}"
-RandomForest,0.9893,"{""max_depth"": null, ""max_features"": ""sqrt"", ""min_samples_leaf"": 1, ""min_samples_split"": 10, ""n_estimators"": 100}"
