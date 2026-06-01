@@ -120,18 +120,34 @@ THEME_CSS = """
 
     .main-header {
         text-align: center;
-        padding: 1rem 0;
+        padding: 1.5rem 1rem;
         color: var(--text-primary);
         transition: color var(--theme-transition);
+    }
+    .main-header h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #4a90d9, #7c5ce0, #e84393);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.3rem;
+    }
+    .main-header p {
+        color: var(--text-secondary);
+        font-size: 1.05rem;
     }
 
     .stButton > button {
         width: 100%;
+        border-radius: 0.6rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.02em;
         transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
     }
     .stButton > button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.18);
     }
     .stButton > button:active {
         transform: translateY(0px);
@@ -141,27 +157,33 @@ THEME_CSS = """
        Prediction Box
        ================================================================ */
     .prediction-box {
-        padding: 1.5rem;
-        border-radius: 0.75rem;
-        margin: 1rem 0;
+        padding: 1.8rem 2rem;
+        border-radius: 1rem;
+        margin: 1.2rem 0;
         animation: fadeIn 0.5s ease;
-        transition: background-color var(--theme-transition), border-color var(--theme-transition);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: background-color var(--theme-transition), border-color var(--theme-transition), box-shadow var(--theme-transition);
     }
     .spam-box {
-        background-color: var(--accent-red-light);
-        border: 2px solid var(--accent-red);
+        background: linear-gradient(135deg, var(--accent-red-light), #fff0f0);
+        border-left: 5px solid var(--accent-red);
     }
     .ham-box {
-        background-color: var(--accent-green-light);
-        border: 2px solid var(--accent-green);
+        background: linear-gradient(135deg, var(--accent-green-light), #f0fff0);
+        border-left: 5px solid var(--accent-green);
     }
 
     .metric-card {
         background-color: var(--metric-bg);
-        padding: 1rem;
-        border-radius: 0.5rem;
+        padding: 1.2rem;
+        border-radius: 0.75rem;
         text-align: center;
-        transition: background-color var(--theme-transition);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        transition: background-color var(--theme-transition), box-shadow var(--theme-transition);
+    }
+    .metric-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
     }
 
     /* ================================================================
@@ -171,7 +193,12 @@ THEME_CSS = """
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin: 1.2rem 0;
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        transition: background-color var(--theme-transition), box-shadow var(--theme-transition);
     }
     .gauge-svg {
         width: 160px;
@@ -227,10 +254,10 @@ THEME_CSS = """
     .explanation-section {
         background: var(--explanation-bg);
         border: 1px solid var(--explanation-border);
-        border-radius: 12px;
-        padding: 1.5rem;
+        border-radius: 16px;
+        padding: 2rem;
         margin: 1.5rem 0;
-        box-shadow: var(--card-shadow);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.06);
         animation: slideUp 0.45s ease;
         transition: background var(--theme-transition), border-color var(--theme-transition), box-shadow var(--theme-transition);
     }
@@ -376,9 +403,13 @@ THEME_CSS = """
     }
     .stTabs [data-baseweb="tab"] {
         transition: color var(--theme-transition);
+        border-radius: 8px 8px 0 0;
+        padding: 0.6rem 1.2rem;
+        font-weight: 600;
     }
     .stTabs [aria-selected="true"] {
         background-color: var(--card-bg) !important;
+        border-bottom: 3px solid var(--input-focus-border);
         transition: background-color var(--theme-transition);
     }
 
@@ -404,7 +435,8 @@ THEME_CSS = """
     .stExpander details {
         background-color: var(--card-bg);
         border: 1px solid var(--card-border);
-        border-radius: 8px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         transition: background-color var(--theme-transition), border-color var(--theme-transition);
     }
 </style>
@@ -512,10 +544,14 @@ except Exception as e:
 # Header
 # ---------------------------------------------------------------------------
 st.markdown('<div class="main-header">', unsafe_allow_html=True)
-st.title("📧 Spam Email Classifier")
+st.markdown("<h1>📧 Spam Email Classifier</h1>", unsafe_allow_html=True)
 st.markdown(
     "Classify emails as **Spam** 🚨 or **Ham** ✅ (Safe) using "
-    "Machine Learning with **scikit-learn**."
+    "Machine Learning with **scikit-learn** & **SHAP** explainability."
+)
+st.markdown(
+    "<div style='margin-top:0.5rem;'><a href='https://smart-spam-detector.streamlit.app' target='_blank' style='color:var(--input-focus-border);font-weight:600;text-decoration:none;'>🌐 Live App: smart-spam-detector.streamlit.app</a></div>",
+    unsafe_allow_html=True,
 )
 st.markdown("</div>", unsafe_allow_html=True)
 
@@ -910,11 +946,11 @@ with tab1:
                     # Display result with styling
                     if prediction == "Spam":
                         st.markdown(
-                            f"""
+                            """
                             <div class="prediction-box spam-box">
-                                <h2 style="color: var(--spam-title); margin: 0;">🚨 SPAM DETECTED</h2>
-                                <p style="font-size: 1.2rem; margin: 0.5rem 0 0 0;">
-                                    This email is likely <strong>Spam</strong>
+                                <h2 style="color: var(--spam-title); margin: 0; font-size: 1.8rem;">🚨 SPAM DETECTED</h2>
+                                <p style="font-size: 1.1rem; margin: 0.5rem 0 0 0; color: var(--text-secondary);">
+                                    This email is likely <strong>Spam</strong> — proceed with caution
                                 </p>
                             </div>
                             """,
@@ -922,11 +958,11 @@ with tab1:
                         )
                     else:
                         st.markdown(
-                            f"""
+                            """
                             <div class="prediction-box ham-box">
-                                <h2 style="color: var(--ham-title); margin: 0;">✅ SAFE — HAM</h2>
-                                <p style="font-size: 1.2rem; margin: 0.5rem 0 0 0;">
-                                    This email appears to be <strong>Safe (Ham)</strong>
+                                <h2 style="color: var(--ham-title); margin: 0; font-size: 1.8rem;">✅ SAFE — HAM</h2>
+                                <p style="font-size: 1.1rem; margin: 0.5rem 0 0 0; color: var(--text-secondary);">
+                                    This email appears to be <strong>Safe (Ham)</strong> — no threats detected
                                 </p>
                             </div>
                             """,
