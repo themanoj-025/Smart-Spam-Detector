@@ -120,7 +120,7 @@ Smart-Spam-Detector/
 
 ### Try It Online (No Setup)
 
-👉 **[Open the Live App](https://smart-spam-detector.streamlit.app)** — classify emails instantly in your browser.
+👉 **[Open the Live App](https://smart-spam-detector-mdpxyaho4g6mvsmbgth5nj.streamlit.app/)** — classify emails instantly in your browser.
 
 ### Run Locally
 
@@ -139,8 +139,6 @@ pip install -r requirements.txt
 # Run the Streamlit app
 streamlit run app.py
 ```
-
-Opens at **http://localhost:8501**.
 
 ### Train Models (First Run)
 
