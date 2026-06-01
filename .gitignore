@@ -40,9 +40,5 @@ Thumbs.db
 outputs/
 data/models/
 
-# Docker build artifacts
-Dockerfile
-Dockerfile.streamlit
-docker-compose.yml
-.dockerignore
+# Coverage
 .coverage
