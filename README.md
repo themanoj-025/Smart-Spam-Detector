@@ -8,10 +8,12 @@
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3+-orange?logo=scikit-learn&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red?logo=streamlit&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
+[![CI](https://img.shields.io/github/actions/workflow/status/themanoj-025/Smart-Spam-Detector/ci.yml?branch=main&label=CI&logo=github)](https://github.com/themanoj-025/Smart-Spam-Detector/actions/workflows/ci.yml)
 
 ### 🚀 **[Try the Live App →](https://smart-spam-detector.streamlit.app)**
 
 ![Deploy](https://img.shields.io/badge/Deployed_on-Streamlit_Cloud-ff4b4b?logo=streamlit&logoColor=white)
+[![Dependabot](https://img.shields.io/badge/dependabot-enabled-025E8C?logo=dependabot)](https://github.com/themanoj-025/Smart-Spam-Detector/security/dependabot)
 
 </div>
 
@@ -120,7 +122,7 @@ Smart-Spam-Detector/
 
 ### Try It Online (No Setup)
 
-👉 **[Open the Live App](https://smart-spam-detector-mdpxyaho4g6mvsmbgth5nj.streamlit.app/)** — classify emails instantly in your browser.
+👉 **[Open the Live App](https://smart-spam-detector.streamlit.app)** — classify emails instantly in your browser.
 
 ### Run Locally
 

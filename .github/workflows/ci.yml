@@ -49,3 +49,26 @@ jobs:
           python -c "from src.components.model_training import ModelTraining; print('✓ ModelTraining imported successfully')"
           python -c "from src.pipeline.training_pipeline import TrainingPipeline; print('✓ TrainingPipeline imported successfully')"
           python -c "from src.pipeline.prediction_pipeline import PredictionPipeline; print('✓ PredictionPipeline imported successfully')"
+
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for broken links in docs
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --config /dev/null
+            --no-progress
+            --exclude 'https?://localhost'
+            --exclude 'https?://127\.0\.0\.1'
+            --exclude 'https?://.*shields\.io'
+            --exclude 'https?://.*example\.com'
+            --exclude 'https?://.*test\.org'
+            --exclude 'https?://.*yourusername.*'
+            --exclude 'https?://.*your-username.*'
+            --exclude 'https?://.*static\.streamlit\.io'
+            --exclude 'https?://.*\{.*\}.*'
+            '**/*.md'
+        continue-on-error: true
