@@ -12,7 +12,7 @@ hypothesis>=6.0.0
 black>=23.0.0
 flake8>=6.0.0
 mypy>=1.0.0
-pre-commit>=3.0.0
+pre-commit>=4.6.0
 
 # API (not needed for Streamlit Cloud)
 fastapi>=0.100.0
