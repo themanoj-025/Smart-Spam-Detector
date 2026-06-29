@@ -60,3 +60,17 @@ history/classifications.db
 
 # Lock files (Streamlit Cloud uses pip, not uv)
 uv.lock
+
+CLAUDE.md
+
+# === ML model artifacts (auto-generated, not committed) ===
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.ckpt
+*.parquet
+mlruns/
+
+# === Streamlit secrets (NEVER COMMIT) ===
+.streamlit/secrets.toml
