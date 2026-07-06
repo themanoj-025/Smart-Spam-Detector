@@ -23,7 +23,7 @@ shap>=0.45.0
 plotly>=5.15.0
 
 # FastAPI test compatibility (pin httpx to avoid starlette/httpx API conflict)
-httpx<0.28.0
+httpx<0.29.0
 
 # Excel upload support (pd.read_excel in Batch Processing tab)
 openpyxl>=3.1.0
