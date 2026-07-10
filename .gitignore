@@ -35,6 +35,7 @@ Thumbs.db
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+*.ipynb
 
 # Model artifacts (auto-trained on first run)
 # Keep only the latest training run in outputs/
