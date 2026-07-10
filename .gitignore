@@ -62,6 +62,8 @@ history/classifications.db
 # Lock files (Streamlit Cloud uses pip, not uv)
 uv.lock
 
+.gemini/
+
 CLAUDE.md
 
 # === ML model artifacts (auto-generated, not committed) ===
