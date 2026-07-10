@@ -11,7 +11,8 @@ ENV/
 env/
 
 # IDE
-.vscode/
+.vscode/*
+!.vscode/settings.json
 .idea/
 *.swp
 *.swo
@@ -63,6 +64,7 @@ history/classifications.db
 uv.lock
 
 .gemini/
+.cursorrules
 
 CLAUDE.md
 
