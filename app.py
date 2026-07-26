@@ -1392,7 +1392,7 @@ with st.sidebar:
 
     st.divider()
 
-    st.caption("Built with ❤️ using Streamlit, scikit-learn & SHAP")
+    st.caption("Built using Streamlit, scikit-learn & SHAP")
 
 
 
@@ -3223,7 +3223,7 @@ with tab4:
 st.markdown(
     f"""
     <footer>
-        Spam Email Classifier • Built with scikit-learn, Streamlit & SHAP
+        Spam Email Classifier • Using scikit-learn, Streamlit & SHAP
         • <span id="theme-indicator">{'🌙 Dark Mode' if st.session_state.theme == 'dark' else '☀️ Light Mode'}</span>
         <br>
         <a href="https://github.com/themanoj-025" target="_blank" style="

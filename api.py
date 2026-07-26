@@ -17,7 +17,7 @@ import hashlib
 from typing import List, Optional, Dict, Any
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Header, Depends, Request
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field, ConfigDict
@@ -31,7 +31,6 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
 from src.pipeline.prediction_pipeline import PredictionPipeline
-from src.utils.url_analyzer import analyze_urls_in_text
 from src.utils.history_manager import HistoryManager
 
 
