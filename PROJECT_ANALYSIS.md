@@ -14,8 +14,8 @@
 ================================== FAILURES ===================================
 _________________________ TestCORS.test_cors_headers __________________________
 
-self = <tests.test_api.TestCORS object at 0x0000015DEFD0D810>
-client = <starlette.testclient.TestClient object at 0x0000015DEFE65390>
+self = <tests.test_api.TestCORS object at 0x0000027B77B99590>
+client = <starlette.testclient.TestClient object at 0x0000027B77CA7E70>
 
     def test_cors_headers(self, client):
         """API should include CORS headers in responses."""
@@ -33,7 +33,7 @@ E        +  where 400 = <Response [400 Bad Request]>.status_code
 tests\test_api.py:381: AssertionError
 =========================== short test summary info ===========================
 FAILED tests/test_api.py::TestCORS::test_cors_headers - assert 400 == 200
-1 failed, 108 passed in 2.68s
+1 failed, 108 passed in 3.37s
 `
 
 ## 3. Operations & Release Checklist
