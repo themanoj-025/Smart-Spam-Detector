@@ -14,34 +14,87 @@ from urllib.parse import urlparse
 # Known suspicious TLDs and patterns
 # ---------------------------------------------------------------------------
 SUSPICIOUS_TLDS = {
-    ".tk", ".ml", ".ga", ".cf", ".gq",  # Free/abused TLDs
-    ".xyz", ".top", ".club", ".work", ".date", ".men", ".loan",
-    ".download", ".review", ".stream", ".bid", ".trade", ".webcam",
-    ".science", ".party", ".racing", ".win", ".vip",
+    ".tk",
+    ".ml",
+    ".ga",
+    ".cf",
+    ".gq",  # Free/abused TLDs
+    ".xyz",
+    ".top",
+    ".club",
+    ".work",
+    ".date",
+    ".men",
+    ".loan",
+    ".download",
+    ".review",
+    ".stream",
+    ".bid",
+    ".trade",
+    ".webcam",
+    ".science",
+    ".party",
+    ".racing",
+    ".win",
+    ".vip",
 }
 
 SUSPICIOUS_KEYWORDS = [
-    "login", "verify", "secure", "account", "update", "confirm",
-    "password", "credential", "banking", "paypal", "refund",
-    "prize", "winner", "lottery", "inheritance", "cryptocurrency",
-    "bitcoin", "wallet", "investment", "bonus", "free-money",
-    "claim", "urgent", "action-required", "suspended",
+    "login",
+    "verify",
+    "secure",
+    "account",
+    "update",
+    "confirm",
+    "password",
+    "credential",
+    "banking",
+    "paypal",
+    "refund",
+    "prize",
+    "winner",
+    "lottery",
+    "inheritance",
+    "cryptocurrency",
+    "bitcoin",
+    "wallet",
+    "investment",
+    "bonus",
+    "free-money",
+    "claim",
+    "urgent",
+    "action-required",
+    "suspended",
 ]
 
 SHORTENER_DOMAINS = {
-    "bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly",
-    "is.gd", "buff.ly", "tiny.cc", "lc.chat", "bl.ink",
-    "shorturl.at", "cutt.ly", "rb.gy", "short.link",
-    "click", "shortcm.xyz", "shorte.st", "3e8.eu",
+    "bit.ly",
+    "tinyurl.com",
+    "t.co",
+    "goo.gl",
+    "ow.ly",
+    "is.gd",
+    "buff.ly",
+    "tiny.cc",
+    "lc.chat",
+    "bl.ink",
+    "shorturl.at",
+    "cutt.ly",
+    "rb.gy",
+    "short.link",
+    "click",
+    "shortcm.xyz",
+    "shorte.st",
+    "3e8.eu",
 }
 
 # ---------------------------------------------------------------------------
 # Regex for URL extraction
 # ---------------------------------------------------------------------------
 URL_PATTERN = re.compile(
-    r'(?:https?://|www\d?\.|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}/)'
+    r"(?:https?://|www\d?\.|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}/)"
     r'(?:[^\s()<>\[\]{}|\\^`"]+|(?:\([^\s()<>]+\)))',
-    re.IGNORECASE
+    re.IGNORECASE,
 )
 
 
@@ -211,4 +264,3 @@ def _is_ip_address(hostname: str) -> bool:
             return True
         except (socket.error, OSError):
             return False
-

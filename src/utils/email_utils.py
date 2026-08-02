@@ -41,10 +41,11 @@ def extract_body(msg: Message) -> str:
             texts.append(text)
 
     clean = " ".join(texts)
-    clean = re.sub(r'\\+', ' ', clean)
-    clean = re.sub(r'[\r\n\t]+', ' ', clean)
-    clean = re.sub(r'\s+', ' ', clean)
+    clean = re.sub(r"\\+", " ", clean)
+    clean = re.sub(r"[\r\n\t]+", " ", clean)
+    clean = re.sub(r"\s+", " ", clean)
     return clean.strip()
+
 
 # ----------------------------------------------------------------------------
 # Function to extract all recipients from email headers
@@ -64,6 +65,7 @@ def all_recipients(msg: Message) -> str:
     for h in ["From", "To", "Cc", "Bcc"]:
         fields.extend(getaddresses([msg.get(h, "")]))
     return ", ".join(sorted(set(addr for _, addr in fields if addr)))
+
 
 # ----------------------------------------------------------------------------
 # Function to clean text for Excel compatibility and model input
@@ -85,7 +87,9 @@ def clean_text(text: Union[str, None]) -> Union[str, None]:
     """
     if not isinstance(text, str):
         return text
-    text = re.sub(r'[\x00-\x08\x0B-\x0C\x0E-\x1F\u200B\u200C\u200D\u200E\u200F\uFEFF]', '', text)
+    text = re.sub(
+        r"[\x00-\x08\x0B-\x0C\x0E-\x1F\u200B\u200C\u200D\u200E\u200F\uFEFF]", "", text
+    )
     text = text.encode("utf-16", "surrogatepass").decode("utf-16", "ignore")
     text = text[:32767]
     if text.startswith(("=", "+", "-", "@")):

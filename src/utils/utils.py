@@ -34,7 +34,7 @@ def save_pickle(obj: Any, filepath: str) -> str:
         The path where the file was saved.
     """
     ensure_dir(os.path.dirname(filepath))
-    with open(filepath, 'wb') as f:
+    with open(filepath, "wb") as f:
         pickle.dump(obj, f)
     return filepath
 
@@ -53,7 +53,7 @@ def load_pickle(filepath: str) -> Any:
     """
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"Pickle file not found: {filepath}")
-    with open(filepath, 'rb') as f:
+    with open(filepath, "rb") as f:
         return pickle.load(f)
 
 
@@ -78,7 +78,7 @@ def save_metadata(metadata: Dict[str, Any], filepath: str) -> None:
         else:
             clean_metadata[key] = value
 
-    with open(filepath, 'w', encoding='utf-8') as f:
+    with open(filepath, "w", encoding="utf-8") as f:
         json.dump(clean_metadata, f, indent=2, default=str)
 
 
@@ -114,15 +114,15 @@ def get_dataset_stats(df: pd.DataFrame) -> Dict[str, Any]:
         Dictionary with dataset statistics.
     """
     stats = {
-        'total_samples': len(df),
-        'columns': df.columns.tolist(),
-        'dtypes': {col: str(dtype) for col, dtype in df.dtypes.items()},
-        'missing_values': df.isnull().sum().to_dict(),
-        'missing_pct': (df.isnull().sum() / len(df) * 100).round(2).to_dict(),
+        "total_samples": len(df),
+        "columns": df.columns.tolist(),
+        "dtypes": {col: str(dtype) for col, dtype in df.dtypes.items()},
+        "missing_values": df.isnull().sum().to_dict(),
+        "missing_pct": (df.isnull().sum() / len(df) * 100).round(2).to_dict(),
     }
 
     # Include value counts for categorical columns
-    for col in df.select_dtypes(include=['object']).columns:
-        stats[f'{col}_value_counts'] = df[col].value_counts().to_dict()
+    for col in df.select_dtypes(include=["object"]).columns:
+        stats[f"{col}_value_counts"] = df[col].value_counts().to_dict()
 
     return stats

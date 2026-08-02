@@ -20,6 +20,7 @@ def client():
 def reset_pipeline():
     """Reset the global pipeline before each test."""
     import api as api_module
+
     api_module.pipeline = None
     yield
 
@@ -29,7 +30,7 @@ class TestRoot:
 
     def test_root_returns_endpoints(self, client):
         """GET / should return API metadata with endpoint list."""
-        with patch('api.pipeline', MagicMock()):
+        with patch("api.pipeline", MagicMock()):
             resp = client.get("/")
         assert resp.status_code == 200
         data = resp.json()
@@ -44,8 +45,8 @@ class TestHealth:
 
     def test_health_healthy(self, client):
         """GET /health should return healthy status when model is loaded."""
-        with patch('api.pipeline', MagicMock()):
-            with patch('api._ensure_pipeline', return_value=None):
+        with patch("api.pipeline", MagicMock()):
+            with patch("api._ensure_pipeline", return_value=None):
                 resp = client.get("/health")
         assert resp.status_code == 200
         data = resp.json()
@@ -74,8 +75,8 @@ class TestModelInfo:
         mock_pipeline.config.feature_path = "outputs/run/models/vectorizer.pkl"
         mock_pipeline._shap_explainer = None
 
-        with patch('api.pipeline', mock_pipeline):
-            with patch('api._ensure_pipeline', return_value=None):
+        with patch("api.pipeline", mock_pipeline):
+            with patch("api._ensure_pipeline", return_value=None):
                 resp = client.get("/model/info")
 
         assert resp.status_code == 200
@@ -104,7 +105,7 @@ class TestPredict:
             "raw_prediction": 0,
         }
 
-        with patch('api.pipeline', mock_pipeline):
+        with patch("api.pipeline", mock_pipeline):
             resp = client.post("/predict", json={"email": "Congratulations! You won!"})
 
         assert resp.status_code == 200
@@ -124,7 +125,7 @@ class TestPredict:
             "raw_prediction": 1,
         }
 
-        with patch('api.pipeline', mock_pipeline):
+        with patch("api.pipeline", mock_pipeline):
             resp = client.post("/predict", json={"email": "Meeting tomorrow at 3pm"})
 
         assert resp.status_code == 200
@@ -139,8 +140,8 @@ class TestPredict:
             "Email body is empty."
         )
 
-        with patch('api.pipeline', mock_pipeline):
-            with patch('api._ensure_pipeline', return_value=None):
+        with patch("api.pipeline", mock_pipeline):
+            with patch("api._ensure_pipeline", return_value=None):
                 resp = client.post("/predict", json={"email": ""})
 
         assert resp.status_code == 422
@@ -153,9 +154,11 @@ class TestPredict:
     def test_predict_server_error(self, client):
         """POST /predict should return 500 on unexpected errors."""
         mock_pipeline = MagicMock()
-        mock_pipeline.predict_single_email.side_effect = RuntimeError("Unexpected error")
+        mock_pipeline.predict_single_email.side_effect = RuntimeError(
+            "Unexpected error"
+        )
 
-        with patch('api.pipeline', mock_pipeline):
+        with patch("api.pipeline", mock_pipeline):
             resp = client.post("/predict", json={"email": "test email"})
 
         assert resp.status_code == 500
@@ -188,7 +191,7 @@ class TestPredictWithExplanation:
             },
         }
 
-        with patch('api.pipeline', mock_pipeline):
+        with patch("api.pipeline", mock_pipeline):
             resp = client.post("/predict/explain", json={"email": "Free money!"})
 
         assert resp.status_code == 200
@@ -224,14 +227,17 @@ class TestPredictBatch:
 
         mock_pipeline.predict_single_email.side_effect = mock_single
 
-        with patch('api.pipeline', mock_pipeline):
-            resp = client.post("/predict/batch", json={
-                "emails": [
-                    "Win a free iPhone!",
-                    "Meeting at 3pm tomorrow",
-                ],
-                "include_explanations": False,
-            })
+        with patch("api.pipeline", mock_pipeline):
+            resp = client.post(
+                "/predict/batch",
+                json={
+                    "emails": [
+                        "Win a free iPhone!",
+                        "Meeting at 3pm tomorrow",
+                    ],
+                    "include_explanations": False,
+                },
+            )
 
         assert resp.status_code == 200
         data = resp.json()
@@ -251,19 +257,26 @@ class TestPredictBatch:
             "raw_prediction": 0,
             "explanation": {
                 "status": "available",
-                "word_contributions": [{"word": "free", "contribution": 0.85, "class": "spam"}],
-                "top_spam_words": [{"word": "free", "contribution": 0.85, "class": "spam"}],
+                "word_contributions": [
+                    {"word": "free", "contribution": 0.85, "class": "spam"}
+                ],
+                "top_spam_words": [
+                    {"word": "free", "contribution": 0.85, "class": "spam"}
+                ],
                 "top_ham_words": [],
                 "highlighted_html": "<span>free</span>",
                 "error_message": "",
             },
         }
 
-        with patch('api.pipeline', mock_pipeline):
-            resp = client.post("/predict/batch", json={
-                "emails": ["Free money!"],
-                "include_explanations": True,
-            })
+        with patch("api.pipeline", mock_pipeline):
+            resp = client.post(
+                "/predict/batch",
+                json={
+                    "emails": ["Free money!"],
+                    "include_explanations": True,
+                },
+            )
 
         assert resp.status_code == 200
         data = resp.json()
@@ -289,11 +302,14 @@ class TestPredictBatch:
             "explanation": None,
         }
 
-        with patch('api.pipeline', mock_pipeline):
-            resp = client.post("/predict/batch", json={
-                "emails": ["", "Valid email", "  "],
-                "include_explanations": False,
-            })
+        with patch("api.pipeline", mock_pipeline):
+            resp = client.post(
+                "/predict/batch",
+                json={
+                    "emails": ["", "Valid email", "  "],
+                    "include_explanations": False,
+                },
+            )
 
         assert resp.status_code == 200
         data = resp.json()
@@ -305,10 +321,13 @@ class TestPredictBatch:
 
     def test_batch_no_model(self, client):
         """POST /predict/batch should return 503 when no model is loaded."""
-        resp = client.post("/predict/batch", json={
-            "emails": ["test"],
-            "include_explanations": False,
-        })
+        resp = client.post(
+            "/predict/batch",
+            json={
+                "emails": ["test"],
+                "include_explanations": False,
+            },
+        )
         assert resp.status_code == 503
 
 
@@ -324,7 +343,7 @@ class TestPredictFile:
             "raw_prediction": 0,
         }
 
-        with patch('api.pipeline', mock_pipeline):
+        with patch("api.pipeline", mock_pipeline):
             resp = client.post(
                 "/predict/file",
                 files={"file": ("email.txt", "Win a free prize!")},

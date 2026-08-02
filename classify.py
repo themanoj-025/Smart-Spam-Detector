@@ -25,7 +25,9 @@ def classify(text: str) -> None:
         prediction = result["prediction"]
         confidence = result.get("confidence")
 
-        confidence_str = f"(confidence: {confidence:.1f}%)" if confidence is not None else ""
+        confidence_str = (
+            f"(confidence: {confidence:.1f}%)" if confidence is not None else ""
+        )
         if prediction == "Spam":
             print(f"\n  [SPAM]  PREDICTION: SPAM  {confidence_str}\n")
         else:
@@ -45,9 +47,9 @@ def main():
     parser = argparse.ArgumentParser(
         description="Classify an email as Spam or Ham using a trained SVM model.",
         epilog="Examples:\n"
-               "  python classify.py \"Congratulations! You won a prize!\"\n"
-               "  python classify.py --file email.txt\n"
-               "  cat email.txt | python classify.py",
+        '  python classify.py "Congratulations! You won a prize!"\n'
+        "  python classify.py --file email.txt\n"
+        "  cat email.txt | python classify.py",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
@@ -57,7 +59,8 @@ def main():
         help="Email text to classify (or pipe input via stdin)",
     )
     parser.add_argument(
-        "--file", "-f",
+        "--file",
+        "-f",
         type=str,
         help="Read email text from a file",
     )

@@ -36,7 +36,7 @@ def get_logger(name: str):
             handler = logging.FileHandler(_LOG_FILE, encoding="utf-8")
             formatter = logging.Formatter(
                 "[%(asctime)s]: %(filename)s - Line %(lineno)d: %(levelname)s: %(message)s",
-                datefmt="%Y-%m-%d %H:%M:%S"
+                datefmt="%Y-%m-%d %H:%M:%S",
             )
             handler.setFormatter(formatter)
             logger.addHandler(handler)
@@ -50,7 +50,7 @@ def get_logger(name: str):
         handler = logging.StreamHandler()
         formatter = logging.Formatter(
             "[%(asctime)s]: %(filename)s - Line %(lineno)d: %(levelname)s: %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S"
+            datefmt="%Y-%m-%d %H:%M:%S",
         )
         handler.setFormatter(formatter)
         logger.addHandler(handler)

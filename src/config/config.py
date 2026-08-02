@@ -15,7 +15,9 @@ from pathlib import Path
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
-def find_latest_artifacts(project_root: Optional[Path] = None) -> Tuple[Optional[str], Optional[str]]:
+def find_latest_artifacts(
+    project_root: Optional[Path] = None,
+) -> Tuple[Optional[str], Optional[str]]:
     """Auto-discover the latest trained model and vectorizer from the outputs directory.
 
     Args:
@@ -35,7 +37,7 @@ def find_latest_artifacts(project_root: Optional[Path] = None) -> Tuple[Optional
     # Find all timestamped run directories
     run_dirs = sorted(
         [d for d in base_dir.iterdir() if d.is_dir() and d.name[:4].isdigit()],
-        reverse=True
+        reverse=True,
     )
 
     for run_dir in run_dirs:
@@ -62,6 +64,7 @@ class Config:
         test_size: Fraction of data to use for testing.
         random_state: Random seed for reproducibility.
     """
+
     training_data_path: str = ""
     OUTPUT_BASE_DIR: str = ""
     model_path: str = ""
@@ -80,7 +83,9 @@ class Config:
 
         # Resolve default paths to absolute locations
         if not self.training_data_path:
-            self.training_data_path = str(project_root / "data" / "dataset" / "dataset.csv")
+            self.training_data_path = str(
+                project_root / "data" / "dataset" / "dataset.csv"
+            )
         if not self.OUTPUT_BASE_DIR:
             self.OUTPUT_BASE_DIR = str(project_root / "outputs")
 
@@ -101,7 +106,8 @@ class Config:
         if not os.path.exists(self.OUTPUT_BASE_DIR):
             return None
         dirs = [
-            d for d in os.listdir(self.OUTPUT_BASE_DIR)
+            d
+            for d in os.listdir(self.OUTPUT_BASE_DIR)
             if os.path.isdir(os.path.join(self.OUTPUT_BASE_DIR, d))
         ]
         if not dirs:
@@ -118,43 +124,45 @@ class Config:
 class ModelConfig:
     """Configuration for model hyperparameter grids used in GridSearchCV."""
 
-    models: Dict[str, Dict[str, Any]] = field(default_factory=lambda: {
-        'LogisticRegression': {
-            'C': [0.01, 0.1, 1, 10, 100],
-            'solver': ['lbfgs', 'liblinear'],
-            'max_iter': [100, 200, 300]
-        },
-        'DecisionTree': {
-            'criterion': ['gini', 'entropy'],
-            'max_depth': [5, 10, 15, 20, None],
-            'min_samples_split': [2, 5, 10],
-            'min_samples_leaf': [1, 2, 4]
-        },
-        'SVM': {
-            'C': [0.1, 1, 10],
-            'kernel': ['linear', 'rbf'],
-            'gamma': ['scale', 'auto']
-        },
-        'KNN': {
-            'n_neighbors': [3, 5, 7, 9, 11],
-            'weights': ['uniform', 'distance'],
-            'metric': ['euclidean', 'manhattan']
-        },
-        'RandomForest': {
-            'n_estimators': [50, 100, 200],
-            'max_depth': [10, 20, 30, None],
-            'min_samples_split': [2, 5, 10],
-            'min_samples_leaf': [1, 2, 4],
-            'max_features': ['sqrt', 'log2']
-        },
-        'XGBoost': {
-            'n_estimators': [100, 200],
-            'max_depth': [3, 6, 10],
-            'learning_rate': [0.01, 0.1, 0.2],
-            'subsample': [0.8, 1.0],
+    models: Dict[str, Dict[str, Any]] = field(
+        default_factory=lambda: {
+            "LogisticRegression": {
+                "C": [0.01, 0.1, 1, 10, 100],
+                "solver": ["lbfgs", "liblinear"],
+                "max_iter": [100, 200, 300],
+            },
+            "DecisionTree": {
+                "criterion": ["gini", "entropy"],
+                "max_depth": [5, 10, 15, 20, None],
+                "min_samples_split": [2, 5, 10],
+                "min_samples_leaf": [1, 2, 4],
+            },
+            "SVM": {
+                "C": [0.1, 1, 10],
+                "kernel": ["linear", "rbf"],
+                "gamma": ["scale", "auto"],
+            },
+            "KNN": {
+                "n_neighbors": [3, 5, 7, 9, 11],
+                "weights": ["uniform", "distance"],
+                "metric": ["euclidean", "manhattan"],
+            },
+            "RandomForest": {
+                "n_estimators": [50, 100, 200],
+                "max_depth": [10, 20, 30, None],
+                "min_samples_split": [2, 5, 10],
+                "min_samples_leaf": [1, 2, 4],
+                "max_features": ["sqrt", "log2"],
+            },
+            "XGBoost": {
+                "n_estimators": [100, 200],
+                "max_depth": [3, 6, 10],
+                "learning_rate": [0.01, 0.1, 0.2],
+                "subsample": [0.8, 1.0],
+            },
         }
-    })
+    )
 
     cv_folds: int = 5
-    scoring: str = 'f1'
+    scoring: str = "f1"
     n_jobs: int = 1  # Set to 1 to prevent OOM kills on Streamlit Cloud

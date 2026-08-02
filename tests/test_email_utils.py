@@ -16,9 +16,9 @@ class TestCleanText:
 
     def test_clean_special_chars(self):
         """Test removal of special characters."""
-        text = "Hello\u200Bworld"  # zero-width space
+        text = "Hello\u200bworld"  # zero-width space
         result = clean_text(text)
-        assert "\u200B" not in result
+        assert "\u200b" not in result
 
     def test_clean_excel_injection(self):
         """Test Excel injection prevention."""
@@ -44,17 +44,17 @@ class TestExtractBody:
     def test_extract_html(self):
         """Test extracting body from HTML email."""
         html = "<html><body><p>Hello <b>World</b></p></body></html>"
-        msg = MIMEText(html, 'html')
+        msg = MIMEText(html, "html")
         body = extract_body(msg)
         assert "Hello" in body
         assert "World" in body
 
     def test_extract_multipart(self):
         """Test extracting body from multipart email."""
-        msg = MIMEMultipart('alternative')
-        msg.attach(MIMEText("Plain text version", 'plain'))
-        msg.attach(MIMEText("<p>HTML version</p>", 'html'))
-        
+        msg = MIMEMultipart("alternative")
+        msg.attach(MIMEText("Plain text version", "plain"))
+        msg.attach(MIMEText("<p>HTML version</p>", "html"))
+
         body = extract_body(msg)
         # Should extract at least one of the parts
         assert body

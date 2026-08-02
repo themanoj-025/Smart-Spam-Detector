@@ -19,7 +19,7 @@ class DataIngestion:
     comprehensive statistics about the data.
     """
 
-    REQUIRED_COLUMNS = ['Category', 'Message']
+    REQUIRED_COLUMNS = ["Category", "Message"]
 
     def __init__(self):
         self.config = Config()
@@ -57,10 +57,12 @@ class DataIngestion:
             stats = get_dataset_stats(state.training_data)
             logger.info(f"Dataset loaded successfully: {stats['total_samples']} emails")
             logger.info(f"Columns: {stats['columns']}")
-            logger.info(f"Category distribution: {stats.get('Category_value_counts', {})}")
+            logger.info(
+                f"Category distribution: {stats.get('Category_value_counts', {})}"
+            )
             logger.info(f"Missing values: {stats['missing_values']}")
 
-            if stats['total_samples'] == 0:
+            if stats["total_samples"] == 0:
                 raise ValueError("Dataset is empty - no records found")
 
             return state

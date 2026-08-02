@@ -77,8 +77,18 @@ class TestHistoryManager:
         assert len(manual) == 1
 
     def test_search_text(self, hm):
-        hm.add_entry(email_text="Free money now", prediction="Spam", source="manual", email_subject="")
-        hm.add_entry(email_text="Meeting at 3pm", prediction="Ham", source="manual", email_subject="Meeting")
+        hm.add_entry(
+            email_text="Free money now",
+            prediction="Spam",
+            source="manual",
+            email_subject="",
+        )
+        hm.add_entry(
+            email_text="Meeting at 3pm",
+            prediction="Ham",
+            source="manual",
+            email_subject="Meeting",
+        )
 
         results = hm.get_history(limit=10, search_text="money")
         assert len(results) == 1
@@ -101,8 +111,22 @@ class TestHistoryManager:
         assert hm.get_total_count(prediction_filter="Spam") == 1
 
     def test_get_stats(self, hm):
-        hm.add_entry(email_text="A", prediction="Spam", confidence=90.0, spam_risk=90.0, source="manual", url_count=3, suspicious_urls=2)
-        hm.add_entry(email_text="B", prediction="Ham", confidence=85.0, spam_risk=15.0, source="manual")
+        hm.add_entry(
+            email_text="A",
+            prediction="Spam",
+            confidence=90.0,
+            spam_risk=90.0,
+            source="manual",
+            url_count=3,
+            suspicious_urls=2,
+        )
+        hm.add_entry(
+            email_text="B",
+            prediction="Ham",
+            confidence=85.0,
+            spam_risk=15.0,
+            source="manual",
+        )
 
         stats = hm.get_stats(days_back=30)
         assert stats["total"] == 2
@@ -121,7 +145,9 @@ class TestHistoryManager:
         assert hm.get_total_count() == 0
 
     def test_get_entry_by_id(self, hm):
-        entry_id = hm.add_entry(email_text="Find me", prediction="Spam", source="manual")
+        entry_id = hm.add_entry(
+            email_text="Find me", prediction="Spam", source="manual"
+        )
         entry = hm.get_entry_by_id(entry_id)
         assert entry is not None
         assert entry["prediction"] == "Spam"
@@ -142,7 +168,11 @@ class TestHistoryManager:
 
     def test_pagination(self, hm):
         for i in range(10):
-            hm.add_entry(email_text=f"Email {i}", prediction="Spam" if i % 2 == 0 else "Ham", source="manual")
+            hm.add_entry(
+                email_text=f"Email {i}",
+                prediction="Spam" if i % 2 == 0 else "Ham",
+                source="manual",
+            )
 
         page1 = hm.get_history(limit=3, offset=0)
         assert len(page1) == 3

@@ -10,8 +10,6 @@ SHAP-based explainable AI, dark/light theme, and real-time typing analysis.
 
 """
 
-
-
 import os
 
 import json
@@ -23,11 +21,9 @@ import tempfile
 from pathlib import Path
 
 
-
 import streamlit as st
 
 import pandas as pd
-
 
 
 from src.pipeline.prediction_pipeline import PredictionPipeline
@@ -40,8 +36,10 @@ from src.utils.history_manager import HistoryManager
 
 from src.utils.url_analyzer import analyze_urls_in_text
 
-from src.utils.report_generator import generate_classification_report, generate_email_report
-
+from src.utils.report_generator import (
+    generate_classification_report,
+    generate_email_report,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -51,17 +49,11 @@ from src.utils.report_generator import generate_classification_report, generate_
 # ---------------------------------------------------------------------------
 
 st.set_page_config(
-
     page_title="Spam Email Classifier",
-
     page_icon="📧",
-
     layout="centered",
-
     initial_sidebar_state="expanded",
-
 )
-
 
 
 # ---------------------------------------------------------------------------
@@ -71,15 +63,11 @@ st.set_page_config(
 # ---------------------------------------------------------------------------
 
 if "theme" not in st.session_state:
-
     st.session_state.theme = "light"
 
 
-
 if "email_text" not in st.session_state:
-
     st.session_state.email_text = ""
-
 
 
 # Initialize history manager (singleton via cache)
@@ -87,13 +75,10 @@ if "email_text" not in st.session_state:
 _history_manager = None
 
 
-
 @st.cache_resource(show_spinner=False)
-
 def get_history_manager():
 
     return HistoryManager()
-
 
 
 # ---------------------------------------------------------------------------
@@ -1027,7 +1012,6 @@ THEME_CSS = """
 """
 
 
-
 # ---------------------------------------------------------------------------
 
 # Import Plotly (for dashboard charts)
@@ -1035,7 +1019,6 @@ THEME_CSS = """
 # ---------------------------------------------------------------------------
 
 try:
-
     import plotly.graph_objects as go
 
     import plotly.express as px
@@ -1043,13 +1026,11 @@ try:
     HAS_PLOTLY = True
 
 except ImportError:
-
     HAS_PLOTLY = False
 
     go = None
 
     px = None
-
 
 
 # ---------------------------------------------------------------------------
@@ -1061,13 +1042,10 @@ except ImportError:
 st.markdown(THEME_CSS, unsafe_allow_html=True)
 
 
-
 # Apply dark theme variables directly onto .stApp and Streamlit components.
 
 if st.session_state.theme == "dark":
-
     st.markdown(
-
         """<style>
 
         .stApp {
@@ -1127,11 +1105,8 @@ if st.session_state.theme == "dark":
         }
 
         </style>""",
-
         unsafe_allow_html=True,
-
     )
-
 
 
 # ---------------------------------------------------------------------------
@@ -1140,36 +1115,37 @@ if st.session_state.theme == "dark":
 
 # ---------------------------------------------------------------------------
 
+
 @st.cache_resource(show_spinner="Loading trained models...")
-
 def get_pipeline():
-
     """Initialize and load the prediction pipeline (cached)."""
 
     return PredictionPipeline(load_models=True)
 
 
-
 # Try to load models; auto-train if not found (needed for Streamlit Cloud)
 
 try:
-
     pipeline = get_pipeline()
 
     model_loaded = True
 
-    model_name = Path(pipeline.config.model_path).name if pipeline.config.model_path else "Unknown"
+    model_name = (
+        Path(pipeline.config.model_path).name
+        if pipeline.config.model_path
+        else "Unknown"
+    )
 
 except FileNotFoundError:
-
-    st.warning("⚠️ No trained models found. Training is required before the app can work.")
+    st.warning(
+        "⚠️ No trained models found. Training is required before the app can work."
+    )
 
     if st.button("🚀 Train Models Now", type="primary", use_container_width=True):
-
-        with st.spinner("🔄 Training models (this may take several minutes on first deploy)..."):
-
+        with st.spinner(
+            "🔄 Training models (this may take several minutes on first deploy)..."
+        ):
             try:
-
                 from src.pipeline.training_pipeline import TrainingPipeline
 
                 tp = TrainingPipeline()
@@ -1183,35 +1159,25 @@ except FileNotFoundError:
                 st.rerun()
 
             except Exception as train_err:
-
                 st.error(f"⚠️ Training failed: {str(train_err)}")
 
                 st.stop()
 
     st.info(
-
         "💡 Click the button above to train models. "
-
         "This is only needed on the first deployment or when models are missing."
-
     )
 
     st.stop()
 
 except Exception as e:
-
     st.error(
-
         f"⚠️ Unexpected error loading models: {str(e)}\n\n"
-
         "If you just deployed, try clicking **Rerun** from the upper-right menu. "
-
         "If the error persists, check the Streamlit Cloud logs for details."
-
     )
 
     st.stop()
-
 
 
 # ---------------------------------------------------------------------------
@@ -1225,15 +1191,11 @@ st.markdown('<div class="main-header">', unsafe_allow_html=True)
 st.markdown("<h1>📧 Spam Email Classifier</h1>", unsafe_allow_html=True)
 
 st.markdown(
-
     "Classify emails as **Spam** 🚨 or **Ham** ✅ (Safe) using "
-
     "Machine Learning with **scikit-learn** & **SHAP** explainability."
-
 )
 
 st.markdown("</div>", unsafe_allow_html=True)
-
 
 
 # ---------------------------------------------------------------------------
@@ -1243,7 +1205,6 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ---------------------------------------------------------------------------
 
 with st.sidebar:
-
     # --- Theme Toggle ---
 
     st.header("🎨 Appearance")
@@ -1254,31 +1215,20 @@ with st.sidebar:
 
     theme_label = "Dark Mode" if current_theme == "light" else "Light Mode"
 
-
-
     def toggle_theme():
 
-        st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
-
-
+        st.session_state.theme = (
+            "dark" if st.session_state.theme == "light" else "light"
+        )
 
     st.button(
-
         f"{theme_icon} {theme_label}",
-
         on_click=toggle_theme,
-
         use_container_width=True,
-
         help="Switch between light and dark themes",
-
     )
 
-
-
     st.divider()
-
-
 
     # --- Model Info ---
 
@@ -1287,74 +1237,45 @@ with st.sidebar:
     st.metric("Status", "✅ Loaded" if model_loaded else "❌ Not loaded")
 
     if model_loaded and pipeline.config.model_path:
-
         st.caption(f"Model: `{Path(pipeline.config.model_path).name}`")
 
-
-
     st.divider()
-
-
 
     # --- Explainability Toggle ---
 
     st.header("🧠 Explainability")
 
     enable_explanation = st.checkbox(
-
         "Show AI explanation",
-
         value=True,
-
         help="When enabled, SHAP analyzes each word's contribution to the prediction. "
-
-             "This adds ~3-5 seconds per classification.",
-
+        "This adds ~3-5 seconds per classification.",
     )
 
     st.caption(
-
         "Explanations highlight which words influenced the model's decision — "
-
         "great for understanding why an email was flagged."
-
     )
 
-
-
     st.divider()
-
-
 
     # --- Real-time Analysis Toggle ---
 
     st.header("⚡ Live Analysis")
 
     enable_live = st.checkbox(
-
         "Real-time typing analysis",
-
         value=True,
-
         help="Shows a live spam likelihood gauge while you type. "
-
-             "Updates automatically as you edit the email text.",
-
+        "Updates automatically as you edit the email text.",
     )
 
     st.caption(
-
         "The gauge updates whenever you interact with the text area. "
-
         "Full analysis with SHAP runs when you click **Classify**."
-
     )
 
-
-
     st.divider()
-
-
 
     # --- About ---
 
@@ -1388,12 +1309,9 @@ with st.sidebar:
 
     """)
 
-
-
     st.divider()
 
     st.caption("Built using Streamlit, scikit-learn & SHAP")
-
 
 
 # ---------------------------------------------------------------------------
@@ -1402,15 +1320,13 @@ with st.sidebar:
 
 # ---------------------------------------------------------------------------
 
-def show_confidence_gauge(confidence: float, prediction: str, is_live: bool = False):
 
+def show_confidence_gauge(confidence: float, prediction: str, is_live: bool = False):
     """Render an animated circular gauge showing the spam confidence score."""
 
     spam_risk = confidence if prediction == "Spam" else 100.0 - confidence
 
     spam_risk = max(0, min(100, spam_risk))
-
-
 
     radius = 70 if not is_live else 55
 
@@ -1420,10 +1336,7 @@ def show_confidence_gauge(confidence: float, prediction: str, is_live: bool = Fa
 
     offset = circumference - arc_length
 
-
-
     if spam_risk < 50:
-
         ratio = spam_risk / 50
 
         r = int(76 + (255 - 76) * ratio)
@@ -1433,7 +1346,6 @@ def show_confidence_gauge(confidence: float, prediction: str, is_live: bool = Fa
         b = int(80 + (38 - 80) * ratio)
 
     else:
-
         ratio = (spam_risk - 50) / 50
 
         r = int(255 + (244 - 255) * ratio)
@@ -1442,33 +1354,24 @@ def show_confidence_gauge(confidence: float, prediction: str, is_live: bool = Fa
 
         b = int(38 + (54 - 38) * ratio)
 
-
-
     color = f"rgb({r},{g},{b})"
 
     size = 180 if not is_live else 140
 
-
-
     if spam_risk < 30:
-
         status_text = "✅ Safe"
 
         dot_class = "ham"
 
     elif spam_risk < 60:
-
         status_text = "⚠️ Uncertain"
 
         dot_class = "idle"
 
     else:
-
         status_text = "🚨 Spam Risk"
 
         dot_class = "spam"
-
-
 
     gauge_html = f"""
 
@@ -1562,19 +1465,16 @@ def show_confidence_gauge(confidence: float, prediction: str, is_live: bool = Fa
 
     """
 
-
-
     st.markdown(gauge_html, unsafe_allow_html=True)
 
 
-
 def show_confidence_bar(confidence: float, prediction: str):
-
     """Legacy horizontal confidence bar (used as secondary indicator)."""
 
     bar_color = "#ef5350" if prediction == "Spam" else "#66bb6a"
 
-    st.markdown(f"""
+    st.markdown(
+        f"""
 
     <div style="margin: 10px 0; animation: fadeIn 0.4s ease;">
 
@@ -1600,8 +1500,9 @@ def show_confidence_bar(confidence: float, prediction: str):
 
     </div>
 
-    """, unsafe_allow_html=True)
-
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -1610,18 +1511,14 @@ def show_confidence_bar(confidence: float, prediction: str):
 
 # ---------------------------------------------------------------------------
 
-def compute_live_prediction(text: str):
 
+def compute_live_prediction(text: str):
     """Run a lightweight prediction for real-time analysis (no SHAP)."""
 
     if not text or not text.strip():
-
         return None, None, None
 
-
-
     try:
-
         cleaned = clean_text(text)
 
         features = pipeline.feature_transformer.transform([cleaned])
@@ -1631,15 +1528,17 @@ def compute_live_prediction(text: str):
         label = "Spam" if str(pred[0]) == "0" else "Ham"
 
         if hasattr(pipeline.model, "predict_proba"):
-
             proba = pipeline.model.predict_proba(features)
 
             conf = float(max(proba[0])) * 100
 
-            spam_risk = float(proba[0][0]) * 100 if label == "Spam" else float(proba[0][1]) * 100
+            spam_risk = (
+                float(proba[0][0]) * 100
+                if label == "Spam"
+                else float(proba[0][1]) * 100
+            )
 
         else:
-
             conf = None
 
             spam_risk = 50.0 if label == "Spam" else 50.0
@@ -1647,9 +1546,7 @@ def compute_live_prediction(text: str):
         return label, conf, spam_risk
 
     except Exception:
-
         return None, None, None
-
 
 
 # ---------------------------------------------------------------------------
@@ -1658,83 +1555,59 @@ def compute_live_prediction(text: str):
 
 # ---------------------------------------------------------------------------
 
-def show_explanation(explanation: dict, prediction: str):
 
+def show_explanation(explanation: dict, prediction: str):
     """Render the SHAP explanation UI components."""
 
     status = explanation.get("status", "unavailable")
 
     if status == "error":
-
         st.warning(f"⚠️ {explanation.get('error_message', 'Explanation unavailable')}")
 
         return
 
-
-
     if status == "unavailable":
-
         st.info(
-
             "💡 Explanation unavailable for this model. Some models don't support "
-
             "per-word analysis in real time.",
-
             icon="🧠",
-
         )
 
         return
 
-
-
     st.markdown('<div class="explanation-section">', unsafe_allow_html=True)
 
     st.markdown(
-
         '<div class="explanation-title">🧠 Why this prediction?</div>',
-
         unsafe_allow_html=True,
-
     )
 
     st.markdown(
-
         "Below are the words that most influenced the model's decision. "
-
         "**Red** bars push toward **Spam**, **green** bars push toward **Ham (Safe)**.",
-
     )
-
-
 
     top_spam = explanation.get("top_spam_words", [])
 
     top_ham = explanation.get("top_ham_words", [])
 
-
-
     spam_col, ham_col = st.columns(2)
 
-
-
     with spam_col:
-
         st.markdown("##### 🚨 Pushes toward Spam")
 
         if top_spam:
-
             max_val = max(abs(w["contribution"]) for w in top_spam) or 1
 
             for w in top_spam:
-
                 pct = abs(w["contribution"]) / max_val * 100
 
-                st.markdown(f"""
+                st.markdown(
+                    f"""
 
                 <div class="word-bar-container">
 
-                    <span class="word-label" style="color:var(--spam-text);">{w['word']}</span>
+                    <span class="word-label" style="color:var(--spam-text);">{w["word"]}</span>
 
                     <div class="bar-track">
 
@@ -1742,35 +1615,32 @@ def show_explanation(explanation: dict, prediction: str):
 
                     </div>
 
-                    <span class="bar-value">{w['contribution']:+.3f}</span>
+                    <span class="bar-value">{w["contribution"]:+.3f}</span>
 
                 </div>
 
-                """, unsafe_allow_html=True)
+                """,
+                    unsafe_allow_html=True,
+                )
 
         else:
-
             st.caption("No spam-indicative words found")
 
-
-
     with ham_col:
-
         st.markdown("##### ✅ Pushes toward Ham")
 
         if top_ham:
-
             max_val = max(abs(w["contribution"]) for w in top_ham) or 1
 
             for w in top_ham:
-
                 pct = abs(w["contribution"]) / max_val * 100
 
-                st.markdown(f"""
+                st.markdown(
+                    f"""
 
                 <div class="word-bar-container">
 
-                    <span class="word-label" style="color:var(--ham-text);">{w['word']}</span>
+                    <span class="word-label" style="color:var(--ham-text);">{w["word"]}</span>
 
                     <div class="bar-track">
 
@@ -1778,62 +1648,43 @@ def show_explanation(explanation: dict, prediction: str):
 
                     </div>
 
-                    <span class="bar-value">{w['contribution']:+.3f}</span>
+                    <span class="bar-value">{w["contribution"]:+.3f}</span>
 
                 </div>
 
-                """, unsafe_allow_html=True)
+                """,
+                    unsafe_allow_html=True,
+                )
 
         else:
-
             st.caption("No ham-indicative words found")
-
-
 
     highlighted_html = explanation.get("highlighted_html", "")
 
     if highlighted_html:
-
         st.markdown("##### 📝 Word-level Analysis")
 
         st.markdown(
-
             f'<div class="highlight-box">{highlighted_html}</div>',
-
             unsafe_allow_html=True,
-
         )
 
         st.caption(
-
             "Words are colored by their contribution: "
-
             "🔴 red = pushes toward Spam, 🟢 green = pushes toward Ham. "
-
             "Hover to see exact contribution values."
-
         )
 
-
-
     st.markdown(
-
         '<div class="explanation-footer">'
-
-        'Explanations are computed using <strong>SHAP</strong> '
-
-        '(SHapley Additive exPlanations) — a game-theoretic approach '
-
-        'to model interpretability.'
-
-        '</div>',
-
+        "Explanations are computed using <strong>SHAP</strong> "
+        "(SHapley Additive exPlanations) — a game-theoretic approach "
+        "to model interpretability."
+        "</div>",
         unsafe_allow_html=True,
-
     )
 
     st.markdown("</div>", unsafe_allow_html=True)
-
 
 
 # ---------------------------------------------------------------------------
@@ -1842,234 +1693,177 @@ def show_explanation(explanation: dict, prediction: str):
 
 # ---------------------------------------------------------------------------
 
-tab1, tab2, tab3, tab4 = st.tabs(["🔍 Single Email", "📂 Batch Processing", "📊 Model Comparison", "📋 History"])
-
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["🔍 Single Email", "📂 Batch Processing", "📊 Model Comparison", "📋 History"]
+)
 
 
 # --- Tab 1: Single Email Classification ---
 
 with tab1:
-
     st.header("Check a Single Email")
 
     st.markdown(
-
         "Paste the email content below. The **live gauge** updates as you type — "
-
         "click **Classify** for a full analysis with SHAP explanation."
-
     )
-
-
 
     # --- Quick Example Buttons ---
 
     st.markdown(
-
         "<div style='margin-bottom:0.5rem;'><span style='font-size:0.85rem;color:var(--text-muted);font-weight:500;'>"
-
         "⚡ Quick test:</span></div>",
-
         unsafe_allow_html=True,
-
     )
 
     ex_col1, ex_col2, ex_col3, ex_col4 = st.columns(4)
 
     EXAMPLE_EMAILS = {
-
         "spam": "Congratulations! You have won a $1000 Walmart gift card. Click here to claim your prize now! Act fast, this offer expires in 24 hours!",
-
         "ham": "Hey, are we still meeting for lunch tomorrow at the cafe? Let me know what time works for you.",
-
         "phish": "URGENT: Your account has been compromised. Please verify your identity immediately at http://secure-bank-login.xyz/verify to avoid suspension.",
-
-        "scam": "Dear friend, I am a prince from Nigeria and I have $15,000,000 USD that I need to transfer to your bank account. Please send your bank details."
-
+        "scam": "Dear friend, I am a prince from Nigeria and I have $15,000,000 USD that I need to transfer to your bank account. Please send your bank details.",
     }
 
     with ex_col1:
-
         if st.button("🚨 Spam", use_container_width=True, key="ex_spam"):
-
             st.session_state.email_input = EXAMPLE_EMAILS["spam"]
 
             st.rerun()
 
     with ex_col2:
-
         if st.button("✅ Ham", use_container_width=True, key="ex_ham"):
-
             st.session_state.email_input = EXAMPLE_EMAILS["ham"]
 
             st.rerun()
 
     with ex_col3:
-
         if st.button("🔗 Phishing", use_container_width=True, key="ex_phish"):
-
             st.session_state.email_input = EXAMPLE_EMAILS["phish"]
 
             st.rerun()
 
     with ex_col4:
-
         if st.button("💰 Scam", use_container_width=True, key="ex_scam"):
-
             st.session_state.email_input = EXAMPLE_EMAILS["scam"]
 
             st.rerun()
 
-
-
     # Text input
 
     email_text = st.text_area(
-
         "Email Content",
-
         height=200,
-
         placeholder="Paste email content here... e.g., 'Dear friend, I have a business proposal...'",
-
         label_visibility="collapsed",
-
         key="email_input",
-
     )
-
-
 
     # --- Email Stats Bar ---
 
     if email_text and email_text.strip():
-
         words = len(email_text.split())
 
         chars = len(email_text)
 
-        sentences = email_text.count('.') + email_text.count('!') + email_text.count('?')
+        sentences = (
+            email_text.count(".") + email_text.count("!") + email_text.count("?")
+        )
 
         st.markdown(
-
             f"<div class='email-stats'>"
-
             f"<div class='email-stat-item'>📝 <span class='stat-val'>{words}</span> words</div>"
-
             f"<div class='email-stat-item'>🔤 <span class='stat-val'>{chars}</span> chars</div>"
-
             f"<div class='email-stat-item'>📑 <span class='stat-val'>{sentences}</span> sentences</div>"
-
             f"<div class='email-stat-item'>⏱️ ~{max(1, -(-words // 200))} min read</div>"
-
             f"</div>",
-
             unsafe_allow_html=True,
-
         )
 
     # Real-time typing analysis
 
     if enable_live and email_text and email_text.strip():
-
         live_label, live_conf, live_risk = compute_live_prediction(email_text)
 
         if live_label is not None:
-
-            show_confidence_gauge(live_conf if live_conf else 50.0, live_label, is_live=True)
-
-
+            show_confidence_gauge(
+                live_conf if live_conf else 50.0, live_label, is_live=True
+            )
 
     # Action buttons
 
     col1, col2, col3 = st.columns([1, 2, 1])
 
     with col2:
-
-        classify_clicked = st.button("🔍 Classify Email", type="primary", use_container_width=True)
-
-
+        classify_clicked = st.button(
+            "🔍 Classify Email", type="primary", use_container_width=True
+        )
 
     if classify_clicked:
-
         if email_text and email_text.strip():
-
             # Phase 1: Quick prediction
 
             with st.spinner("🤖 Analyzing email content..."):
-
                 try:
-
                     result = pipeline.predict_single_email(email_text)
 
                     prediction = result["prediction"]
 
                     confidence = result.get("confidence")
 
-
-
                     # --- URL Analysis ---
 
                     url_analysis = analyze_urls_in_text(email_text)
-
-
 
                     # Save to history
 
                     hm = get_history_manager()
 
-                    spam_risk_val = confidence if prediction == "Spam" else (100.0 - confidence) if confidence else None
-
-                    hm.add_entry(
-
-                        email_text=email_text,
-
-                        prediction=prediction,
-
-                        confidence=confidence,
-
-                        spam_risk=spam_risk_val,
-
-                        model_used=model_name,
-
-                        source="manual",
-
-                        url_count=url_analysis["total_urls"],
-
-                        suspicious_urls=url_analysis["suspicious_count"],
-
+                    spam_risk_val = (
+                        confidence
+                        if prediction == "Spam"
+                        else (100.0 - confidence)
+                        if confidence
+                        else None
                     )
 
-
+                    hm.add_entry(
+                        email_text=email_text,
+                        prediction=prediction,
+                        confidence=confidence,
+                        spam_risk=spam_risk_val,
+                        model_used=model_name,
+                        source="manual",
+                        url_count=url_analysis["total_urls"],
+                        suspicious_urls=url_analysis["suspicious_count"],
+                    )
 
                     # Toast notification
 
-                    toast_class = "toast-danger" if prediction == "Spam" else "toast-success"
+                    toast_class = (
+                        "toast-danger" if prediction == "Spam" else "toast-success"
+                    )
 
                     toast_icon = "🚨" if prediction == "Spam" else "✅"
 
-                    toast_msg = f"{toast_icon} Classified as <strong>{prediction}</strong>"
-
-                    if confidence:
-
-                        toast_msg += f" with <strong>{confidence:.1f}%</strong> confidence"
-
-                    st.markdown(
-
-                        f"<div class='toast-notification {toast_class}'>{toast_msg}</div>",
-
-                        unsafe_allow_html=True,
-
+                    toast_msg = (
+                        f"{toast_icon} Classified as <strong>{prediction}</strong>"
                     )
 
+                    if confidence:
+                        toast_msg += (
+                            f" with <strong>{confidence:.1f}%</strong> confidence"
+                        )
 
+                    st.markdown(
+                        f"<div class='toast-notification {toast_class}'>{toast_msg}</div>",
+                        unsafe_allow_html=True,
+                    )
 
                     # Display result with styling
 
                     if prediction == "Spam":
-
                         st.markdown(
-
                             """
 
                             <div class="prediction-box spam-box">
@@ -2085,15 +1879,11 @@ with tab1:
                             </div>
 
                             """,
-
                             unsafe_allow_html=True,
-
                         )
 
                     else:
-
                         st.markdown(
-
                             """
 
                             <div class="prediction-box ham-box">
@@ -2109,67 +1899,64 @@ with tab1:
                             </div>
 
                             """,
-
                             unsafe_allow_html=True,
-
                         )
 
-
-
                     if confidence:
-
                         show_confidence_gauge(confidence, prediction, is_live=False)
 
                         with st.expander("📊 Show confidence bar"):
-
                             show_confidence_bar(confidence, prediction)
-
-
 
                     # --- URL Analysis Section ---
 
                     if url_analysis["total_urls"] > 0:
-
-                        with st.expander(f"🔗 URL Analysis — {url_analysis['total_urls']} URL(s) found, {url_analysis['suspicious_count']} suspicious", expanded=url_analysis["suspicious_count"] > 0):
-
+                        with st.expander(
+                            f"🔗 URL Analysis — {url_analysis['total_urls']} URL(s) found, {url_analysis['suspicious_count']} suspicious",
+                            expanded=url_analysis["suspicious_count"] > 0,
+                        ):
                             risk_level = url_analysis["risk_level"]
 
-                            risk_icon = {"low": "🟢", "medium": "🟡", "high": "🔴", "none": "⚪"}.get(risk_level, "⚪")
+                            risk_icon = {
+                                "low": "🟢",
+                                "medium": "🟡",
+                                "high": "🔴",
+                                "none": "⚪",
+                            }.get(risk_level, "⚪")
 
-                            st.markdown(f"**{risk_icon} Overall URL Risk: {url_analysis['overall_risk_score']:.0f}% — {risk_level.upper()}**")
+                            st.markdown(
+                                f"**{risk_icon} Overall URL Risk: {url_analysis['overall_risk_score']:.0f}% — {risk_level.upper()}**"
+                            )
 
-                            url_df = pd.DataFrame([
+                            url_df = pd.DataFrame(
+                                [
+                                    {
+                                        "URL": u["url"][:80],
+                                        "Host": u["hostname"],
+                                        "Risk": f"{u['risk_score']:.0f}%",
+                                        "Flags": ", ".join(u["flags"]),
+                                    }
+                                    for u in url_analysis["urls"]
+                                ]
+                            )
 
-                                {"URL": u["url"][:80], "Host": u["hostname"], "Risk": f"{u['risk_score']:.0f}%", "Flags": ", ".join(u["flags"])}
-
-                                for u in url_analysis["urls"]
-
-                            ])
-
-                            st.dataframe(url_df, use_container_width=True, hide_index=True)
-
-
+                            st.dataframe(
+                                url_df, use_container_width=True, hide_index=True
+                            )
 
                 except Exception as e:
-
                     st.error(f"⚠️ Error analyzing email: {str(e)}")
-
-
 
             # Phase 2: Explanation (if enabled)
 
             if enable_explanation and confidence:
-
-                with st.spinner("🧠 Computing word-level explanations (may take a moment)..."):
-
+                with st.spinner(
+                    "🧠 Computing word-level explanations (may take a moment)..."
+                ):
                     try:
-
                         result_ex = pipeline.predict_with_explanation(
-
                             email_text,
-
                             explanation_enabled=True,
-
                         )
 
                         explanation = result_ex.get("explanation", {})
@@ -2177,162 +1964,110 @@ with tab1:
                         show_explanation(explanation, prediction)
 
                     except Exception as e:
-
                         st.warning(f"⚠️ Explanation not available: {str(e)}")
-
-
 
             # --- Report Download ---
 
             if confidence:
-
                 explanation_summary = None
 
-                if enable_explanation and 'explanation' in locals() and isinstance(explanation, dict) and explanation.get('status') == 'available':
-
-                    top_spam = explanation.get('top_spam_words', [])
+                if (
+                    enable_explanation
+                    and "explanation" in locals()
+                    and isinstance(explanation, dict)
+                    and explanation.get("status") == "available"
+                ):
+                    top_spam = explanation.get("top_spam_words", [])
 
                     if top_spam:
-
                         explanation_summary = f"Top spam word: {top_spam[0].get('word', 'N/A')} ({top_spam[0].get('contribution', 0):+.4f})"
 
-
-
                 report_html = generate_email_report(
-
                     email_text=email_text,
-
                     prediction=prediction,
-
                     confidence=confidence,
-
                     spam_risk=spam_risk_val,
-
-                    url_analysis=url_analysis if url_analysis["total_urls"] > 0 else None,
-
+                    url_analysis=url_analysis
+                    if url_analysis["total_urls"] > 0
+                    else None,
                     explanation_summary=explanation_summary,
-
                 )
 
                 st.download_button(
-
                     "📥 Download Report (HTML)",
-
                     data=report_html.encode("utf-8"),
-
                     file_name=f"email_report_{int(time.time())}.html",
-
                     mime="text/html",
-
                     use_container_width=True,
-
                 )
 
         else:
-
             st.warning("⚠️ Please enter some text to classify.")
-
 
 
 # --- Tab 2: Batch Processing (MBOX + CSV/Excel) ---
 
 with tab2:
-
     st.header("Batch File Processing")
 
     st.markdown(
-
         "Upload email files for bulk classification. Supports "
-
         "**MBOX** files, **CSV** files, and **Excel (.xlsx)** files."
-
     )
-
-
 
     upload_type = st.radio(
-
         "File type",
-
         ["MBOX / Text", "CSV / Excel"],
-
         horizontal=True,
-
         label_visibility="collapsed",
-
     )
 
-
-
     if upload_type == "MBOX / Text":
-
         st.markdown(
-
             "Upload an MBOX file (exported from Gmail, Thunderbird, etc.) "
-
             "to classify all emails at once."
-
         )
 
         uploaded_file = st.file_uploader(
-
             "Choose an MBOX file",
-
             type=["mbox", "txt"],
-
             help="Upload an MBOX file exported from your email client",
-
             key="mbox_uploader",
-
         )
 
-
-
         if uploaded_file is not None:
+            st.success(
+                f"✅ File uploaded: {uploaded_file.name} "
+                f"({uploaded_file.size / 1024:.1f} KB)"
+            )
 
-            st.success(f"✅ File uploaded: {uploaded_file.name} "
-
-                       f"({uploaded_file.size / 1024:.1f} KB)")
-
-
-
-            if st.button("🚀 Process File", type="primary", use_container_width=True, key="mbox_process"):
-
+            if st.button(
+                "🚀 Process File",
+                type="primary",
+                use_container_width=True,
+                key="mbox_process",
+            ):
                 with st.spinner("📂 Processing file... this may take a moment"):
-
                     try:
-
-                        with tempfile.NamedTemporaryFile(delete=False, suffix=".mbox") as tmp_file:
-
+                        with tempfile.NamedTemporaryFile(
+                            delete=False, suffix=".mbox"
+                        ) as tmp_file:
                             tmp_file.write(uploaded_file.getvalue())
 
                             tmp_path = tmp_file.name
 
-
-
                         try:
-
                             df = pipeline.predict_mbox_file(tmp_path)
-
-
 
                             hm = get_history_manager()
 
                             for _, row in df.iterrows():
-
                                 hm.add_entry(
-
                                     email_text=row.get("Body", ""),
-
                                     prediction=row.get("Prediction", "Unknown"),
-
                                     source="batch",
-
                                     email_subject=row.get("Subject", ""),
-
                                 )
-
-
 
                             st.subheader("📊 Processing Results")
 
@@ -2344,178 +2079,154 @@ with tab2:
 
                             col1.metric("Total Emails", len(df))
 
-                            col2.metric("Spam Found", spam_count, delta=f"{spam_count/len(df)*100:.1f}%" if len(df) > 0 else "0%", delta_color="inverse")
+                            col2.metric(
+                                "Spam Found",
+                                spam_count,
+                                delta=f"{spam_count / len(df) * 100:.1f}%"
+                                if len(df) > 0
+                                else "0%",
+                                delta_color="inverse",
+                            )
 
-                            col3.metric("Ham (Safe)", ham_count, delta=f"{ham_count/len(df)*100:.1f}%" if len(df) > 0 else "0%")
-
-
+                            col3.metric(
+                                "Ham (Safe)",
+                                ham_count,
+                                delta=f"{ham_count / len(df) * 100:.1f}%"
+                                if len(df) > 0
+                                else "0%",
+                            )
 
                             st.subheader("📋 Results Preview")
 
                             preview_cols = ["Time", "Subject", "Prediction"]
 
-                            available_cols = [c for c in preview_cols if c in df.columns]
+                            available_cols = [
+                                c for c in preview_cols if c in df.columns
+                            ]
 
-                            st.dataframe(df[available_cols].head(10), use_container_width=True, hide_index=True)
-
-
+                            st.dataframe(
+                                df[available_cols].head(10),
+                                use_container_width=True,
+                                hide_index=True,
+                            )
 
                             csv = df.to_csv(index=False).encode("utf-8")
 
                             st.download_button(
-
                                 label="📥 Download Full Results (CSV)",
-
                                 data=csv,
-
                                 file_name=f"spam_predictions_{int(time.time())}.csv",
-
                                 mime="text/csv",
-
                                 use_container_width=True,
-
                             )
-
-
 
                             report_data = []
 
                             for _, row in df.iterrows():
+                                report_data.append(
+                                    {
+                                        "prediction": row.get("Prediction", "Unknown"),
+                                        "email_subject": row.get("Subject", ""),
+                                        "timestamp": time.time(),
+                                        "source": "batch",
+                                    }
+                                )
 
-                                report_data.append({
-
-                                    "prediction": row.get("Prediction", "Unknown"),
-
-                                    "email_subject": row.get("Subject", ""),
-
-                                    "timestamp": time.time(),
-
-                                    "source": "batch",
-
-                                })
-
-                            report_html = generate_classification_report(report_data, title=f"Batch Results — {uploaded_file.name}")
-
-                            st.download_button(
-
-                                "📄 Download Report (HTML)",
-
-                                data=report_html.encode("utf-8"),
-
-                                file_name=f"spam_report_{int(time.time())}.html",
-
-                                mime="text/html",
-
-                                use_container_width=True,
-
+                            report_html = generate_classification_report(
+                                report_data,
+                                title=f"Batch Results — {uploaded_file.name}",
                             )
 
-
+                            st.download_button(
+                                "📄 Download Report (HTML)",
+                                data=report_html.encode("utf-8"),
+                                file_name=f"spam_report_{int(time.time())}.html",
+                                mime="text/html",
+                                use_container_width=True,
+                            )
 
                         finally:
-
                             if os.path.exists(tmp_path):
-
                                 try:
-
                                     os.unlink(tmp_path)
 
                                 except PermissionError:
-
                                     pass
 
-
-
                     except Exception as e:
-
                         st.error(f"⚠️ Error processing file: {str(e)}")
 
-
-
     else:  # CSV / Excel
-
         st.markdown(
-
             "Upload a **CSV** or **Excel (.xlsx)** file containing email text. "
-
             "Auto-detects the email text column. Results will include all original columns plus the prediction."
-
         )
-
-
 
         spreadsheet_file = st.file_uploader(
-
             "Choose a CSV or Excel file",
-
             type=["csv", "xlsx"],
-
             help="File should contain a column with email text content",
-
             key="spreadsheet_uploader",
-
         )
 
-
-
         if spreadsheet_file is not None:
-
             try:
-
                 if spreadsheet_file.name.endswith(".csv"):
-
                     data_df = pd.read_csv(spreadsheet_file)
 
                 else:
-
                     data_df = pd.read_excel(spreadsheet_file, engine="openpyxl")
 
-
-
-                st.success(f"✅ Loaded: {spreadsheet_file.name} ({len(data_df)} rows, {len(data_df.columns)} columns)")
-
-
+                st.success(
+                    f"✅ Loaded: {spreadsheet_file.name} ({len(data_df)} rows, {len(data_df.columns)} columns)"
+                )
 
                 with st.expander("📋 Preview Data", expanded=False):
-
-                    st.dataframe(data_df.head(5), use_container_width=True, hide_index=True)
-
-
+                    st.dataframe(
+                        data_df.head(5), use_container_width=True, hide_index=True
+                    )
 
                 text_candidates = [
-
-                    c for c in data_df.columns
-
-                    if any(kw in c.lower() for kw in ["email", "message", "body", "text", "content", "mail"])
-
+                    c
+                    for c in data_df.columns
+                    if any(
+                        kw in c.lower()
+                        for kw in [
+                            "email",
+                            "message",
+                            "body",
+                            "text",
+                            "content",
+                            "mail",
+                        ]
+                    )
                 ]
 
                 if not text_candidates:
+                    text_candidates = data_df.select_dtypes(
+                        include=["object"]
+                    ).columns.tolist()
 
-                    text_candidates = data_df.select_dtypes(include=["object"]).columns.tolist()
-
-                default_col = text_candidates[0] if text_candidates else data_df.columns[0]
-
-
-
-                text_column = st.selectbox(
-
-                    "📝 Select email text column",
-
-                    options=data_df.columns.tolist(),
-
-                    index=data_df.columns.tolist().index(default_col) if default_col in data_df.columns else 0,
-
+                default_col = (
+                    text_candidates[0] if text_candidates else data_df.columns[0]
                 )
 
+                text_column = st.selectbox(
+                    "📝 Select email text column",
+                    options=data_df.columns.tolist(),
+                    index=data_df.columns.tolist().index(default_col)
+                    if default_col in data_df.columns
+                    else 0,
+                )
 
-
-                if st.button("🚀 Classify All", type="primary", use_container_width=True, key="spreadsheet_classify"):
-
+                if st.button(
+                    "🚀 Classify All",
+                    type="primary",
+                    use_container_width=True,
+                    key="spreadsheet_classify",
+                ):
                     with st.spinner(f"📊 Classifying {len(data_df)} emails..."):
-
                         try:
-
                             predictions = []
 
                             confidences = []
@@ -2530,14 +2241,12 @@ with tab2:
 
                             status_text = st.empty()
 
-
-
                             for i, text in enumerate(data_df[text_column].fillna("")):
-
-                                status_text.caption(f"Processing {i + 1}/{len(data_df)}...")
+                                status_text.caption(
+                                    f"Processing {i + 1}/{len(data_df)}..."
+                                )
 
                                 if text and str(text).strip():
-
                                     result = pipeline.predict_single_email(str(text))
 
                                     pred = result["prediction"]
@@ -2547,27 +2256,20 @@ with tab2:
                                     url_analysis = analyze_urls_in_text(str(text))
 
                                     hm.add_entry(
-
                                         email_text=str(text),
-
                                         prediction=pred,
-
                                         confidence=conf,
-
                                         source="batch",
-
                                         url_count=url_analysis["total_urls"],
-
-                                        suspicious_urls=url_analysis["suspicious_count"],
-
+                                        suspicious_urls=url_analysis[
+                                            "suspicious_count"
+                                        ],
                                     )
 
                                     if pred == "Spam":
-
                                         spam_count += 1
 
                                     else:
-
                                         ham_count += 1
 
                                     predictions.append(pred)
@@ -2575,14 +2277,11 @@ with tab2:
                                     confidences.append(conf)
 
                                 else:
-
                                     predictions.append("Unknown")
 
                                     confidences.append(None)
 
                                 progress_bar.progress((i + 1) / len(data_df))
-
-
 
                             status_text.empty()
 
@@ -2592,88 +2291,76 @@ with tab2:
 
                             data_df["Confidence"] = confidences
 
-
-
                             st.subheader("📊 Results Summary")
 
                             col1, col2, col3 = st.columns(3)
 
                             col1.metric("Total", len(data_df))
 
-                            col2.metric("Spam", spam_count, delta=f"{spam_count/len(data_df)*100:.1f}%" if len(data_df) > 0 else "0%", delta_color="inverse")
+                            col2.metric(
+                                "Spam",
+                                spam_count,
+                                delta=f"{spam_count / len(data_df) * 100:.1f}%"
+                                if len(data_df) > 0
+                                else "0%",
+                                delta_color="inverse",
+                            )
 
-                            col3.metric("Ham", ham_count, delta=f"{ham_count/len(data_df)*100:.1f}%" if len(data_df) > 0 else "0%")
+                            col3.metric(
+                                "Ham",
+                                ham_count,
+                                delta=f"{ham_count / len(data_df) * 100:.1f}%"
+                                if len(data_df) > 0
+                                else "0%",
+                            )
 
-
-
-                            st.dataframe(data_df.head(10), use_container_width=True, hide_index=True)
-
-
+                            st.dataframe(
+                                data_df.head(10),
+                                use_container_width=True,
+                                hide_index=True,
+                            )
 
                             output_csv = data_df.to_csv(index=False).encode("utf-8")
 
                             st.download_button(
-
                                 "📥 Download Results (CSV)",
-
                                 data=output_csv,
-
                                 file_name=f"spreadsheet_results_{int(time.time())}.csv",
-
                                 mime="text/csv",
-
                                 use_container_width=True,
-
                             )
-
-
 
                             report_data_list = []
 
                             for _, row in data_df.iterrows():
+                                report_data_list.append(
+                                    {
+                                        "prediction": row.get("Prediction", "Unknown"),
+                                        "email_subject": "",
+                                        "confidence": row.get("Confidence"),
+                                        "timestamp": time.time(),
+                                        "source": "batch",
+                                    }
+                                )
 
-                                report_data_list.append({
-
-                                    "prediction": row.get("Prediction", "Unknown"),
-
-                                    "email_subject": "",
-
-                                    "confidence": row.get("Confidence"),
-
-                                    "timestamp": time.time(),
-
-                                    "source": "batch",
-
-                                })
-
-                            report_html = generate_classification_report(report_data_list, title=f"Spreadsheet Results — {spreadsheet_file.name}")
-
-                            st.download_button(
-
-                                "📄 Download Report (HTML)",
-
-                                data=report_html.encode("utf-8"),
-
-                                file_name=f"spreadsheet_report_{int(time.time())}.html",
-
-                                mime="text/html",
-
-                                use_container_width=True,
-
+                            report_html = generate_classification_report(
+                                report_data_list,
+                                title=f"Spreadsheet Results — {spreadsheet_file.name}",
                             )
 
-
+                            st.download_button(
+                                "📄 Download Report (HTML)",
+                                data=report_html.encode("utf-8"),
+                                file_name=f"spreadsheet_report_{int(time.time())}.html",
+                                mime="text/html",
+                                use_container_width=True,
+                            )
 
                         except Exception as e:
-
                             st.error(f"⚠️ Error processing spreadsheet: {str(e)}")
 
-
-
             except Exception as e:
-
                 st.error(f"⚠️ Error loading file: {str(e)}")
-
 
 
 # ---------------------------------------------------------------------------
@@ -2683,21 +2370,14 @@ with tab2:
 # ---------------------------------------------------------------------------
 
 with tab3:
-
     st.header("📊 Model Performance Comparison")
 
     st.markdown(
-
         "Compare all trained models side-by-side with radar charts, "
-
         "confusion matrices, and detailed performance metrics."
-
     )
 
-
-
     @st.cache_resource(show_spinner="Loading model comparison data...")
-
     def get_model_comparison():
 
         mc = ModelComparison()
@@ -2706,32 +2386,24 @@ with tab3:
 
         return mc, loaded
 
-
-
     mc, comparison_loaded = get_model_comparison()
 
-
-
     if not comparison_loaded:
-
         st.info(
-
             f"🚫 {mc.error_message or 'No trained models found.'}\n\n"
-
             "Train the models first, then return here to see the comparison dashboard.",
-
             icon="🤖",
-
         )
 
         col1, col2, col3 = st.columns([1, 2, 1])
 
         with col2:
-
-            if st.button("🚀 Train Models Now", type="primary", use_container_width=True):
-
-                with st.spinner("🔄 Training all models (this may take a few minutes)..."):
-
+            if st.button(
+                "🚀 Train Models Now", type="primary", use_container_width=True
+            ):
+                with st.spinner(
+                    "🔄 Training all models (this may take a few minutes)..."
+                ):
                     from src.pipeline.training_pipeline import TrainingPipeline
 
                     tp = TrainingPipeline()
@@ -2739,207 +2411,166 @@ with tab3:
                     state = tp.run_pipeline()
 
                     st.success(
-
                         f"✅ Training complete! Best model: **{state.best_model_name}** "
-
                         f"(F1: {state.model_metrics[state.best_model_name]['f1_score']:.4f})"
-
                     )
 
                     st.cache_resource.clear()
 
                     st.rerun()
 
-
-
     else:
-
         if not HAS_PLOTLY:
-
-            st.warning("⚠️ Plotly is required for charts. Install with: `pip install plotly`")
+            st.warning(
+                "⚠️ Plotly is required for charts. Install with: `pip install plotly`"
+            )
 
             st.stop()
-
-
 
         st.subheader("📈 Overall Summary")
 
         df = mc.get_comparison_df()
 
-        best_row = df[df["Best"] == "⭐"].iloc[0] if not df.empty and "⭐" in df["Best"].values else None
-
-
+        best_row = (
+            df[df["Best"] == "⭐"].iloc[0]
+            if not df.empty and "⭐" in df["Best"].values
+            else None
+        )
 
         if best_row is not None:
-
             cols = st.columns(4)
 
             cols[0].metric("🏆 Best Model", best_row["Model"])
 
-            cols[1].metric("🎯 Accuracy", f"{best_row['Accuracy']*100:.2f}%")
+            cols[1].metric("🎯 Accuracy", f"{best_row['Accuracy'] * 100:.2f}%")
 
-            cols[2].metric("📐 Precision", f"{best_row['Precision']*100:.2f}%")
+            cols[2].metric("📐 Precision", f"{best_row['Precision'] * 100:.2f}%")
 
-            cols[3].metric("📊 F1-Score", f"{best_row['F1-Score']*100:.2f}%")
+            cols[3].metric("📊 F1-Score", f"{best_row['F1-Score'] * 100:.2f}%")
 
         else:
-
             st.caption("No best model selected yet.")
-
-
 
         st.subheader("🕸️ Radar Chart — Metrics Comparison")
 
         radar_fig = mc.get_radar_chart()
 
         if radar_fig:
-
             text_color = "#e8eaed" if st.session_state.theme == "dark" else "#1a1a2e"
 
             radar_fig.update_layout(
-
                 font=dict(color=text_color),
-
                 polar=dict(
-
-                    radialaxis=dict(gridcolor="#444" if st.session_state.theme == "dark" else "#e0e0e0"),
-
-                    angularaxis=dict(gridcolor="#444" if st.session_state.theme == "dark" else "#e0e0e0"),
-
+                    radialaxis=dict(
+                        gridcolor="#444"
+                        if st.session_state.theme == "dark"
+                        else "#e0e0e0"
+                    ),
+                    angularaxis=dict(
+                        gridcolor="#444"
+                        if st.session_state.theme == "dark"
+                        else "#e0e0e0"
+                    ),
                 ),
-
             )
 
             st.plotly_chart(radar_fig, use_container_width=True)
 
         else:
-
             st.caption("Radar chart not available.")
-
-
 
         st.subheader("🏅 Model Rankings")
 
         st.dataframe(
-
             df,
-
             use_container_width=True,
-
             hide_index=True,
-
             column_config={
-
                 "Model": st.column_config.TextColumn("Model", width="medium"),
-
                 "Accuracy": st.column_config.NumberColumn("Accuracy", format="%.2f%%"),
-
-                "Precision": st.column_config.NumberColumn("Precision", format="%.2f%%"),
-
+                "Precision": st.column_config.NumberColumn(
+                    "Precision", format="%.2f%%"
+                ),
                 "Recall": st.column_config.NumberColumn("Recall", format="%.2f%%"),
-
                 "F1-Score": st.column_config.NumberColumn("F1-Score", format="%.2f%%"),
-
                 "Best": st.column_config.TextColumn(" ", width="small"),
-
             },
-
         )
-
-
 
         st.subheader("🔢 Confusion Matrices")
 
         st.markdown(
-
             "Each cell shows **count** and **percentage** (by row). "
-
             "Rows = true labels, columns = predictions."
-
         )
-
-
 
         cm_figs = mc.get_all_confusion_matrices()
 
         if cm_figs:
-
             cm_names = list(cm_figs.keys())
 
-            cm_chunks = [cm_names[i:i+3] for i in range(0, len(cm_names), 3)]
+            cm_chunks = [cm_names[i : i + 3] for i in range(0, len(cm_names), 3)]
 
             for chunk in cm_chunks:
-
                 cols = st.columns(len(chunk))
 
                 for col, name in zip(cols, chunk):
-
                     with col:
-
                         fig = cm_figs[name]
 
                         if fig:
-
-                            text_color = "#e8eaed" if st.session_state.theme == "dark" else "#1a1a2e"
+                            text_color = (
+                                "#e8eaed"
+                                if st.session_state.theme == "dark"
+                                else "#1a1a2e"
+                            )
 
                             fig.update_layout(
-
                                 font=dict(color=text_color),
-
-                                title=dict(text=("⭐ " if name == mc.best_model_name else "") + name, font=dict(size=13)),
-
+                                title=dict(
+                                    text=("⭐ " if name == mc.best_model_name else "")
+                                    + name,
+                                    font=dict(size=13),
+                                ),
                             )
 
                             st.plotly_chart(fig, use_container_width=True)
 
         else:
-
-            st.caption("Confusion matrices not available. Train models to generate them.")
-
-
+            st.caption(
+                "Confusion matrices not available. Train models to generate them."
+            )
 
         with st.expander("📁 Training Run Details"):
-
             if mc.run_dir:
-
                 st.markdown(f"**Run directory:** `{mc.run_dir}`")
 
-                meta_path = os.path.join(mc.run_dir, "observations", "model_metadata.json")
+                meta_path = os.path.join(
+                    mc.run_dir, "observations", "model_metadata.json"
+                )
 
                 if os.path.exists(meta_path):
-
                     with open(meta_path) as f:
-
                         meta = json.load(f)
 
                     st.json(meta)
 
                 else:
-
                     st.code(
-
                         "\n".join(os.listdir(os.path.join(mc.run_dir, "models")))
-
                         if os.path.exists(os.path.join(mc.run_dir, "models"))
-
                         else "No model files found."
-
                     )
 
             else:
-
                 st.caption("No run directory discovered.")
-
-
 
         st.divider()
 
         if st.button("🔄 Refresh Data", use_container_width=True):
-
             st.cache_resource.clear()
 
             st.rerun()
-
 
 
 # ---------------------------------------------------------------------------
@@ -2949,72 +2580,67 @@ with tab3:
 # ---------------------------------------------------------------------------
 
 with tab4:
-
     st.header("📋 Classification History")
 
     st.markdown(
-
         "Browse past classifications, track trends over time, "
-
         "and search through your prediction history."
-
     )
-
-
 
     hm = get_history_manager()
 
     stats = hm.get_stats(days_back=30)
 
-
-
     col1, col2, col3, col4 = st.columns(4)
 
     col1.metric("📊 Last 30 Days", stats["total"])
 
-    col2.metric("🚨 Spam", stats["spam_count"], delta=f"{stats['spam_pct']:.0f}%", delta_color="inverse")
+    col2.metric(
+        "🚨 Spam",
+        stats["spam_count"],
+        delta=f"{stats['spam_pct']:.0f}%",
+        delta_color="inverse",
+    )
 
     col3.metric("✅ Ham", stats["ham_count"])
 
     col4.metric("🔗 Suspicious URLs", stats["total_suspicious_urls"])
 
-
-
     if stats["daily_counts"]:
-
         st.subheader("📈 Daily Trend")
 
         trend_df = pd.DataFrame(stats["daily_counts"])
 
         if not trend_df.empty:
-
             trend_df = trend_df.set_index("date")
 
             st.line_chart(trend_df, height=200)
 
     else:
-
         st.caption("No classification data yet. Classify some emails to see trends!")
-
-
 
     st.subheader("🔍 Search History")
 
     filter_col1, filter_col2, filter_col3 = st.columns([2, 1, 1])
 
     with filter_col1:
-
-        search_text = st.text_input("Search in email text or subject", placeholder="Type to search...", label_visibility="collapsed")
+        search_text = st.text_input(
+            "Search in email text or subject",
+            placeholder="Type to search...",
+            label_visibility="collapsed",
+        )
 
     with filter_col2:
-
-        pred_filter = st.selectbox("Prediction", ["All", "Spam", "Ham"], label_visibility="collapsed")
+        pred_filter = st.selectbox(
+            "Prediction", ["All", "Spam", "Ham"], label_visibility="collapsed"
+        )
 
     with filter_col3:
-
-        source_filter = st.selectbox("Source", ["All", "manual", "batch", "live", "api"], label_visibility="collapsed")
-
-
+        source_filter = st.selectbox(
+            "Source",
+            ["All", "manual", "batch", "live", "api"],
+            label_visibility="collapsed",
+        )
 
     pred_value = pred_filter if pred_filter != "All" else None
 
@@ -3022,196 +2648,153 @@ with tab4:
 
     search_value = search_text if search_text else None
 
-
-
     page_size = 25
 
-    total_count = hm.get_total_count(prediction_filter=pred_value, source_filter=source_value, search_text=search_value)
+    total_count = hm.get_total_count(
+        prediction_filter=pred_value,
+        source_filter=source_value,
+        search_text=search_value,
+    )
 
     total_pages = max(1, (total_count + page_size - 1) // page_size)
 
-
-
     if "history_page" not in st.session_state:
-
         st.session_state.history_page = 1
-
-
 
     page_col1, page_col2, page_col3 = st.columns([1, 2, 1])
 
     with page_col2:
-
-        st.caption(f"Page {st.session_state.history_page} of {total_pages} ({total_count} records)")
-
-
+        st.caption(
+            f"Page {st.session_state.history_page} of {total_pages} ({total_count} records)"
+        )
 
     nav_col1, nav_col2, nav_col3, nav_col4, nav_col5 = st.columns([1, 1, 2, 1, 1])
 
     with nav_col1:
-
-        if st.button("◀ Prev", use_container_width=True, disabled=st.session_state.history_page <= 1):
-
+        if st.button(
+            "◀ Prev",
+            use_container_width=True,
+            disabled=st.session_state.history_page <= 1,
+        ):
             st.session_state.history_page = max(1, st.session_state.history_page - 1)
 
             st.rerun()
 
     with nav_col4:
-
-        if st.button("Next ▶", use_container_width=True, disabled=st.session_state.history_page >= total_pages):
-
-            st.session_state.history_page = min(total_pages, st.session_state.history_page + 1)
+        if st.button(
+            "Next ▶",
+            use_container_width=True,
+            disabled=st.session_state.history_page >= total_pages,
+        ):
+            st.session_state.history_page = min(
+                total_pages, st.session_state.history_page + 1
+            )
 
             st.rerun()
 
     with nav_col5:
-
         if st.button("🗑 Clear", use_container_width=True):
-
             hm.clear_history()
 
             st.rerun()
 
-
-
     records = hm.get_history(
-
         limit=page_size,
-
         offset=(st.session_state.history_page - 1) * page_size,
-
         prediction_filter=pred_value,
-
         source_filter=source_value,
-
         search_text=search_value,
-
     )
 
-
-
     if records:
-
         display_data = []
 
         for r in records:
-
-            display_data.append({
-
-                "Time": r.get("datetime", ""),
-
-                "Prediction": r.get("prediction", ""),
-
-                "Confidence": f"{r.get('confidence', 0):.1f}%" if r.get("confidence") else "N/A",
-
-                "Source": r.get("source", ""),
-
-                "URLs": f"{r.get('suspicious_urls', 0)} susp." if r.get('suspicious_urls', 0) > 0 else str(r.get('url_count', 0)),
-
-                "Subject": r.get("email_subject", "")[:80] if r.get("email_subject") else r.get("email_text", "")[:80],
-
-            })
-
-
+            display_data.append(
+                {
+                    "Time": r.get("datetime", ""),
+                    "Prediction": r.get("prediction", ""),
+                    "Confidence": f"{r.get('confidence', 0):.1f}%"
+                    if r.get("confidence")
+                    else "N/A",
+                    "Source": r.get("source", ""),
+                    "URLs": f"{r.get('suspicious_urls', 0)} susp."
+                    if r.get("suspicious_urls", 0) > 0
+                    else str(r.get("url_count", 0)),
+                    "Subject": r.get("email_subject", "")[:80]
+                    if r.get("email_subject")
+                    else r.get("email_text", "")[:80],
+                }
+            )
 
         df_history = pd.DataFrame(display_data)
 
         st.dataframe(
-
             df_history,
-
             use_container_width=True,
-
             hide_index=True,
-
             column_config={
-
                 "Time": st.column_config.TextColumn("Time", width="small"),
-
-                "Prediction": st.column_config.TextColumn("📊 Prediction", width="small"),
-
+                "Prediction": st.column_config.TextColumn(
+                    "📊 Prediction", width="small"
+                ),
                 "Confidence": st.column_config.TextColumn("Confidence", width="small"),
-
                 "Source": st.column_config.TextColumn("Source", width="small"),
-
                 "URLs": st.column_config.TextColumn("🔗 URLs", width="small"),
-
-                "Subject": st.column_config.TextColumn("Subject / Preview", width="large"),
-
+                "Subject": st.column_config.TextColumn(
+                    "Subject / Preview", width="large"
+                ),
             },
-
         )
-
-
 
         all_records = hm.get_history(limit=10000, search_text=search_value)
 
         if all_records:
-
             export_data = []
 
             for r in all_records:
-
-                export_data.append({
-
-                    "Time": r.get("datetime", ""),
-
-                    "Prediction": r.get("prediction", ""),
-
-                    "Confidence": r.get("confidence"),
-
-                    "Spam Risk": r.get("spam_risk"),
-
-                    "Source": r.get("source", ""),
-
-                    "URL Count": r.get("url_count", 0),
-
-                    "Suspicious URLs": r.get("suspicious_urls", 0),
-
-                    "Subject/Text": r.get("email_subject", "") or r.get("email_text", ""),
-
-                })
+                export_data.append(
+                    {
+                        "Time": r.get("datetime", ""),
+                        "Prediction": r.get("prediction", ""),
+                        "Confidence": r.get("confidence"),
+                        "Spam Risk": r.get("spam_risk"),
+                        "Source": r.get("source", ""),
+                        "URL Count": r.get("url_count", 0),
+                        "Suspicious URLs": r.get("suspicious_urls", 0),
+                        "Subject/Text": r.get("email_subject", "")
+                        or r.get("email_text", ""),
+                    }
+                )
 
             export_df = pd.DataFrame(export_data)
 
             csv_export = export_df.to_csv(index=False).encode("utf-8")
 
             st.download_button(
-
                 "📥 Download History (CSV)",
-
                 data=csv_export,
-
                 file_name=f"classification_history_{int(time.time())}.csv",
-
                 mime="text/csv",
-
                 use_container_width=True,
-
             )
 
-
-
-            report_html = generate_classification_report(export_data, title="Classification History Report")
+            report_html = generate_classification_report(
+                export_data, title="Classification History Report"
+            )
 
             st.download_button(
-
                 "📄 Download Report (HTML)",
-
                 data=report_html.encode("utf-8"),
-
                 file_name=f"history_report_{int(time.time())}.html",
-
                 mime="text/html",
-
                 use_container_width=True,
-
             )
 
     else:
-
-        st.info("📭 No classification history found. Classify some emails to see them here!")
-
+        st.info(
+            "📭 No classification history found. Classify some emails to see them here!"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -3224,7 +2807,7 @@ st.markdown(
     f"""
     <footer>
         Spam Email Classifier • Using scikit-learn, Streamlit & SHAP
-        • <span id="theme-indicator">{'🌙 Dark Mode' if st.session_state.theme == 'dark' else '☀️ Light Mode'}</span>
+        • <span id="theme-indicator">{"🌙 Dark Mode" if st.session_state.theme == "dark" else "☀️ Light Mode"}</span>
         <br>
         <a href="https://github.com/themanoj-025" target="_blank" style="
             display: inline-flex;

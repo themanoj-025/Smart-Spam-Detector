@@ -47,25 +47,25 @@ def _bar_chart_svg(
         bars.append(
             f'<rect x="{x}" y="{y}" width="{bar_width}" height="{bar_h}" '
             f'fill="{bar_color}" rx="3">'
-            f'<title>{escape(str(d.get(label_key, "")))}: {val}</title>'
-            f'</rect>'
+            f"<title>{escape(str(d.get(label_key, '')))}: {val}</title>"
+            f"</rect>"
         )
         labels.append(
             f'<text x="{x + bar_width / 2}" y="{chart_height + 25}" '
             f'text-anchor="middle" font-size="10" fill="#666">'
-            f'{escape(str(d.get(label_key, "")))}</text>'
+            f"{escape(str(d.get(label_key, '')))}</text>"
         )
 
-    joined_bars = ''.join(bars)
-    joined_labels = ''.join(labels)
+    joined_bars = "".join(bars)
+    joined_labels = "".join(labels)
     mid = width / 2
     return (
         f'<svg width="{width}" height="{height}"'
         f' xmlns="http://www.w3.org/2000/svg">'
         f'<text x="{mid}" y="18" text-anchor="middle"'
         f' font-size="13" font-weight="600" fill="#333">'
-        f'{title}</text>'
-        f'{joined_bars}{joined_labels}</svg>'
+        f"{title}</text>"
+        f"{joined_bars}{joined_labels}</svg>"
     )
 
 
@@ -97,7 +97,9 @@ def generate_classification_report(
     ham_pct = round(ham_count / max(total, 1) * 100, 1)
 
     avg_confidence = 0.0
-    confidences = [r.get("confidence") for r in results if r.get("confidence") is not None]
+    confidences = [
+        r.get("confidence") for r in results if r.get("confidence") is not None
+    ]
     if confidences:
         avg_confidence = round(sum(confidences) / len(confidences), 1)
 
@@ -117,12 +119,17 @@ def generate_classification_report(
         charts_html = f"""
         <div class="charts-section">
             <div class="chart-container">
-                {_bar_chart_svg(
-                    dist_data, "value", "label",
-                    "Prediction Distribution",
-                    bar_color="#4a90d9",
-                    width=400, height=200,
-                )}
+                {
+            _bar_chart_svg(
+                dist_data,
+                "value",
+                "label",
+                "Prediction Distribution",
+                bar_color="#4a90d9",
+                width=400,
+                height=200,
+            )
+        }
             </div>
         </div>
         """
@@ -137,22 +144,17 @@ def generate_classification_report(
             confidence = r.get("confidence", "")
             timestamp = r.get("datetime") or (
                 datetime.fromtimestamp(r["timestamp"]).strftime("%Y-%m-%d %H:%M")
-                if r.get("timestamp") else ""
+                if r.get("timestamp")
+                else ""
             )
             subject = escape(r.get("email_subject", ""))
             urls_info = ""
             if r.get("suspicious_urls", 0) > 0:
                 n = r["suspicious_urls"]
-                urls_info = (
-                    f'<span class="badge badge-danger">'
-                    f'{n} susp.</span>'
-                )
+                urls_info = f'<span class="badge badge-danger">{n} susp.</span>'
             elif r.get("url_count", 0) > 0:
                 n = r["url_count"]
-                urls_info = (
-                    f'<span class="badge badge-ok">'
-                    f'{n} urls</span>'
-                )
+                urls_info = f'<span class="badge badge-ok">{n} urls</span>'
 
             rows.append(f"""
             <tr class="{pred_class}">
@@ -182,7 +184,7 @@ def generate_classification_report(
                     </tr>
                 </thead>
                 <tbody>
-                    {''.join(rows)}
+                    {"".join(rows)}
                 </tbody>
             </table>
         </div>
@@ -340,15 +342,9 @@ def generate_email_report(
         url_rows = []
         for u in url_analysis.get("urls", []):
             risk = u.get("risk_score", 0)
-            risk_label = (
-                "High" if risk >= 50
-                else "Medium" if risk >= 20
-                else "Low"
-            )
+            risk_label = "High" if risk >= 50 else "Medium" if risk >= 20 else "Low"
             risk_bg = (
-                "#f44336" if risk >= 50
-                else "#ffa726" if risk >= 20
-                else "#66bb6a"
+                "#f44336" if risk >= 50 else "#ffa726" if risk >= 20 else "#66bb6a"
             )
             flags = ", ".join(u.get("flags", []))
             url_rows.append(f"""
@@ -364,10 +360,10 @@ def generate_email_report(
 
         urls_html = f"""
         <h3 style="margin:20px 0 10px;">🔗 URL Analysis</h3>
-        <p>Found {url_analysis['total_urls']} URL(s),
-         {url_analysis['suspicious_count']} suspicious.
-        Overall URL risk: <strong>{url_analysis['overall_risk_score']:.0f}%
-         ({url_analysis['risk_level'].upper()})</strong></p>
+        <p>Found {url_analysis["total_urls"]} URL(s),
+         {url_analysis["suspicious_count"]} suspicious.
+        Overall URL risk: <strong>{url_analysis["overall_risk_score"]:.0f}%
+         ({url_analysis["risk_level"].upper()})</strong></p>
         <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
             <thead>
                 <tr style="background:#f0f2f6;">
@@ -376,7 +372,7 @@ def generate_email_report(
                 <th style="padding:6px;text-align:left;">Risk</th>
                 <th style="padding:6px;text-align:left;">Flags</th>
             </tr></thead>
-            <tbody>{''.join(url_rows)}</tbody>
+            <tbody>{"".join(url_rows)}</tbody>
         </table>
         """
 
@@ -391,8 +387,13 @@ def generate_email_report(
     .prediction-badge {{
         display:inline-block; padding:6px 20px;
         border-radius:20px; font-weight:700; font-size:1.2rem;
-        {("background:#ffebee;color:#c62828" if prediction == "Spam"
-          else "background:#e8f5e9;color:#2e7d32")}
+        {
+        (
+            "background:#ffebee;color:#c62828"
+            if prediction == "Spam"
+            else "background:#e8f5e9;color:#2e7d32"
+        )
+    }
     }}
     .section {{ background:#fff; border-radius:10px; padding:16px; margin-bottom:16px; box-shadow:0 1px 6px rgba(0,0,0,0.06); }}
     .section h3 {{ margin-bottom:8px; color:#333; }}
@@ -428,10 +429,15 @@ def generate_email_report(
 
     {f'<div class="section">{urls_html}</div>' if urls_html else ""}
 
-    {('<div class="section"><h3>🧠 Explanation</h3>'
-     '<p>{}</p></div>'.format(
-      escape(explanation_summary))
-     if explanation_summary else "")}
+    {
+        (
+            '<div class="section"><h3>🧠 Explanation</h3><p>{}</p></div>'.format(
+                escape(explanation_summary)
+            )
+            if explanation_summary
+            else ""
+        )
+    }
 
     <div class="footer">
         Spam Email Classifier

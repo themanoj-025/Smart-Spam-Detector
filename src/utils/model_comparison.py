@@ -79,7 +79,8 @@ class ModelComparison:
 
         run_dirs = sorted(
             [
-                d for d in base_dir.iterdir()
+                d
+                for d in base_dir.iterdir()
                 if d.is_dir()
                 and re.match(
                     r"^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}$",
@@ -195,7 +196,8 @@ class ModelComparison:
 
             # Split (same seed as training pipeline)
             _, X_test, _, y_test = train_test_split(
-                X, y,
+                X,
+                y,
                 test_size=self.config.test_size,
                 random_state=self.config.random_state,
                 stratify=y,
@@ -209,7 +211,8 @@ class ModelComparison:
                 # We need the full training data to fit — this is approximate
                 # In practice, the vectorizer should always be saved alongside models
                 X_train, _, _, _ = train_test_split(
-                    X, y,
+                    X,
+                    y,
                     test_size=self.config.test_size,
                     random_state=self.config.random_state,
                     stratify=y,
@@ -280,9 +283,7 @@ class ModelComparison:
         models_loaded = self._load_all_models(run_dir)
 
         if not metrics_loaded and not models_loaded:
-            self._error_message = (
-                f"No model data found in: {run_dir}"
-            )
+            self._error_message = f"No model data found in: {run_dir}"
             return False
 
         # If models are loaded, compute confusion matrices
@@ -297,16 +298,22 @@ class ModelComparison:
                         self.metrics[name] = {
                             "accuracy": accuracy_score(self.y_test, y_pred),
                             "precision": precision_score(
-                                self.y_test, y_pred,
-                                average="weighted", zero_division=0,
+                                self.y_test,
+                                y_pred,
+                                average="weighted",
+                                zero_division=0,
                             ),
                             "recall": recall_score(
-                                self.y_test, y_pred,
-                                average="weighted", zero_division=0,
+                                self.y_test,
+                                y_pred,
+                                average="weighted",
+                                zero_division=0,
                             ),
                             "f1_score": f1_score(
-                                self.y_test, y_pred,
-                                average="weighted", zero_division=0,
+                                self.y_test,
+                                y_pred,
+                                average="weighted",
+                                zero_division=0,
                             ),
                         }
                     except Exception:
@@ -314,7 +321,9 @@ class ModelComparison:
 
         # Determine best model
         if self.metrics and not self.best_model_name:
-            self.best_model_name = max(self.metrics, key=lambda x: self.metrics[x]["f1_score"])
+            self.best_model_name = max(
+                self.metrics, key=lambda x: self.metrics[x]["f1_score"]
+            )
 
         self._loaded = True
         return True
@@ -327,14 +336,16 @@ class ModelComparison:
         """
         rows = []
         for name, metrics in self.metrics.items():
-            rows.append({
-                "Model": name,
-                "Accuracy": round(metrics.get("accuracy", 0), 4),
-                "Precision": round(metrics.get("precision", 0), 4),
-                "Recall": round(metrics.get("recall", 0), 4),
-                "F1-Score": round(metrics.get("f1_score", 0), 4),
-                "Best": "⭐" if name == self.best_model_name else "",
-            })
+            rows.append(
+                {
+                    "Model": name,
+                    "Accuracy": round(metrics.get("accuracy", 0), 4),
+                    "Precision": round(metrics.get("precision", 0), 4),
+                    "Recall": round(metrics.get("recall", 0), 4),
+                    "F1-Score": round(metrics.get("f1_score", 0), 4),
+                    "Best": "⭐" if name == self.best_model_name else "",
+                }
+            )
 
         df = pd.DataFrame(rows)
         if not df.empty and "F1-Score" in df.columns:
@@ -360,12 +371,22 @@ class ModelComparison:
 
         # Color palette for models
         colors = [
-            "#636EFA", "#EF553B", "#00CC96", "#AB63FA",
-            "#FFA15A", "#19D3F3", "#FF6692", "#B6E880",
+            "#636EFA",
+            "#EF553B",
+            "#00CC96",
+            "#AB63FA",
+            "#FFA15A",
+            "#19D3F3",
+            "#FF6692",
+            "#B6E880",
         ]
 
         for i, (name, metrics) in enumerate(
-            sorted(self.metrics.items(), key=lambda x: x[1].get("f1_score", 0), reverse=True)
+            sorted(
+                self.metrics.items(),
+                key=lambda x: x[1].get("f1_score", 0),
+                reverse=True,
+            )
         ):
             values = [metrics.get(m, 0) * 100 for m in radar_metrics]
             # Close the loop by repeating the first value
@@ -376,15 +397,17 @@ class ModelComparison:
             line_width = 3 if name == self.best_model_name else 1.5
             opacity = 1.0 if name == self.best_model_name else 0.7
 
-            fig.add_trace(go.Scatterpolar(
-                r=values_closed,
-                theta=labels_closed,
-                name=f"{name} {'⭐' if name == self.best_model_name else ''}",
-                line=dict(color=color, width=line_width),
-                opacity=opacity,
-                fill="toself",
-                fillcolor=f"rgba{self._hex_to_rgba(color, 0.08)}",  # noqa
-            ))
+            fig.add_trace(
+                go.Scatterpolar(
+                    r=values_closed,
+                    theta=labels_closed,
+                    name=f"{name} {'⭐' if name == self.best_model_name else ''}",
+                    line=dict(color=color, width=line_width),
+                    opacity=opacity,
+                    fill="toself",
+                    fillcolor=f"rgba{self._hex_to_rgba(color, 0.08)}",  # noqa
+                )
+            )
 
         # Compute dynamic range: round down min value to nearest 5%
         all_vals = [
@@ -457,30 +480,39 @@ class ModelComparison:
         annotations = []
         for i in range(cm.shape[0]):
             for j in range(cm.shape[1]):
-                annotations.append(dict(
-                    text=f"{cm[i, j]}<br><sub>{cm_pct[i, j]:.1f}%</sub>",
-                    x=j,
-                    y=i,
-                    font=dict(size=13, color="white" if cm_pct[i, j] > 40 else "#333"),
-                    showarrow=False,
-                ))
+                annotations.append(
+                    dict(
+                        text=f"{cm[i, j]}<br><sub>{cm_pct[i, j]:.1f}%</sub>",
+                        x=j,
+                        y=i,
+                        font=dict(
+                            size=13, color="white" if cm_pct[i, j] > 40 else "#333"
+                        ),
+                        showarrow=False,
+                    )
+                )
 
-        fig = go.Figure(data=go.Heatmap(
-            z=cm_pct,
-            x=self.class_names,
-            y=self.class_names,
-            text=[[str(cm[i, j]) for j in range(cm.shape[1])] for i in range(cm.shape[0])],
-            texttemplate="%{text}",
-            hovertemplate="True: %{y}<br>Predicted: %{x}<br>Count: %{text}<br>Rate: %{z:.1f}%<extra></extra>",
-            colorscale="Blues",
-            showscale=True,
-            colorbar=dict(
-                title="%",
-                tickformat=".0f",
-                thickness=15,
-                len=0.7,
-            ),
-        ))
+        fig = go.Figure(
+            data=go.Heatmap(
+                z=cm_pct,
+                x=self.class_names,
+                y=self.class_names,
+                text=[
+                    [str(cm[i, j]) for j in range(cm.shape[1])]
+                    for i in range(cm.shape[0])
+                ],
+                texttemplate="%{text}",
+                hovertemplate="True: %{y}<br>Predicted: %{x}<br>Count: %{text}<br>Rate: %{z:.1f}%<extra></extra>",
+                colorscale="Blues",
+                showscale=True,
+                colorbar=dict(
+                    title="%",
+                    tickformat=".0f",
+                    thickness=15,
+                    len=0.7,
+                ),
+            )
+        )
 
         fig.update_layout(
             title=dict(
@@ -489,7 +521,9 @@ class ModelComparison:
                 x=0.5,
             ),
             xaxis=dict(title="Predicted Label", side="bottom", tickfont=dict(size=12)),
-            yaxis=dict(title="True Label", tickfont=dict(size=12), autorange="reversed"),
+            yaxis=dict(
+                title="True Label", tickfont=dict(size=12), autorange="reversed"
+            ),
             margin=dict(l=60, r=40, t=50, b=60),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
@@ -524,7 +558,11 @@ class ModelComparison:
             Tuple of (r, g, b, a) integers.
         """
         hex_color = hex_color.lstrip("#")
-        r, g, b = int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
+        r, g, b = (
+            int(hex_color[0:2], 16),
+            int(hex_color[2:4], 16),
+            int(hex_color[4:6], 16),
+        )
         return (r, g, b, alpha)
 
     @property

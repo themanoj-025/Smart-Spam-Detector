@@ -42,15 +42,15 @@ class TestPickleFunctions:
     def test_save_and_load_pickle(self):
         """Test round-trip save and load of pickle files."""
         data = {"key": "value", "list": [1, 2, 3], "number": 42}
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             filepath = os.path.join(tmpdir, "test.pkl")
-            
+
             # Save
             saved_path = save_pickle(data, filepath)
             assert saved_path == filepath
             assert os.path.exists(filepath)
-            
+
             # Load
             loaded = load_pickle(filepath)
             assert loaded == data
@@ -66,21 +66,25 @@ class TestValidateDataset:
 
     def test_valid_dataset(self):
         """Test validation passes for correct dataset."""
-        df = pd.DataFrame({
-            'Category': ['spam', 'ham'],
-            'Message': ['buy now', 'hello friend'],
-        })
-        result = validate_dataset(df, ['Category', 'Message'])
+        df = pd.DataFrame(
+            {
+                "Category": ["spam", "ham"],
+                "Message": ["buy now", "hello friend"],
+            }
+        )
+        result = validate_dataset(df, ["Category", "Message"])
         assert result is True
 
     def test_missing_columns(self):
         """Test validation raises ValueError for missing columns."""
-        df = pd.DataFrame({
-            'Message': ['buy now', 'hello friend'],
-        })
+        df = pd.DataFrame(
+            {
+                "Message": ["buy now", "hello friend"],
+            }
+        )
         with pytest.raises(ValueError) as exc:
-            validate_dataset(df, ['Category', 'Message'])
-        assert 'Category' in str(exc.value)
+            validate_dataset(df, ["Category", "Message"])
+        assert "Category" in str(exc.value)
 
 
 class TestGetDatasetStats:
@@ -88,23 +92,27 @@ class TestGetDatasetStats:
 
     def test_basic_stats(self):
         """Test that stats returns expected structure."""
-        df = pd.DataFrame({
-            'Category': ['spam', 'ham', 'spam'],
-            'Message': ['buy now', 'hello friend', 'click here'],
-        })
+        df = pd.DataFrame(
+            {
+                "Category": ["spam", "ham", "spam"],
+                "Message": ["buy now", "hello friend", "click here"],
+            }
+        )
         stats = get_dataset_stats(df)
-        
-        assert stats['total_samples'] == 3
-        assert 'columns' in stats
-        assert 'dtypes' in stats
-        assert 'missing_values' in stats
+
+        assert stats["total_samples"] == 3
+        assert "columns" in stats
+        assert "dtypes" in stats
+        assert "missing_values" in stats
 
     def test_missing_values(self):
         """Test that missing values are reported."""
-        df = pd.DataFrame({
-            'A': [1, None, 3],
-            'B': ['x', 'y', None],
-        })
+        df = pd.DataFrame(
+            {
+                "A": [1, None, 3],
+                "B": ["x", "y", None],
+            }
+        )
         stats = get_dataset_stats(df)
-        assert stats['missing_values']['A'] == 1
-        assert stats['missing_values']['B'] == 1
+        assert stats["missing_values"]["A"] == 1
+        assert stats["missing_values"]["B"] == 1

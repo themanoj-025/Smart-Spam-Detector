@@ -187,9 +187,9 @@ class HistoryManager:
             for row in rows:
                 record = dict(row)
                 record["timestamp"] = record["timestamp"]
-                record["datetime"] = datetime.fromtimestamp(record["timestamp"]).strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
+                record["datetime"] = datetime.fromtimestamp(
+                    record["timestamp"]
+                ).strftime("%Y-%m-%d %H:%M:%S")
                 if record["metadata"]:
                     try:
                         record["metadata"] = json.loads(record["metadata"])
@@ -235,7 +235,8 @@ class HistoryManager:
         conn = sqlite3.connect(self.db_path)
         try:
             row = conn.execute(
-                f"SELECT COUNT(*) as cnt FROM classifications WHERE {where_clause}", params
+                f"SELECT COUNT(*) as cnt FROM classifications WHERE {where_clause}",
+                params,
             ).fetchone()
             return row[0] if row else 0
         finally:
@@ -343,9 +344,9 @@ class HistoryManager:
             ).fetchone()
             if row:
                 record = dict(row)
-                record["datetime"] = datetime.fromtimestamp(record["timestamp"]).strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
+                record["datetime"] = datetime.fromtimestamp(
+                    record["timestamp"]
+                ).strftime("%Y-%m-%d %H:%M:%S")
                 if record["metadata"]:
                     try:
                         record["metadata"] = json.loads(record["metadata"])

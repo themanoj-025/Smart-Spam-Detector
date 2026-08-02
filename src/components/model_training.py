@@ -19,12 +19,16 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, StackingClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score, f1_score,
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
 )
 
 # Optional: XGBoost (graceful fallback if not installed)
 try:
     from xgboost import XGBClassifier
+
     HAS_XGBOOST = True
 except ImportError:
     HAS_XGBOOST = False
@@ -56,24 +60,26 @@ class ModelTraining:
             Dictionary mapping model names to sklearn estimators.
         """
         models = {
-            'LogisticRegression': LogisticRegression(
-                random_state=self.config.random_state, class_weight='balanced'
+            "LogisticRegression": LogisticRegression(
+                random_state=self.config.random_state, class_weight="balanced"
             ),
-            'DecisionTree': DecisionTreeClassifier(
-                random_state=self.config.random_state, class_weight='balanced'
+            "DecisionTree": DecisionTreeClassifier(
+                random_state=self.config.random_state, class_weight="balanced"
             ),
-            'SVM': SVC(
-                random_state=self.config.random_state, probability=True, class_weight='balanced'
+            "SVM": SVC(
+                random_state=self.config.random_state,
+                probability=True,
+                class_weight="balanced",
             ),
-            'KNN': KNeighborsClassifier(),
-            'RandomForest': RandomForestClassifier(
-                random_state=self.config.random_state, class_weight='balanced'
+            "KNN": KNeighborsClassifier(),
+            "RandomForest": RandomForestClassifier(
+                random_state=self.config.random_state, class_weight="balanced"
             ),
         }
         if HAS_XGBOOST:
-            models['XGBoost'] = XGBClassifier(
+            models["XGBoost"] = XGBClassifier(
                 random_state=self.config.random_state,
-                eval_metric='logloss',
+                eval_metric="logloss",
             )
         return models
 
@@ -90,10 +96,12 @@ class ModelTraining:
             Dictionary of metric names to values.
         """
         return {
-            'accuracy': accuracy_score(y_test, y_pred),
-            'precision': precision_score(y_test, y_pred, average='weighted', zero_division=0),
-            'recall': recall_score(y_test, y_pred, average='weighted', zero_division=0),
-            'f1_score': f1_score(y_test, y_pred, average='weighted', zero_division=0),
+            "accuracy": accuracy_score(y_test, y_pred),
+            "precision": precision_score(
+                y_test, y_pred, average="weighted", zero_division=0
+            ),
+            "recall": recall_score(y_test, y_pred, average="weighted", zero_division=0),
+            "f1_score": f1_score(y_test, y_pred, average="weighted", zero_division=0),
         }
 
     def save_pickle_files(self, state: TrainingState) -> str:
@@ -115,10 +123,14 @@ class ModelTraining:
             ensure_dir(observations_dir)
 
             # Save TF-IDF vectorizer
-            save_pickle(state.tfidf_vectorizer, os.path.join(models_dir, "vectorizer.pkl"))
+            save_pickle(
+                state.tfidf_vectorizer, os.path.join(models_dir, "vectorizer.pkl")
+            )
 
             # Save best model
-            best_model_path = os.path.join(models_dir, f"{state.best_model_name}_model.pkl")
+            best_model_path = os.path.join(
+                models_dir, f"{state.best_model_name}_model.pkl"
+            )
             save_pickle(state.best_model, best_model_path)
 
             # Save all trained models
@@ -128,24 +140,24 @@ class ModelTraining:
 
             # Save metadata
             metadata = {
-                'timestamp': timestamp,
-                'best_model_name': state.best_model_name,
-                'best_model_params': str(state.best_params),
-                'best_model_f1_score': float(
-                    state.model_metrics[state.best_model_name]['f1_score']
+                "timestamp": timestamp,
+                "best_model_name": state.best_model_name,
+                "best_model_params": str(state.best_params),
+                "best_model_f1_score": float(
+                    state.model_metrics[state.best_model_name]["f1_score"]
                 ),
-                'best_model_accuracy': float(
-                    state.model_metrics[state.best_model_name]['accuracy']
+                "best_model_accuracy": float(
+                    state.model_metrics[state.best_model_name]["accuracy"]
                 ),
-                'all_models_trained': list(state.trained_models.keys()),
-                'tfidf_features': state.X_train_tfidf.shape[1],
-                'vocabulary_size': len(state.tfidf_vectorizer.vocabulary_),
-                'train_samples': len(state.y_train),
-                'test_samples': len(state.y_test),
+                "all_models_trained": list(state.trained_models.keys()),
+                "tfidf_features": state.X_train_tfidf.shape[1],
+                "vocabulary_size": len(state.tfidf_vectorizer.vocabulary_),
+                "train_samples": len(state.y_train),
+                "test_samples": len(state.y_test),
             }
 
             metadata_path = os.path.join(observations_dir, "model_metadata.json")
-            with open(metadata_path, 'w', encoding='utf-8') as f:
+            with open(metadata_path, "w", encoding="utf-8") as f:
                 json.dump(metadata, f, indent=2)
 
             logger.info(f"All artifacts saved to: {output_dir}/")
@@ -168,38 +180,40 @@ class ModelTraining:
         # 1. Model Comparison Summary
         metrics_data = []
         for model_name, metrics in state.model_metrics.items():
-            metrics_data.append({
-                'Model': model_name,
-                'Accuracy': round(metrics['accuracy'], 4),
-                'Precision': round(metrics['precision'], 4),
-                'Recall': round(metrics['recall'], 4),
-                'F1_Score': round(metrics['f1_score'], 4),
-                'CV_Score': round(metrics.get('best_cv_score', 0), 4),
-                'Is_Best_Model': '✓' if model_name == state.best_model_name else ''
-            })
+            metrics_data.append(
+                {
+                    "Model": model_name,
+                    "Accuracy": round(metrics["accuracy"], 4),
+                    "Precision": round(metrics["precision"], 4),
+                    "Recall": round(metrics["recall"], 4),
+                    "F1_Score": round(metrics["f1_score"], 4),
+                    "CV_Score": round(metrics.get("best_cv_score", 0), 4),
+                    "Is_Best_Model": "✓" if model_name == state.best_model_name else "",
+                }
+            )
 
         df_summary = pd.DataFrame(metrics_data)
-        df_summary = df_summary.sort_values('F1_Score', ascending=False)
+        df_summary = df_summary.sort_values("F1_Score", ascending=False)
         df_summary.to_csv(
-            os.path.join(observations_dir, "model_comparison_summary.csv"),
-            index=False
+            os.path.join(observations_dir, "model_comparison_summary.csv"), index=False
         )
         logger.info("Saved: model_comparison_summary.csv")
 
         # 2. Best Parameters for Each Model
         params_data = []
         for model_name, metrics in state.model_metrics.items():
-            best_params = metrics.get('best_params', {})
-            params_data.append({
-                'Model': model_name,
-                'Best_Parameters': json.dumps(best_params),
-                'CV_Score': round(metrics.get('best_cv_score', 0), 4)
-            })
+            best_params = metrics.get("best_params", {})
+            params_data.append(
+                {
+                    "Model": model_name,
+                    "Best_Parameters": json.dumps(best_params),
+                    "CV_Score": round(metrics.get("best_cv_score", 0), 4),
+                }
+            )
 
         df_params = pd.DataFrame(params_data)
         df_params.to_csv(
-            os.path.join(observations_dir, "best_parameters.csv"),
-            index=False
+            os.path.join(observations_dir, "best_parameters.csv"), index=False
         )
         logger.info("Saved: best_parameters.csv")
 
@@ -207,48 +221,49 @@ class ModelTraining:
         if state.cv_results:
             cv_summary = []
             for model_name, cv_data in state.cv_results.items():
-                cv_summary.append({
-                    'Model': model_name,
-                    'Best_CV_Score': round(cv_data.get('best_score', 0), 4),
-                    'Best_Parameters': json.dumps(cv_data.get('best_params', {}))
-                })
+                cv_summary.append(
+                    {
+                        "Model": model_name,
+                        "Best_CV_Score": round(cv_data.get("best_score", 0), 4),
+                        "Best_Parameters": json.dumps(cv_data.get("best_params", {})),
+                    }
+                )
 
             df_cv = pd.DataFrame(cv_summary)
             df_cv.to_csv(
                 os.path.join(observations_dir, "cross_validation_summary.csv"),
-                index=False
+                index=False,
             )
             logger.info("Saved: cross_validation_summary.csv")
 
         # 4. Best Model Information
         best_model_info = {
-            'Attribute': [
-                'Best Model Name',
-                'Accuracy',
-                'Precision',
-                'Recall',
-                'F1-Score',
-                'CV Score',
-                'Best Parameters'
+            "Attribute": [
+                "Best Model Name",
+                "Accuracy",
+                "Precision",
+                "Recall",
+                "F1-Score",
+                "CV Score",
+                "Best Parameters",
             ],
-            'Value': [
+            "Value": [
                 state.best_model_name,
-                round(state.model_metrics[state.best_model_name]['accuracy'], 4),
-                round(state.model_metrics[state.best_model_name]['precision'], 4),
-                round(state.model_metrics[state.best_model_name]['recall'], 4),
-                round(state.model_metrics[state.best_model_name]['f1_score'], 4),
+                round(state.model_metrics[state.best_model_name]["accuracy"], 4),
+                round(state.model_metrics[state.best_model_name]["precision"], 4),
+                round(state.model_metrics[state.best_model_name]["recall"], 4),
+                round(state.model_metrics[state.best_model_name]["f1_score"], 4),
                 round(
-                    state.model_metrics[state.best_model_name]
-                    .get('best_cv_score', 0), 4
+                    state.model_metrics[state.best_model_name].get("best_cv_score", 0),
+                    4,
                 ),
                 json.dumps(state.best_params, indent=2),
-            ]
+            ],
         }
 
         df_best = pd.DataFrame(best_model_info)
         df_best.to_csv(
-            os.path.join(observations_dir, "best_model_info.csv"),
-            index=False
+            os.path.join(observations_dir, "best_model_info.csv"), index=False
         )
         logger.info("Saved: best_model_info.csv")
 
@@ -299,17 +314,17 @@ class ModelTraining:
 
                 # Compute metrics
                 metrics = self._evaluate_model(best_model, X_test, y_test, y_pred)
-                metrics['best_params'] = search.best_params_
-                metrics['best_cv_score'] = search.best_score_
+                metrics["best_params"] = search.best_params_
+                metrics["best_cv_score"] = search.best_score_
 
                 elapsed = time.time() - start_time
 
                 trained_models[model_name] = best_model
                 model_metrics[model_name] = metrics
                 cv_results[model_name] = {
-                    'cv_scores': search.cv_results_,
-                    'best_params': search.best_params_,
-                    'best_score': search.best_score_
+                    "cv_scores": search.cv_results_,
+                    "best_params": search.best_params_,
+                    "best_score": search.best_score_,
                 }
 
                 logger.info(
@@ -327,24 +342,27 @@ class ModelTraining:
             # Use unfitted estimator classes for the stacking ensemble;
             # StackingClassifier handles fitting internally via cross-validation
             estimators = [
-                ('lr', LogisticRegression(random_state=self.config.random_state)),
-                ('dt', DecisionTreeClassifier(random_state=self.config.random_state)),
-                ('rf', RandomForestClassifier(random_state=self.config.random_state)),
+                ("lr", LogisticRegression(random_state=self.config.random_state)),
+                ("dt", DecisionTreeClassifier(random_state=self.config.random_state)),
+                ("rf", RandomForestClassifier(random_state=self.config.random_state)),
             ]
             stack = StackingClassifier(
                 estimators=estimators,
-                final_estimator=SVC(kernel='linear', probability=True),
-                cv=5
+                final_estimator=SVC(kernel="linear", probability=True),
+                cv=5,
             )
             stack.fit(X_train, y_train)
             y_pred_stack = stack.predict(X_test)
 
             stack_metrics = self._evaluate_model(stack, X_test, y_test, y_pred_stack)
-            stack_metrics['best_params'] = {'estimators': 'LR+DT+RF', 'final_estimator': 'SVC(linear)'}
-            stack_metrics['best_cv_score'] = 0  # No CV for stacking
+            stack_metrics["best_params"] = {
+                "estimators": "LR+DT+RF",
+                "final_estimator": "SVC(linear)",
+            }
+            stack_metrics["best_cv_score"] = 0  # No CV for stacking
 
-            trained_models['StackingClassifier'] = stack
-            model_metrics['StackingClassifier'] = stack_metrics
+            trained_models["StackingClassifier"] = stack
+            model_metrics["StackingClassifier"] = stack_metrics
 
             logger.info(
                 f"Time: {time.time() - stack_start:.2f}s | "
@@ -353,9 +371,11 @@ class ModelTraining:
             )
 
             # Find best model based on F1-score
-            best_model_name = max(model_metrics, key=lambda x: model_metrics[x]['f1_score'])
+            best_model_name = max(
+                model_metrics, key=lambda x: model_metrics[x]["f1_score"]
+            )
             best_model = trained_models[best_model_name]
-            best_params = model_metrics[best_model_name]['best_params']
+            best_params = model_metrics[best_model_name]["best_params"]
 
             logger.info(f"\n{'=' * 50}")
             logger.info(f"BEST MODEL: {best_model_name}")

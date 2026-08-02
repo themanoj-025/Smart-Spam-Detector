@@ -6,6 +6,7 @@ import pandas as pd
 @dataclass
 class TrainingState:
     """Mutable state object passed through the training pipeline stages."""
+
     training_data_path: Optional[str] = None
     training_data: Optional[pd.DataFrame] = None
     transformed_data: Optional[pd.DataFrame] = None
@@ -22,4 +23,3 @@ class TrainingState:
     best_model: Optional[Any] = None
     best_params: Optional[Dict[str, Any]] = field(default=None)
     cv_results: Optional[Dict[str, Any]] = field(default=None)
-

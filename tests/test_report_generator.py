@@ -18,7 +18,12 @@ class TestGenerateClassificationReport:
 
     def test_single_result(self):
         results = [
-            {"prediction": "Spam", "confidence": 95.5, "source": "manual", "timestamp": 1000000},
+            {
+                "prediction": "Spam",
+                "confidence": 95.5,
+                "source": "manual",
+                "timestamp": 1000000,
+            },
         ]
         html = generate_classification_report(results)
         assert "Spam" in html
@@ -85,8 +90,18 @@ class TestGenerateEmailReport:
             "risk_level": "medium",
             "overall_risk_score": 35.0,
             "urls": [
-                {"url": "https://example.com", "hostname": "example.com", "risk_score": 5.0, "flags": []},
-                {"url": "https://bit.ly/abc", "hostname": "bit.ly", "risk_score": 30.0, "flags": ["shortened URL"]},
+                {
+                    "url": "https://example.com",
+                    "hostname": "example.com",
+                    "risk_score": 5.0,
+                    "flags": [],
+                },
+                {
+                    "url": "https://bit.ly/abc",
+                    "hostname": "bit.ly",
+                    "risk_score": 30.0,
+                    "flags": ["shortened URL"],
+                },
             ],
         }
         html = generate_email_report("Check links", "Ham", url_analysis=url_analysis)
@@ -94,7 +109,9 @@ class TestGenerateEmailReport:
         assert "example.com" in html
 
     def test_with_explanation(self):
-        html = generate_email_report("Hello", "Spam", explanation_summary="Keyword 'free' detected")
+        html = generate_email_report(
+            "Hello", "Spam", explanation_summary="Keyword 'free' detected"
+        )
         assert "free" in html
 
 

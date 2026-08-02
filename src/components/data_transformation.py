@@ -44,45 +44,48 @@ class DataTransformation:
         try:
             # Validate input
             if state.training_data is None or state.training_data.empty:
-                raise ValueError("No training data available. Run data ingestion first.")
+                raise ValueError(
+                    "No training data available. Run data ingestion first."
+                )
 
             data = state.training_data.copy()
             logger.info(f"Raw data shape: {data.shape}")
 
             # Encode labels: spam -> 0, ham -> 1
-            label_mapping = {'spam': 0, 'ham': 1}
-            data['Category'] = data['Category'].map(label_mapping)
+            label_mapping = {"spam": 0, "ham": 1}
+            data["Category"] = data["Category"].map(label_mapping)
 
             # Check for unmapped labels
-            if data['Category'].isnull().any():
+            if data["Category"].isnull().any():
                 unknown_labels = state.training_data.loc[
-                    data['Category'].isnull(), 'Category'
+                    data["Category"].isnull(), "Category"
                 ].unique()
                 raise ValueError(f"Unknown labels found: {unknown_labels}")
 
             # Ensure Category column is integer type
-            data['Category'] = data['Category'].astype(int)
+            data["Category"] = data["Category"].astype(int)
 
             # Log label distribution
-            spam_count = (data['Category'] == 0).sum()
-            ham_count = (data['Category'] == 1).sum()
+            spam_count = (data["Category"] == 0).sum()
+            ham_count = (data["Category"] == 1).sum()
             logger.info("Label encoding completed")
-            logger.info(f"Spam (0): {spam_count} ({spam_count/len(data)*100:.1f}%)")
-            logger.info(f"Ham (1): {ham_count} ({ham_count/len(data)*100:.1f}%)")
+            logger.info(f"Spam (0): {spam_count} ({spam_count / len(data) * 100:.1f}%)")
+            logger.info(f"Ham (1): {ham_count} ({ham_count / len(data) * 100:.1f}%)")
 
             # Split features and target
-            X = data['Message']
-            y = data['Category']
+            X = data["Message"]
+            y = data["Category"]
 
             # Convert y to numpy array of integers
             y = np.array(y, dtype=int)
 
             # Split into train and test sets (80:20 ratio)
             X_train, X_test, y_train, y_test = train_test_split(
-                X, y,
+                X,
+                y,
                 test_size=self.config.test_size,
                 random_state=self.config.random_state,
-                stratify=y
+                stratify=y,
             )
 
             train_pct = f"{1 - self.config.test_size:.0f}"
@@ -93,12 +96,12 @@ class DataTransformation:
             # Apply TF-IDF vectorization with optimized settings
             tfidf_vectorizer = TfidfVectorizer(
                 lowercase=True,
-                stop_words='english',
-                ngram_range=(1, 2),       # unigrams + bigrams for better feature quality
-                max_features=15000,        # limit vocabulary size for faster training
-                min_df=2,                  # ignore very rare terms (appear < 2 times)
-                max_df=0.95,               # ignore terms in > 95% of documents
-                sublinear_tf=True,         # apply sublinear TF scaling (1 + log(tf))
+                stop_words="english",
+                ngram_range=(1, 2),  # unigrams + bigrams for better feature quality
+                max_features=15000,  # limit vocabulary size for faster training
+                min_df=2,  # ignore very rare terms (appear < 2 times)
+                max_df=0.95,  # ignore terms in > 95% of documents
+                sublinear_tf=True,  # apply sublinear TF scaling (1 + log(tf))
             )
 
             X_train_tfidf = tfidf_vectorizer.fit_transform(X_train)

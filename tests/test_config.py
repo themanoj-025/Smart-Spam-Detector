@@ -15,7 +15,9 @@ class TestConfig:
         config = Config()
         # Paths are now resolved relative to the project root (via __file__)
         project_root = Path(__file__).resolve().parents[1]
-        assert config.training_data_path == str(project_root / "data" / "dataset" / "dataset.csv")
+        assert config.training_data_path == str(
+            project_root / "data" / "dataset" / "dataset.csv"
+        )
         assert config.OUTPUT_BASE_DIR == str(project_root / "outputs")
         assert config.test_size == 0.2
         assert config.random_state == 42
@@ -39,10 +41,10 @@ class TestModelConfig:
         """Test that ModelConfig contains model definitions."""
         config = ModelConfig()
         assert len(config.models) > 0
-        assert 'LogisticRegression' in config.models
-        assert 'RandomForest' in config.models
+        assert "LogisticRegression" in config.models
+        assert "RandomForest" in config.models
         assert config.cv_folds == 5
-        assert config.scoring == 'f1'
+        assert config.scoring == "f1"
 
     def test_model_config_has_param_grids(self):
         """Test that each model has hyperparameter grids."""
