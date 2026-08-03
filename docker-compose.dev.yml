@@ -1,0 +1,34 @@
+# ═══════════════════════════════════════════════════════════════════════
+# Smart-Spam-Detector — Development override
+#
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+#
+# Adds: dev image target, source bind mounts, hot reload.
+# NEVER use in production.
+# ═══════════════════════════════════════════════════════════════════════
+
+services:
+  api:
+    build:
+      target: dev
+    command: uvicorn api:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./api.py:/app/api.py
+      - ./src:/app/src
+      - history:/app/history
+
+  streamlit:
+    build:
+      target: dev
+    command: >
+      streamlit run app.py
+      --server.port=8501
+      --server.address=0.0.0.0
+      --server.headless=true
+      --browser.gatherUsageStats=false
+      --server.fileWatcherType=polling
+      --server.runOnSave=true
+    volumes:
+      - ./app.py:/app/app.py
+      - ./src:/app/src
+      - history:/app/history
