@@ -1,11 +1,11 @@
 # Rules — Smart-Spam-Detector: Coding Standards & AI-Agent Operating Rules
 
-|Field|Value|
-|---|---|
-|Version|v0.1|
-|Last Updated|2026-08-06|
-|Owner|Staff Engineer|
-|Status|Approved (pending review)|
+| Field | Value |
+| --- | --- |
+| Version | v0.1 |
+| Last Updated | 2026-08-06 |
+| Owner | Staff Engineer |
+| Status | Approved (pending review) |
 
 ---
 
@@ -76,13 +76,13 @@ Smart-Spam-Detector/
 
 ## 8. Prohibited Patterns
 
-|Pattern|Why|
-|---|---|
-|`except: pass`|Silent failures violate Principle 3|
-|Unseeded `random`/`np.random` in training|Breaks reproducibility|
-|Committing `.env` or API keys|Leaks secrets|
-|Hardcoded model paths in app code|Artifact version drift|
-|Training inside the API request path|Latency + concurrency hazards|
+| Pattern | Why |
+| --- | --- |
+| `except: pass` | Silent failures violate Principle 3 |
+| Unseeded `random`/`np.random` in training | Breaks reproducibility |
+| Committing `.env` or API keys | Leaks secrets |
+| Hardcoded model paths in app code | Artifact version drift |
+| Training inside the API request path | Latency + concurrency hazards |
 
 ## 9. Escalation Rules
 
@@ -98,9 +98,9 @@ Smart-Spam-Detector/
 
 ## 10. Related Documents
 
-|Document|Relationship|
-|---|---|
-|[Testing.md](../technical/Testing.md)|Enforcement details for Section 4|
-|[SecurityAndCompliance.md](../technical/SecurityAndCompliance.md)|Full security baseline|
-|[API.md](../technical/API.md)|Contract changes trigger doc rules|
-|[PRD.md](../product/PRD.md)|Source of requirements|
+| Document | Relationship |
+| --- | --- |
+| [Testing.md](../technical/Testing.md) | Enforcement details for Section 4 |
+| [SecurityAndCompliance.md](../technical/SecurityAndCompliance.md) | Full security baseline |
+| [API.md](../technical/API.md) | Contract changes trigger doc rules |
+| [PRD.md](../product/PRD.md) | Source of requirements |

@@ -56,10 +56,10 @@ All API endpoints (`/predict`, `/predict/batch`, `/upload`, `/model/info`) requi
 
 ## Environment Variables
 
-|Variable|Sensitivity|Purpose|
-|---|---|---|
-|`SPAM_API_KEY`|**Critical**|API authentication key. Generate a strong random value.|
-|`LOG_LEVEL`|Low|Logging verbosity. Not sensitive.|
+| Variable | Sensitivity | Purpose |
+| --- | --- | --- |
+| `SPAM_API_KEY` | **Critical** | API authentication key. Generate a strong random value. |
+| `LOG_LEVEL` | Low | Logging verbosity. Not sensitive. |
 
 ## Deployment Security
 
