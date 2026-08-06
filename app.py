@@ -1457,7 +1457,7 @@ def show_confidence_gauge(confidence: float, prediction: str, is_live: bool = Fa
 
         <div class="gauge-value">
 
-            {f"Updates as you type" if is_live else f"Spam probability: {spam_risk:.1f}%"}
+            {"Updates as you type" if is_live else f"Spam probability: {spam_risk:.1f}%"}
 
         </div>
 

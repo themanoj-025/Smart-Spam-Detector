@@ -693,7 +693,7 @@ async def predict_file(
                 status_code=413,
                 detail={
                     "error": "File too large",
-                    "message": f"File size exceeds the 100 MB limit.",
+                    "message": "File size exceeds the 100 MB limit.",
                 },
             )
 
