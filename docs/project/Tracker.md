@@ -58,6 +58,7 @@
 
 ## 6. Changelog
 
+- 2026-08-06: **Documentation suite complete** — 14-file suite consolidated into `docs/`, categorized structure, cross-linked navigation, deployment/git/auth diagrams, quality gate passed (238/238), merged to `main`.
 - 2026-08-06: Documentation suite generated (14 files in project-docs/).
 
 ## 7. Burndown Summary
