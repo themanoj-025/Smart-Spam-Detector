@@ -52,10 +52,10 @@ python classify.py --file email.txt
 ```
 
 ### Environment Variables
-| Variable | Default | Description |
+|Variable|Default|Description|
 |---|---|---|
-| `SPAM_API_KEY` | — | API key for FastAPI Bearer token auth (optional) |
-| `LOG_LEVEL` | `INFO` | Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL) |
+|`SPAM_API_KEY`|—|API key for FastAPI Bearer token auth (optional)|
+|`LOG_LEVEL`|`INFO`|Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)|
 
 Note: Model paths are auto-discovered from the `outputs/` directory — no manual path configuration needed.
 

@@ -1,11 +1,11 @@
 # Deployment — Smart-Spam-Detector: Deployment Guide
 
-| Field | Value |
+|Field|Value|
 |---|---|
-| Version | v0.1 |
-| Last Updated | 2026-08-06 |
-| Owner | DevOps Engineer |
-| Status | In Review |
+|Version|v0.1|
+|Last Updated|2026-08-06|
+|Owner|DevOps Engineer|
+|Status|In Review|
 
 ---
 
@@ -23,11 +23,11 @@ graph LR
 
 ## 2. Environment Promotion Flow
 
-| Stage | Trigger | Verification |
+|Stage|Trigger|Verification|
 |---|---|---|
-| Dev | manual | local run |
-| Staging | merge to main | /health + sample predictions |
-| Prod | git tag `v*` | metrics gate + canary 10% |
+|Dev|manual|local run|
+|Staging|merge to main|/health + sample predictions|
+|Prod|git tag `v*`|metrics gate + canary 10%|
 
 ## 3. Deployment Topology
 
@@ -48,15 +48,15 @@ graph TD
 2. Re-deploy previous image tag (images are immutable, tagged `v*`).
 3. Promote previous model artifact version from registry.
 4. Verify `/health` + FPR on 1k sampled messages.
-5. Log rollback in Tracker.md changelog.
+5. Log rollback in ../project/Tracker.md changelog.
 
 ## 5. Feature Flag Policy
 
-| Flag | Default | Purpose |
+|Flag|Default|Purpose|
 |---|---|---|
-| EXPLAINABILITY_ENABLED | true | Toggle top_tokens |
-| BATCH_ENABLED | true | Toggle batch endpoint |
-| REQUIRE_API_KEY | false | Enforce key auth |
+|EXPLAINABILITY_ENABLED|true|Toggle top_tokens|
+|BATCH_ENABLED|true|Toggle batch endpoint|
+|REQUIRE_API_KEY|false|Enforce key auth|
 
 - Flags are env vars; change requires redeploy (v1). Documented in README/config.
 
@@ -69,9 +69,9 @@ graph TD
 
 ## 7. Related Documents
 
-| Document | Relationship |
+|Document|Relationship|
 |---|---|
-| TechSpec.md | Environments matrix (Section 7) |
-| SecurityAndCompliance.md | Incident response tie-in |
-| API.md | Health endpoint used in gates |
-| ImplementationPlan.md | TASK-3.x rollout tasks |
+|[TechSpec.md](TechSpec.md)|Environments matrix (Section 7)|
+|[SecurityAndCompliance.md](SecurityAndCompliance.md)|Incident response tie-in|
+|[API.md](API.md)|Health endpoint used in gates|
+|[ImplementationPlan.md](../project/ImplementationPlan.md)|TASK-3.x rollout tasks|

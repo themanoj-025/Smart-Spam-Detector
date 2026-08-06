@@ -1,11 +1,11 @@
 # Rules — Smart-Spam-Detector: Coding Standards & AI-Agent Operating Rules
 
-| Field | Value |
+|Field|Value|
 |---|---|
-| Version | v0.1 |
-| Last Updated | 2026-08-06 |
-| Owner | Staff Engineer |
-| Status | Approved (pending review) |
+|Version|v0.1|
+|Last Updated|2026-08-06|
+|Owner|Staff Engineer|
+|Status|Approved (pending review)|
 
 ---
 
@@ -48,17 +48,17 @@ Smart-Spam-Detector/
 - Minimum coverage: 80% on `api.py` and `classify.py` core paths.
 - MUST test: input validation, prediction contract, training determinism (same seed → same metrics).
 - Optional: Streamlit UI smoke tests (manual or Playwright).
-- See Testing.md for full strategy.
+- See ../technical/Testing.md for full strategy.
 
 ## 5. AI Agent Operating Rules
 
 - Read Tracker.md and ImplementationPlan.md before starting any task.
 - Never mark a task 🟢 Done without tests passing.
-- Never invent requirements not in PRD.md/TechSpec.md — flag ambiguity instead of guessing.
-- Always update Schema.md when the data model or artifact format changes.
-- Never commit secrets; use environment variables per SecurityAndCompliance.md.
+- Never invent requirements not in ../product/PRD.md/../technical/TechSpec.md — flag ambiguity instead of guessing.
+- Always update ../technical/Schema.md when the data model or artifact format changes.
+- Never commit secrets; use environment variables per ../technical/SecurityAndCompliance.md.
 - Always pin the training seed (default 42) and document it in run metadata.
-- Always cross-check Design.md before building UI components.
+- Always cross-check ../design/Design.md before building UI components.
 - When a rule conflicts with a request, state the conflict rather than silently picking one.
 
 ## 6. Security Baseline Rules
@@ -70,19 +70,19 @@ Smart-Spam-Detector/
 
 ## 7. Documentation Rules
 
-- Any API change → same-PR update to API.md.
-- Any schema/artifact change → same-PR update to Schema.md.
-- Any new screen → update AppFlow.md inventory and navigation map.
+- Any API change → same-PR update to ../technical/API.md.
+- Any schema/artifact change → same-PR update to ../technical/Schema.md.
+- Any new screen → update ../design/AppFlow.md inventory and navigation map.
 
 ## 8. Prohibited Patterns
 
-| Pattern | Why |
+|Pattern|Why|
 |---|---|
-| `except: pass` | Silent failures violate Principle 3 |
-| Unseeded `random`/`np.random` in training | Breaks reproducibility |
-| Committing `.env` or API keys | Leaks secrets |
-| Hardcoded model paths in app code | Artifact version drift |
-| Training inside the API request path | Latency + concurrency hazards |
+|`except: pass`|Silent failures violate Principle 3|
+|Unseeded `random`/`np.random` in training|Breaks reproducibility|
+|Committing `.env` or API keys|Leaks secrets|
+|Hardcoded model paths in app code|Artifact version drift|
+|Training inside the API request path|Latency + concurrency hazards|
 
 ## 9. Escalation Rules
 
@@ -98,9 +98,9 @@ Smart-Spam-Detector/
 
 ## 10. Related Documents
 
-| Document | Relationship |
+|Document|Relationship|
 |---|---|
-| Testing.md | Enforcement details for Section 4 |
-| SecurityAndCompliance.md | Full security baseline |
-| API.md | Contract changes trigger doc rules |
-| PRD.md | Source of requirements |
+|[Testing.md](../technical/Testing.md)|Enforcement details for Section 4|
+|[SecurityAndCompliance.md](../technical/SecurityAndCompliance.md)|Full security baseline|
+|[API.md](../technical/API.md)|Contract changes trigger doc rules|
+|[PRD.md](../product/PRD.md)|Source of requirements|

@@ -1,22 +1,22 @@
 # API — Smart-Spam-Detector: API Reference
 
-| Field | Value |
+|Field|Value|
 |---|---|
-| Version | v0.1 |
-| Last Updated | 2026-08-06 |
-| Owner | Backend Engineer |
-| Status | In Review |
+|Version|v0.1|
+|Last Updated|2026-08-06|
+|Owner|Backend Engineer|
+|Status|In Review|
 
 Base URL (dev): `http://localhost:8000` · Versioning: `/v1` prefix.
 
 ## 1. Endpoint Summary
 
-| Method | Path | Auth | Purpose |
+|Method|Path|Auth|Purpose|
 |---|---|---|---|
-| GET | /v1/health | N | Liveness + model version |
-| POST | /v1/predict | Optional API key | Single-message classification |
-| POST | /v1/predict-batch | Optional API key | Batch classification |
-| GET | /v1/models | API key | List model versions |
+|GET|/v1/health|N|Liveness + model version|
+|POST|/v1/predict|Optional API key|Single-message classification|
+|POST|/v1/predict-batch|Optional API key|Batch classification|
+|GET|/v1/models|API key|List model versions|
 
 ## 2. Auth
 
@@ -48,14 +48,14 @@ Base URL (dev): `http://localhost:8000` · Versioning: `/v1` prefix.
 
 **Status codes**
 
-| Code | Meaning |
+|Code|Meaning|
 |---|---|
-| 200 | Classified |
-| 400 | E400_INVALID_INPUT — empty/oversized text |
-| 401 | Missing/invalid API key (when enforced) |
-| 429 | Rate limit exceeded |
-| 500 | E500_INTERNAL — model unavailable |
-| 503 | Model not loaded (E404_MODEL_NOT_FOUND variant) |
+|200|Classified|
+|400|E400_INVALID_INPUT — empty/oversized text|
+|401|Missing/invalid API key (when enforced)|
+|429|Rate limit exceeded|
+|500|E500_INTERNAL — model unavailable|
+|503|Model not loaded (E404_MODEL_NOT_FOUND variant)|
 
 ### POST /v1/predict-batch
 
@@ -117,9 +117,9 @@ sequenceDiagram
 
 ## 6. Related Documents
 
-| Document | Relationship |
+|Document|Relationship|
 |---|---|
-| TechSpec.md | Implementation behind these contracts |
-| Schema.md | TBL-prediction record shape |
-| Testing.md | Contract tests for each endpoint |
-| SecurityAndCompliance.md | Rate limiting and key policy |
+|[TechSpec.md](TechSpec.md)|Implementation behind these contracts|
+|[Schema.md](Schema.md)|TBL-prediction record shape|
+|[Testing.md](Testing.md)|Contract tests for each endpoint|
+|[SecurityAndCompliance.md](SecurityAndCompliance.md)|Rate limiting and key policy|
