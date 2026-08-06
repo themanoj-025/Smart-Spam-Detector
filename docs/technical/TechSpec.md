@@ -124,6 +124,23 @@ sequenceDiagram
 | Dependency CVEs | Dependabot + pinned hashes where feasible |
 | Slow vectorization at scale | Cache fitted vectorizer in memory; consider joblib mmap |
 
+## Deployment Topology
+
+```mermaid
+graph TD
+    USER[User] --> API[FastAPI API]
+    USER --> UI[Streamlit UI]
+    API --> MODEL[TF-IDF + LinearSVC / LogisticRegression]
+    API --> SPAM[spam / ham prediction]
+    UI --> MODEL
+    subgraph Deploy
+        API --> API_C[API container]
+        UI --> UI_C[UI container]
+        API_C --> COMPOSE[Docker Compose]
+        UI_C --> COMPOSE
+    end
+```
+
 ## 11. Related Documents
 
 | Document | Relationship |
