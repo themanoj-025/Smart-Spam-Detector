@@ -84,9 +84,7 @@ class PredictionPipeline:
 
         try:
             # Read only the rows we need — SHAP just needs a representative sample
-            df = pd.read_csv(
-                self.config.training_data_path, nrows=_SHAP_BACKGROUND_SIZE
-            )
+            df = pd.read_csv(self.config.training_data_path, nrows=_SHAP_BACKGROUND_SIZE)
             sample_texts = df["Message"].dropna().tolist()
             self._background_data = self.feature_transformer.transform(sample_texts)
             logger.info(f"Loaded {len(sample_texts)} background samples for SHAP")
@@ -109,16 +107,12 @@ class PredictionPipeline:
 
         # Ensure model has predict_proba
         if not hasattr(self.model, "predict_proba"):
-            logger.warning(
-                "Model does not support predict_proba — SHAP explanations unavailable"
-            )
+            logger.warning("Model does not support predict_proba — SHAP explanations unavailable")
             return
 
         background = self._load_background_data()
         if background is None:
-            logger.warning(
-                "No background data available — SHAP explanations unavailable"
-            )
+            logger.warning("No background data available — SHAP explanations unavailable")
             return
 
         try:
@@ -141,9 +135,7 @@ class PredictionPipeline:
                     background,
                 )
             self._feature_names = self.feature_transformer.get_feature_names_out()
-            logger.info(
-                f"✓ SHAP explainer initialized ({len(self._feature_names)} features)"
-            )
+            logger.info(f"✓ SHAP explainer initialized ({len(self._feature_names)} features)")
         except Exception as e:
             logger.error(f"Failed to initialize SHAP explainer: {e}")
             self._shap_explainer = None
@@ -188,11 +180,7 @@ class PredictionPipeline:
         for i, val in enumerate(values):
             if abs(val) < 1e-6:
                 continue
-            word = (
-                self._feature_names[i]
-                if self._feature_names is not None
-                else f"feature_{i}"
-            )
+            word = self._feature_names[i] if self._feature_names is not None else f"feature_{i}"
             contributions.append(
                 {
                     "word": str(word),
@@ -258,9 +246,7 @@ class PredictionPipeline:
                 if color:
                     contrib = word_map[token.lower()]["contribution"]
                     highlighted.append(
-                        f'<span style="{color}" '
-                        f'title="contribution: {contrib:.4f}">'
-                        f"{token}</span>"
+                        f'<span style="{color}" title="contribution: {contrib:.4f}">{token}</span>'
                     )
                 else:
                     highlighted.append(token)
@@ -283,9 +269,7 @@ class PredictionPipeline:
             ValueError: If email body is empty.
         """
         if not email_body or not email_body.strip():
-            raise ValueError(
-                "Email body is empty. Please provide email text to classify."
-            )
+            raise ValueError("Email body is empty. Please provide email text to classify.")
 
         # Lazy load models if not already loaded
         if self.model is None or self.feature_transformer is None:
@@ -310,8 +294,7 @@ class PredictionPipeline:
             pass
 
         logger.info(
-            f"Prediction: {prediction_label} "
-            f"{f'(confidence: {confidence}%)' if confidence else ''}"
+            f"Prediction: {prediction_label} {f'(confidence: {confidence}%)' if confidence else ''}"
         )
 
         return {
@@ -349,9 +332,7 @@ class PredictionPipeline:
             ValueError: If email body is empty.
         """
         if not email_body or not email_body.strip():
-            raise ValueError(
-                "Email body is empty. Please provide email text to classify."
-            )
+            raise ValueError("Email body is empty. Please provide email text to classify.")
 
         # Lazy load models if not already loaded
         if self.model is None or self.feature_transformer is None:
@@ -400,9 +381,7 @@ class PredictionPipeline:
                     return result
 
                 # Compute SHAP values for the spam class (index 0)
-                shap_values = self._shap_explainer.shap_values(
-                    features, nsamples=_SHAP_NSAMPLES
-                )
+                shap_values = self._shap_explainer.shap_values(features, nsamples=_SHAP_NSAMPLES)
 
                 # shap_values shape for binary: (n_samples, n_features) or list of arrays
                 if isinstance(shap_values, list):
@@ -412,20 +391,14 @@ class PredictionPipeline:
 
                 # Get word contributions
                 spam_class_idx = 0
-                word_contributions = self._get_word_contributions(
-                    raw_values, spam_class_idx
-                )
+                word_contributions = self._get_word_contributions(raw_values, spam_class_idx)
 
                 # Split into spam-pushing and ham-pushing
-                spam_words = [c for c in word_contributions if c["class"] == "spam"][
-                    :10
-                ]
+                spam_words = [c for c in word_contributions if c["class"] == "spam"][:10]
                 ham_words = [c for c in word_contributions if c["class"] == "ham"][:10]
 
                 # Generate highlighted HTML
-                highlighted_html = self._highlight_text(
-                    cleaned_body, word_contributions
-                )
+                highlighted_html = self._highlight_text(cleaned_body, word_contributions)
 
                 result["explanation"] = {
                     "status": "available",
@@ -469,9 +442,7 @@ class PredictionPipeline:
         self.mailbox = mailbox.mbox(mailbox_path)
         logger.info(f"Loaded {len(self.mailbox)} messages from mailbox")
 
-    def process_mailbox(
-        self, mailbox_path: str | None = None
-    ) -> list[dict[str, str]]:
+    def process_mailbox(self, mailbox_path: str | None = None) -> list[dict[str, str]]:
         """Process all emails in an MBOX file and extract relevant fields.
 
         Args:
@@ -485,9 +456,7 @@ class PredictionPipeline:
             self.load_mailbox(mailbox_path)
 
         if self.mailbox is None:
-            raise ValueError(
-                "No mailbox loaded. Call load_mailbox() or provide a path."
-            )
+            raise ValueError("No mailbox loaded. Call load_mailbox() or provide a path.")
 
         logger.info("Processing mailbox messages...")
         data = []
@@ -552,16 +521,13 @@ class PredictionPipeline:
         elapsed = time.time() - start_time
         spam_count = sum(1 for m in mail_data if m.get("Prediction") == "Spam")
         logger.info(
-            f"✓ Predictions completed in {elapsed:.2f}s "
-            f"({len(mail_data) / elapsed:.0f} emails/sec)"
+            f"✓ Predictions completed in {elapsed:.2f}s ({len(mail_data) / elapsed:.0f} emails/sec)"
         )
         logger.info(f"  Spam: {spam_count} | Ham: {len(mail_data) - spam_count}")
 
         return mail_data
 
-    def predict_mbox_file(
-        self, mailbox_path: str, output_path: str | None = None
-    ) -> pd.DataFrame:
+    def predict_mbox_file(self, mailbox_path: str, output_path: str | None = None) -> pd.DataFrame:
         """Complete pipeline: load MBOX, process emails, run predictions.
 
         Args:

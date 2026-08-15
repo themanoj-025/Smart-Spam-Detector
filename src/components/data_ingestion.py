@@ -58,9 +58,7 @@ class DataIngestion:
             stats = get_dataset_stats(state.training_data)
             logger.info(f"Dataset loaded successfully: {stats['total_samples']} emails")
             logger.info(f"Columns: {stats['columns']}")
-            logger.info(
-                f"Category distribution: {stats.get('Category_value_counts', {})}"
-            )
+            logger.info(f"Category distribution: {stats.get('Category_value_counts', {})}")
             logger.info(f"Missing values: {stats['missing_values']}")
 
             if stats["total_samples"] == 0:
