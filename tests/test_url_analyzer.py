@@ -103,16 +103,12 @@ class TestAnalyzeUrlsInText:
         assert result["risk_level"] == "none"
 
     def test_safe_urls(self):
-        result = analyze_urls_in_text(
-            "Check https://github.com and https://docs.python.org"
-        )
+        result = analyze_urls_in_text("Check https://github.com and https://docs.python.org")
         assert result["total_urls"] == 2
         assert result["suspicious_count"] == 0
 
     def test_suspicious_urls(self):
-        result = analyze_urls_in_text(
-            "Click http://bit.ly/prize and https://suspicious.tk/login"
-        )
+        result = analyze_urls_in_text("Click http://bit.ly/prize and https://suspicious.tk/login")
         assert result["total_urls"] == 2
         assert result["suspicious_count"] >= 1
         assert result["risk_level"] in ("medium", "high")

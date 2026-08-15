@@ -139,9 +139,7 @@ async def lifespan(app: FastAPI):
     if API_KEY:
         logger.info("✓ API key authentication enabled")
     else:
-        logger.info(
-            "⚠ API key authentication DISABLED — set SPAM_API_KEY env var to enable"
-        )
+        logger.info("⚠ API key authentication DISABLED — set SPAM_API_KEY env var to enable")
 
     yield
     logger.info("Shutting down Spam Classifier API...")
@@ -189,9 +187,7 @@ async def add_security_headers(request: Request, call_next):
     response.headers["Permissions-Policy"] = (
         "camera=(), microphone=(), geolocation=(), interest-cohort=()"
     )
-    response.headers["Content-Security-Policy"] = (
-        "default-src 'none'; frame-ancestors 'none';"
-    )
+    response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none';"
     return response
 
 
@@ -257,21 +253,15 @@ class Explanation(BaseModel):
     highlighted_html: str = Field(
         default="", description="HTML with words color-coded by contribution"
     )
-    error_message: str = Field(
-        default="", description="Error message if status is 'error'"
-    )
+    error_message: str = Field(default="", description="Error message if status is 'error'")
 
 
 class PredictResponse(BaseModel):
     """Response model for single email prediction."""
 
     prediction: str = Field(..., description="'Spam' or 'Ham'")
-    confidence: float | None = Field(
-        None, description="Confidence percentage (0-100)"
-    )
-    raw_prediction: int = Field(
-        ..., description="Integer prediction (0 = Spam, 1 = Ham)"
-    )
+    confidence: float | None = Field(None, description="Confidence percentage (0-100)")
+    raw_prediction: int = Field(..., description="Integer prediction (0 = Spam, 1 = Ham)")
     explanation: Explanation | None = Field(
         None, description="SHAP-based explanation (only with /predict/explain)"
     )
@@ -308,9 +298,7 @@ class BatchResult(BaseModel):
     index: int = Field(..., description="Index in the original request array")
     prediction: str = Field(..., description="'Spam' or 'Ham'")
     confidence: float | None = Field(None, description="Confidence percentage")
-    explanation: Explanation | None = Field(
-        None, description="SHAP explanation (if requested)"
-    )
+    explanation: Explanation | None = Field(None, description="SHAP explanation (if requested)")
 
 
 class BatchPredictResponse(BaseModel):
@@ -320,9 +308,7 @@ class BatchPredictResponse(BaseModel):
     spam_count: int = Field(..., description="Number of emails classified as Spam")
     ham_count: int = Field(..., description="Number of emails classified as Ham")
     results: list[BatchResult] = Field(..., description="Individual prediction results")
-    processing_time_ms: float = Field(
-        ..., description="Total processing time in milliseconds"
-    )
+    processing_time_ms: float = Field(..., description="Total processing time in milliseconds")
 
 
 class ModelInfo(BaseModel):
@@ -330,18 +316,12 @@ class ModelInfo(BaseModel):
 
     status: str = Field(..., description="'loaded' or 'not_loaded'")
     model_name: str | None = Field(None, description="Filename of the loaded model")
-    vectorizer_name: str | None = Field(
-        None, description="Filename of the loaded vectorizer"
-    )
-    model_type: str | None = Field(
-        None, description="Type of the model (e.g., 'SVC')"
-    )
+    vectorizer_name: str | None = Field(None, description="Filename of the loaded vectorizer")
+    model_type: str | None = Field(None, description="Type of the model (e.g., 'SVC')")
     vectorizer_type: str | None = Field(
         None, description="Type of the vectorizer (e.g., 'TfidfVectorizer')"
     )
-    vocabulary_size: int | None = Field(
-        None, description="Number of features in the vocabulary"
-    )
+    vocabulary_size: int | None = Field(None, description="Number of features in the vocabulary")
     supports_explanations: bool = Field(
         False, description="Whether SHAP explanations are available"
     )
@@ -354,9 +334,7 @@ class HealthResponse(BaseModel):
     status: str = Field(..., description="'healthy' or 'unhealthy'")
     model_loaded: bool = Field(..., description="Whether the model is loaded")
     api_version: str = Field(..., description="API version")
-    uptime_seconds: float | None = Field(
-        None, description="Server uptime in seconds"
-    )
+    uptime_seconds: float | None = Field(None, description="Server uptime in seconds")
 
 
 # ---------------------------------------------------------------------------
@@ -595,9 +573,7 @@ async def predict_batch(request: Request, body: BatchPredictRequest):
                 continue
 
             if body.include_explanations:
-                result = pipeline.predict_with_explanation(
-                    email_text, explanation_enabled=True
-                )
+                result = pipeline.predict_with_explanation(email_text, explanation_enabled=True)
                 explanation_data = result.get("explanation", {})
                 explanation = None
                 if explanation_data:
@@ -671,9 +647,7 @@ async def predict_batch(request: Request, body: BatchPredictRequest):
 async def predict_file(
     request: Request,
     file: UploadFile = File(..., description="Text or MBOX file to classify"),
-    include_explanations: bool = Form(
-        False, description="Whether to compute SHAP explanations"
-    ),
+    include_explanations: bool = Form(False, description="Whether to compute SHAP explanations"),
 ):
     """Upload a text or MBOX file for classification.
 
@@ -745,9 +719,7 @@ async def predict_file(
             email_text = content.decode("utf-8", errors="ignore")
 
             if include_explanations:
-                result = pipeline.predict_with_explanation(
-                    email_text, explanation_enabled=True
-                )
+                result = pipeline.predict_with_explanation(email_text, explanation_enabled=True)
             else:
                 result = pipeline.predict_single_email(email_text)
 

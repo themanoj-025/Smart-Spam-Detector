@@ -196,9 +196,7 @@ class TestExplanationAvailable:
 
     def test_successful_explanation_with_2d_array_shap_values(self, pipeline):
         """SHAP values returned as a 2D array (single-class style)."""
-        pipeline._shap_explainer.shap_values.return_value = np.array(
-            [[0.85, 0.72, -0.45, 0.0]]
-        )
+        pipeline._shap_explainer.shap_values.return_value = np.array([[0.85, 0.72, -0.45, 0.0]])
 
         result = pipeline.predict_with_explanation(
             "free win meeting hello", explanation_enabled=True
@@ -216,9 +214,7 @@ class TestExplanationAvailable:
         pipeline._shap_explainer.shap_values.return_value = np.array([[0.5, -0.3]])
         pipeline._feature_names = np.array(["win", "hello"])
 
-        result = pipeline.predict_with_explanation(
-            "win hello", explanation_enabled=True
-        )
+        result = pipeline.predict_with_explanation("win hello", explanation_enabled=True)
         assert result["prediction"] == "Spam"
         assert result["raw_prediction"] == 0
 
@@ -231,9 +227,7 @@ class TestExplanationAvailable:
         pipeline._shap_explainer.shap_values.return_value = np.array([[-0.3, 0.5]])
         pipeline._feature_names = np.array(["win", "hello"])
 
-        result = pipeline.predict_with_explanation(
-            "win hello", explanation_enabled=True
-        )
+        result = pipeline.predict_with_explanation("win hello", explanation_enabled=True)
         assert result["prediction"] == "Ham"
         assert result["raw_prediction"] == 1
 
@@ -246,9 +240,7 @@ class TestExplanationAvailable:
         pipeline._shap_explainer.shap_values.return_value = np.array([[-0.3, 0.5]])
         pipeline._feature_names = np.array(["win", "hello"])
 
-        result = pipeline.predict_with_explanation(
-            "win hello", explanation_enabled=True
-        )
+        result = pipeline.predict_with_explanation("win hello", explanation_enabled=True)
         assert result["confidence"] == 87.66  # 0.8766 * 100 → rounded to 2 decimals
 
 
@@ -294,9 +286,7 @@ class TestExplanationExceptions:
         pipeline._shap_explainer = MagicMock()
 
         # Make shap_values raise ImportError (e.g. if shap is uninstalled)
-        pipeline._shap_explainer.shap_values.side_effect = ImportError(
-            "No module named 'shap'"
-        )
+        pipeline._shap_explainer.shap_values.side_effect = ImportError("No module named 'shap'")
         mock_init.return_value = None
 
         result = pipeline.predict_with_explanation("hello", explanation_enabled=True)
@@ -311,17 +301,14 @@ class TestExplanationExceptions:
         model.predict_proba.return_value = np.array([[0.99, 0.01]])
         _make_models_ready(pipeline, model=model)
         pipeline._shap_explainer = MagicMock()
-        pipeline._shap_explainer.shap_values.side_effect = ValueError(
-            "SHAP computation failed"
-        )
+        pipeline._shap_explainer.shap_values.side_effect = ValueError("SHAP computation failed")
         mock_init.return_value = None
 
         result = pipeline.predict_with_explanation("hello", explanation_enabled=True)
 
         assert result["explanation"]["status"] == "error"
         assert (
-            "Explanation failed: SHAP computation failed"
-            in result["explanation"]["error_message"]
+            "Explanation failed: SHAP computation failed" in result["explanation"]["error_message"]
         )
 
 
@@ -350,9 +337,7 @@ class TestLazyLoading:
 
         mock_load.side_effect = _side_effect
 
-        result = pipeline.predict_with_explanation(
-            "test email", explanation_enabled=False
-        )
+        result = pipeline.predict_with_explanation("test email", explanation_enabled=False)
 
         mock_load.assert_called_once()
         assert result["prediction"] == "Ham"

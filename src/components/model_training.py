@@ -96,9 +96,7 @@ class ModelTraining:
         """
         return {
             "accuracy": accuracy_score(y_test, y_pred),
-            "precision": precision_score(
-                y_test, y_pred, average="weighted", zero_division=0
-            ),
+            "precision": precision_score(y_test, y_pred, average="weighted", zero_division=0),
             "recall": recall_score(y_test, y_pred, average="weighted", zero_division=0),
             "f1_score": f1_score(y_test, y_pred, average="weighted", zero_division=0),
         }
@@ -122,14 +120,10 @@ class ModelTraining:
             ensure_dir(observations_dir)
 
             # Save TF-IDF vectorizer
-            save_pickle(
-                state.tfidf_vectorizer, os.path.join(models_dir, "vectorizer.pkl")
-            )
+            save_pickle(state.tfidf_vectorizer, os.path.join(models_dir, "vectorizer.pkl"))
 
             # Save best model
-            best_model_path = os.path.join(
-                models_dir, f"{state.best_model_name}_model.pkl"
-            )
+            best_model_path = os.path.join(models_dir, f"{state.best_model_name}_model.pkl")
             save_pickle(state.best_model, best_model_path)
 
             # Save all trained models
@@ -211,9 +205,7 @@ class ModelTraining:
             )
 
         df_params = pd.DataFrame(params_data)
-        df_params.to_csv(
-            os.path.join(observations_dir, "best_parameters.csv"), index=False
-        )
+        df_params.to_csv(os.path.join(observations_dir, "best_parameters.csv"), index=False)
         logger.info("Saved: best_parameters.csv")
 
         # 3. Cross-Validation Results Summary
@@ -261,9 +253,7 @@ class ModelTraining:
         }
 
         df_best = pd.DataFrame(best_model_info)
-        df_best.to_csv(
-            os.path.join(observations_dir, "best_model_info.csv"), index=False
-        )
+        df_best.to_csv(os.path.join(observations_dir, "best_model_info.csv"), index=False)
         logger.info("Saved: best_model_info.csv")
 
     def train_models(self, state: TrainingState) -> TrainingState:
@@ -370,9 +360,7 @@ class ModelTraining:
             )
 
             # Find best model based on F1-score
-            best_model_name = max(
-                model_metrics, key=lambda x: model_metrics[x]["f1_score"]
-            )
+            best_model_name = max(model_metrics, key=lambda x: model_metrics[x]["f1_score"])
             best_model = trained_models[best_model_name]
             best_params = model_metrics[best_model_name]["best_params"]
 

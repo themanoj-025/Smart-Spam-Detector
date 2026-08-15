@@ -25,9 +25,7 @@ def classify(text: str) -> None:
         prediction = result["prediction"]
         confidence = result.get("confidence")
 
-        confidence_str = (
-            f"(confidence: {confidence:.1f}%)" if confidence is not None else ""
-        )
+        confidence_str = f"(confidence: {confidence:.1f}%)" if confidence is not None else ""
         if prediction == "Spam":
             print(f"\n  [SPAM]  PREDICTION: SPAM  {confidence_str}\n")
         else:

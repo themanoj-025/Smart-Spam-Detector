@@ -73,9 +73,7 @@ class TrainingPipeline:
             best_metrics = self.state.model_metrics[self.state.best_model_name]
             logger.info(f"Best F1-Score: {best_metrics['f1_score']:.4f}")
             logger.info(f"Best Accuracy: {best_metrics['accuracy']:.4f}")
-            logger.info(
-                f"Models trained: {', '.join(self.state.trained_models.keys())}"
-            )
+            logger.info(f"Models trained: {', '.join(self.state.trained_models.keys())}")
 
             return self.state
 
@@ -91,9 +89,7 @@ if __name__ == "__main__":
     # Print final comparison table
     print("\n[MODEL PERFORMANCE COMPARISON]")
     print("-" * 70)
-    print(
-        f"{'Model':<22} {'Accuracy':<12} {'Precision':<12} {'Recall':<12} {'F1-Score':<12}"
-    )
+    print(f"{'Model':<22} {'Accuracy':<12} {'Precision':<12} {'Recall':<12} {'F1-Score':<12}")
     print("-" * 70)
     for model_name, metrics in sorted(
         state.model_metrics.items(), key=lambda x: x[1]["f1_score"], reverse=True

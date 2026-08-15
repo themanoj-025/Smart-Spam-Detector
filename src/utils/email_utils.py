@@ -62,7 +62,7 @@ def all_recipients(msg: Message) -> str:
     Returns:
         Comma-separated string of unique email addresses.
     """
-    fields: list[str] = []
+    fields: list[tuple[str, str]] = []
     for h in ["From", "To", "Cc", "Bcc"]:
         fields.extend(getaddresses([msg.get(h, "")]))
     return ", ".join(sorted(set(addr for _, addr in fields if addr)))
@@ -88,9 +88,7 @@ def clean_text(text: Union[str, None]) -> Union[str, None]:
     """
     if not isinstance(text, str):
         return text
-    text = re.sub(
-        r"[\x00-\x08\x0B-\x0C\x0E-\x1F\u200B\u200C\u200D\u200E\u200F\uFEFF]", "", text
-    )
+    text = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F\u200B\u200C\u200D\u200E\u200F\uFEFF]", "", text)
     text = text.encode("utf-16", "surrogatepass").decode("utf-16", "ignore")
     text = text[:32767]
     if text.startswith(("=", "+", "-", "@")):

@@ -97,9 +97,7 @@ def generate_classification_report(
     ham_pct = round(ham_count / max(total, 1) * 100, 1)
 
     avg_confidence = 0.0
-    confidences = [
-        r.get("confidence") for r in results if r.get("confidence") is not None
-    ]
+    confidences = [r.get("confidence") for r in results if r.get("confidence") is not None]
     if confidences:
         avg_confidence = round(sum(confidences) / len(confidences), 1)
 
@@ -343,9 +341,7 @@ def generate_email_report(
         for u in url_analysis.get("urls", []):
             risk = u.get("risk_score", 0)
             risk_label = "High" if risk >= 50 else "Medium" if risk >= 20 else "Low"
-            risk_bg = (
-                "#f44336" if risk >= 50 else "#ffa726" if risk >= 20 else "#66bb6a"
-            )
+            risk_bg = "#f44336" if risk >= 50 else "#ffa726" if risk >= 20 else "#66bb6a"
             flags = ", ".join(u.get("flags", []))
             url_rows.append(f"""
             <tr>

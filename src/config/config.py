@@ -82,9 +82,7 @@ class Config:
 
         # Resolve default paths to absolute locations
         if not self.training_data_path:
-            self.training_data_path = str(
-                project_root / "data" / "dataset" / "dataset.csv"
-            )
+            self.training_data_path = str(project_root / "data" / "dataset" / "dataset.csv")
         if not self.OUTPUT_BASE_DIR:
             self.OUTPUT_BASE_DIR = str(project_root / "outputs")
 

@@ -121,6 +121,7 @@ class HistoryManager:
             )
             conn.commit()
             record_id = cursor.lastrowid
+            assert record_id is not None  # lastrowid is set after a successful INSERT
             logger.debug(f"History entry #{record_id} saved: {prediction}")
             return record_id
         finally:
@@ -187,9 +188,9 @@ class HistoryManager:
             for row in rows:
                 record = dict(row)
                 record["timestamp"] = record["timestamp"]
-                record["datetime"] = datetime.fromtimestamp(
-                    record["timestamp"]
-                ).strftime("%Y-%m-%d %H:%M:%S")
+                record["datetime"] = datetime.fromtimestamp(record["timestamp"]).strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
                 if record["metadata"]:
                     try:
                         record["metadata"] = json.loads(record["metadata"])
@@ -288,8 +289,7 @@ class HistoryManager:
             ).fetchall()
 
             daily_counts = [
-                {"date": row[0], "spam": row[1] or 0, "ham": row[2] or 0}
-                for row in daily_rows
+                {"date": row[0], "spam": row[1] or 0, "ham": row[2] or 0} for row in daily_rows
             ]
 
             return {
@@ -344,9 +344,9 @@ class HistoryManager:
             ).fetchone()
             if row:
                 record = dict(row)
-                record["datetime"] = datetime.fromtimestamp(
-                    record["timestamp"]
-                ).strftime("%Y-%m-%d %H:%M:%S")
+                record["datetime"] = datetime.fromtimestamp(record["timestamp"]).strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
                 if record["metadata"]:
                     try:
                         record["metadata"] = json.loads(record["metadata"])

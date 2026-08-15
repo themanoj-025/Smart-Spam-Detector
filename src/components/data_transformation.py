@@ -44,9 +44,7 @@ class DataTransformation:
         try:
             # Validate input
             if state.training_data is None or state.training_data.empty:
-                raise ValueError(
-                    "No training data available. Run data ingestion first."
-                )
+                raise ValueError("No training data available. Run data ingestion first.")
 
             data = state.training_data.copy()
             logger.info(f"Raw data shape: {data.shape}")
