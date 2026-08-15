@@ -25,6 +25,26 @@
 
 ---
 
+## 📋 Table of Contents
+
+- [✨ Features](#-features)
+- [🚀 Quick Start](#-quick-start)
+- [📋 Environment Variables](#-environment-variables)
+- [🏗️ Architecture](#️-architecture)
+- [📁 Project Structure](#-project-structure)
+- [📡 API Endpoints](#-api-endpoints)
+- [🧪 Testing](#-testing)
+- [🗺️ Roadmap](#️-roadmap)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [🙏 Acknowledgements](#-acknowledgements)
+
+---
+
+> 📸 **Screenshot placeholder:** Add a screenshot of the Streamlit dashboard's classification view.
+
+---
+
 ## ✨ Features
 
 | Feature | Description |
