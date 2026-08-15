@@ -145,9 +145,7 @@ class TestHistoryManager:
         assert hm.get_total_count() == 0
 
     def test_get_entry_by_id(self, hm):
-        entry_id = hm.add_entry(
-            email_text="Find me", prediction="Spam", source="manual"
-        )
+        entry_id = hm.add_entry(email_text="Find me", prediction="Spam", source="manual")
         entry = hm.get_entry_by_id(entry_id)
         assert entry is not None
         assert entry["prediction"] == "Spam"

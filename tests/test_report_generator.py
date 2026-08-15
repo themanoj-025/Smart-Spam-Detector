@@ -109,9 +109,7 @@ class TestGenerateEmailReport:
         assert "example.com" in html
 
     def test_with_explanation(self):
-        html = generate_email_report(
-            "Hello", "Spam", explanation_summary="Keyword 'free' detected"
-        )
+        html = generate_email_report("Hello", "Spam", explanation_summary="Keyword 'free' detected")
         assert "free" in html
 
 

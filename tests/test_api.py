@@ -137,9 +137,7 @@ class TestPredict:
     def test_predict_empty_email(self, client):
         """POST /predict with empty email should return 422."""
         mock_pipeline = MagicMock()
-        mock_pipeline.predict_single_email.side_effect = ValueError(
-            "Email body is empty."
-        )
+        mock_pipeline.predict_single_email.side_effect = ValueError("Email body is empty.")
 
         with patch("api.pipeline", mock_pipeline):
             with patch("api._ensure_pipeline", return_value=None):
@@ -155,9 +153,7 @@ class TestPredict:
     def test_predict_server_error(self, client):
         """POST /predict should return 500 on unexpected errors."""
         mock_pipeline = MagicMock()
-        mock_pipeline.predict_single_email.side_effect = RuntimeError(
-            "Unexpected error"
-        )
+        mock_pipeline.predict_single_email.side_effect = RuntimeError("Unexpected error")
 
         with patch("api.pipeline", mock_pipeline):
             resp = client.post("/predict", json={"email": "test email"})
@@ -258,12 +254,8 @@ class TestPredictBatch:
             "raw_prediction": 0,
             "explanation": {
                 "status": "available",
-                "word_contributions": [
-                    {"word": "free", "contribution": 0.85, "class": "spam"}
-                ],
-                "top_spam_words": [
-                    {"word": "free", "contribution": 0.85, "class": "spam"}
-                ],
+                "word_contributions": [{"word": "free", "contribution": 0.85, "class": "spam"}],
+                "top_spam_words": [{"word": "free", "contribution": 0.85, "class": "spam"}],
                 "top_ham_words": [],
                 "highlighted_html": "<span>free</span>",
                 "error_message": "",

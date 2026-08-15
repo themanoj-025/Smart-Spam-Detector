@@ -25,6 +25,26 @@
 
 ---
 
+## 📋 Table of Contents
+
+- [✨ Features](#-features)
+- [🚀 Quick Start](#-quick-start)
+- [📋 Environment Variables](#-environment-variables)
+- [🏗️ Architecture](#️-architecture)
+- [📁 Project Structure](#-project-structure)
+- [📡 API Endpoints](#-api-endpoints)
+- [🧪 Testing](#-testing)
+- [🗺️ Roadmap](#️-roadmap)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [🙏 Acknowledgements](#-acknowledgements)
+
+---
+
+> 📸 **Screenshot placeholder:** Add a screenshot of the Streamlit dashboard's classification view.
+
+---
+
 ## ✨ Features
 
 | Feature | Description |
@@ -235,3 +255,11 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 <p align="center">
   If you find this project useful, please give it a ⭐ star!
 </p>
+---
+
+## ⭐ Star History
+
+[![Last Commit](https://img.shields.io/github/last-commit/themanoj-025/Smart-Spam-Detector?style=flat-square)](https://github.com/themanoj-025/Smart-Spam-Detector)
+[![Contributors](https://img.shields.io/github/contributors/themanoj-025/Smart-Spam-Detector?style=flat-square)](https://github.com/themanoj-025/Smart-Spam-Detector/graphs/contributors)
+
+[![Star History Chart](https://api.star-history.com/svg?repos=themanoj-025/Smart-Spam-Detector&type=Date)](https://star-history.com/#Smart-Spam-Detector&Date)
