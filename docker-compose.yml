@@ -1,0 +1,74 @@
+# ═══════════════════════════════════════════════════════════════════════
+# Smart-Spam-Detector — Docker Compose (base)
+#
+# Two services sharing one image:
+#   api        — FastAPI REST API  (:8000)
+#   streamlit  — Streamlit UI     (:8501)
+#
+# Trained model artifacts (outputs/) ship inside the image. Classification
+# history (SQLite) lives on a named volume.
+#
+# Usage:
+#   docker compose up -d
+# ═══════════════════════════════════════════════════════════════════════
+
+name: spam-classifier
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # When set, all /predict endpoints require Authorization: Bearer <key>
+      SPAM_API_KEY: "${SPAM_API_KEY:-}"
+      LOG_LEVEL: "${LOG_LEVEL:-INFO}"
+      CORS_ORIGINS: "${CORS_ORIGINS:-http://localhost:8000,http://127.0.0.1:8000,http://localhost:8501,http://127.0.0.1:8501}"
+    volumes:
+      - history:/app/history
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    networks:
+      - spam-net
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: streamlit
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    environment:
+      SPAM_API_KEY: "${SPAM_API_KEY:-}"
+      LOG_LEVEL: "${LOG_LEVEL:-INFO}"
+    volumes:
+      - history:/app/history
+    # NOTE: the Streamlit UI loads models directly via PredictionPipeline —
+    # it never calls the API, so no hard dependency on api health.
+    depends_on:
+      api:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    networks:
+      - spam-net
+
+volumes:
+  history:  # SQLite classification history — BACK THIS UP if you care
+
+networks:
+  spam-net:
+    driver: bridge

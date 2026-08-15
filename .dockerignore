@@ -1,0 +1,63 @@
+# ── Smart-Spam-Detector — .dockerignore ───────────────────────────────
+
+# VCS metadata
+.git
+.gitignore
+.gitattributes
+
+# Python caches / artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Runtime history DB (lives on a named volume)
+history/
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE / editor config
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# CI / agent config
+.github/
+.gemini/
+.cursorrules
+AGENTS.md
+PROJECT_ANALYSIS.md
+
+# Logs & scratch
+*.log
+logs/
+archived_logs/
+latest_logs/
+
+# Jupyter notebooks
+Notebook Experiments/
+*.ipynb
+.ipynb_checkpoints/
+
+# Streamlit scratch
+.streamlit/cache/
