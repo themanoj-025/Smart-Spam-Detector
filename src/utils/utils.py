@@ -99,8 +99,7 @@ def validate_dataset(df: pd.DataFrame, required_columns: list[str]) -> bool:
     missing = [col for col in required_columns if col not in df.columns]
     if missing:
         raise ValueError(
-            f"Dataset missing required columns: {missing}. "
-            f"Available columns: {df.columns.tolist()}"
+            f"Dataset missing required columns: {missing}. Available columns: {df.columns.tolist()}"
         )
     return True
 

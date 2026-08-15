@@ -321,9 +321,7 @@ class ModelComparison:
 
         # Determine best model
         if self.metrics and not self.best_model_name:
-            self.best_model_name = max(
-                self.metrics, key=lambda x: self.metrics[x]["f1_score"]
-            )
+            self.best_model_name = max(self.metrics, key=lambda x: self.metrics[x]["f1_score"])
 
         self._loaded = True
         return True
@@ -411,9 +409,7 @@ class ModelComparison:
 
         # Compute dynamic range: round down min value to nearest 5%
         all_vals = [
-            metrics.get(m, 0) * 100
-            for metrics in self.metrics.values()
-            for m in radar_metrics
+            metrics.get(m, 0) * 100 for metrics in self.metrics.values() for m in radar_metrics
         ]
         min_val = (min(all_vals) // 5) * 5 if all_vals else 85
         max_val = 100
@@ -485,9 +481,7 @@ class ModelComparison:
                         text=f"{cm[i, j]}<br><sub>{cm_pct[i, j]:.1f}%</sub>",
                         x=j,
                         y=i,
-                        font=dict(
-                            size=13, color="white" if cm_pct[i, j] > 40 else "#333"
-                        ),
+                        font=dict(size=13, color="white" if cm_pct[i, j] > 40 else "#333"),
                         showarrow=False,
                     )
                 )
@@ -497,10 +491,7 @@ class ModelComparison:
                 z=cm_pct,
                 x=self.class_names,
                 y=self.class_names,
-                text=[
-                    [str(cm[i, j]) for j in range(cm.shape[1])]
-                    for i in range(cm.shape[0])
-                ],
+                text=[[str(cm[i, j]) for j in range(cm.shape[1])] for i in range(cm.shape[0])],
                 texttemplate="%{text}",
                 hovertemplate="True: %{y}<br>Predicted: %{x}<br>Count: %{text}<br>Rate: %{z:.1f}%<extra></extra>",
                 colorscale="Blues",
@@ -521,9 +512,7 @@ class ModelComparison:
                 x=0.5,
             ),
             xaxis=dict(title="Predicted Label", side="bottom", tickfont=dict(size=12)),
-            yaxis=dict(
-                title="True Label", tickfont=dict(size=12), autorange="reversed"
-            ),
+            yaxis=dict(title="True Label", tickfont=dict(size=12), autorange="reversed"),
             margin=dict(l=60, r=40, t=50, b=60),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",

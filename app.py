@@ -64,7 +64,6 @@ _history_manager = None
 
 @st.cache_resource(show_spinner=False)
 def get_history_manager():
-
     return HistoryManager()
 
 
@@ -1116,21 +1115,13 @@ try:
 
     model_loaded = True
 
-    model_name = (
-        Path(pipeline.config.model_path).name
-        if pipeline.config.model_path
-        else "Unknown"
-    )
+    model_name = Path(pipeline.config.model_path).name if pipeline.config.model_path else "Unknown"
 
 except FileNotFoundError:
-    st.warning(
-        "⚠️ No trained models found. Training is required before the app can work."
-    )
+    st.warning("⚠️ No trained models found. Training is required before the app can work.")
 
     if st.button("🚀 Train Models Now", type="primary", use_container_width=True):
-        with st.spinner(
-            "🔄 Training models (this may take several minutes on first deploy)..."
-        ):
+        with st.spinner("🔄 Training models (this may take several minutes on first deploy)..."):
             try:
                 from src.pipeline.training_pipeline import TrainingPipeline
 
@@ -1202,10 +1193,7 @@ with st.sidebar:
     theme_label = "Dark Mode" if current_theme == "light" else "Light Mode"
 
     def toggle_theme():
-
-        st.session_state.theme = (
-            "dark" if st.session_state.theme == "light" else "light"
-        )
+        st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
 
     st.button(
         f"{theme_icon} {theme_label}",
@@ -1518,11 +1506,7 @@ def compute_live_prediction(text: str):
 
             conf = float(max(proba[0])) * 100
 
-            spam_risk = (
-                float(proba[0][0]) * 100
-                if label == "Spam"
-                else float(proba[0][1]) * 100
-            )
+            spam_risk = float(proba[0][0]) * 100 if label == "Spam" else float(proba[0][1]) * 100
 
         else:
             conf = None
@@ -1752,9 +1736,7 @@ with tab1:
 
         chars = len(email_text)
 
-        sentences = (
-            email_text.count(".") + email_text.count("!") + email_text.count("?")
-        )
+        sentences = email_text.count(".") + email_text.count("!") + email_text.count("?")
 
         st.markdown(
             f"<div class='email-stats'>"
@@ -1772,18 +1754,14 @@ with tab1:
         live_label, live_conf, live_risk = compute_live_prediction(email_text)
 
         if live_label is not None:
-            show_confidence_gauge(
-                live_conf if live_conf else 50.0, live_label, is_live=True
-            )
+            show_confidence_gauge(live_conf if live_conf else 50.0, live_label, is_live=True)
 
     # Action buttons
 
     col1, col2, col3 = st.columns([1, 2, 1])
 
     with col2:
-        classify_clicked = st.button(
-            "🔍 Classify Email", type="primary", use_container_width=True
-        )
+        classify_clicked = st.button("🔍 Classify Email", type="primary", use_container_width=True)
 
     if classify_clicked:
         if email_text and email_text.strip():
@@ -1826,20 +1804,14 @@ with tab1:
 
                     # Toast notification
 
-                    toast_class = (
-                        "toast-danger" if prediction == "Spam" else "toast-success"
-                    )
+                    toast_class = "toast-danger" if prediction == "Spam" else "toast-success"
 
                     toast_icon = "🚨" if prediction == "Spam" else "✅"
 
-                    toast_msg = (
-                        f"{toast_icon} Classified as <strong>{prediction}</strong>"
-                    )
+                    toast_msg = f"{toast_icon} Classified as <strong>{prediction}</strong>"
 
                     if confidence:
-                        toast_msg += (
-                            f" with <strong>{confidence:.1f}%</strong> confidence"
-                        )
+                        toast_msg += f" with <strong>{confidence:.1f}%</strong> confidence"
 
                     st.markdown(
                         f"<div class='toast-notification {toast_class}'>{toast_msg}</div>",
@@ -1926,9 +1898,7 @@ with tab1:
                                 ]
                             )
 
-                            st.dataframe(
-                                url_df, use_container_width=True, hide_index=True
-                            )
+                            st.dataframe(url_df, use_container_width=True, hide_index=True)
 
                 except Exception as e:
                     st.error(f"⚠️ Error analyzing email: {str(e)}")
@@ -1936,9 +1906,7 @@ with tab1:
             # Phase 2: Explanation (if enabled)
 
             if enable_explanation and confidence:
-                with st.spinner(
-                    "🧠 Computing word-level explanations (may take a moment)..."
-                ):
+                with st.spinner("🧠 Computing word-level explanations (may take a moment)..."):
                     try:
                         result_ex = pipeline.predict_with_explanation(
                             email_text,
@@ -1973,9 +1941,7 @@ with tab1:
                     prediction=prediction,
                     confidence=confidence,
                     spam_risk=spam_risk_val,
-                    url_analysis=url_analysis
-                    if url_analysis["total_urls"] > 0
-                    else None,
+                    url_analysis=url_analysis if url_analysis["total_urls"] > 0 else None,
                     explanation_summary=explanation_summary,
                 )
 
@@ -2023,8 +1989,7 @@ with tab2:
 
         if uploaded_file is not None:
             st.success(
-                f"✅ File uploaded: {uploaded_file.name} "
-                f"({uploaded_file.size / 1024:.1f} KB)"
+                f"✅ File uploaded: {uploaded_file.name} ({uploaded_file.size / 1024:.1f} KB)"
             )
 
             if st.button(
@@ -2035,9 +2000,7 @@ with tab2:
             ):
                 with st.spinner("📂 Processing file... this may take a moment"):
                     try:
-                        with tempfile.NamedTemporaryFile(
-                            delete=False, suffix=".mbox"
-                        ) as tmp_file:
+                        with tempfile.NamedTemporaryFile(delete=False, suffix=".mbox") as tmp_file:
                             tmp_file.write(uploaded_file.getvalue())
 
                             tmp_path = tmp_file.name
@@ -2068,27 +2031,21 @@ with tab2:
                             col2.metric(
                                 "Spam Found",
                                 spam_count,
-                                delta=f"{spam_count / len(df) * 100:.1f}%"
-                                if len(df) > 0
-                                else "0%",
+                                delta=f"{spam_count / len(df) * 100:.1f}%" if len(df) > 0 else "0%",
                                 delta_color="inverse",
                             )
 
                             col3.metric(
                                 "Ham (Safe)",
                                 ham_count,
-                                delta=f"{ham_count / len(df) * 100:.1f}%"
-                                if len(df) > 0
-                                else "0%",
+                                delta=f"{ham_count / len(df) * 100:.1f}%" if len(df) > 0 else "0%",
                             )
 
                             st.subheader("📋 Results Preview")
 
                             preview_cols = ["Time", "Subject", "Prediction"]
 
-                            available_cols = [
-                                c for c in preview_cols if c in df.columns
-                            ]
+                            available_cols = [c for c in preview_cols if c in df.columns]
 
                             st.dataframe(
                                 df[available_cols].head(10),
@@ -2168,9 +2125,7 @@ with tab2:
                 )
 
                 with st.expander("📋 Preview Data", expanded=False):
-                    st.dataframe(
-                        data_df.head(5), use_container_width=True, hide_index=True
-                    )
+                    st.dataframe(data_df.head(5), use_container_width=True, hide_index=True)
 
                 text_candidates = [
                     c
@@ -2189,13 +2144,9 @@ with tab2:
                 ]
 
                 if not text_candidates:
-                    text_candidates = data_df.select_dtypes(
-                        include=["object"]
-                    ).columns.tolist()
+                    text_candidates = data_df.select_dtypes(include=["object"]).columns.tolist()
 
-                default_col = (
-                    text_candidates[0] if text_candidates else data_df.columns[0]
-                )
+                default_col = text_candidates[0] if text_candidates else data_df.columns[0]
 
                 text_column = st.selectbox(
                     "📝 Select email text column",
@@ -2228,9 +2179,7 @@ with tab2:
                             status_text = st.empty()
 
                             for i, text in enumerate(data_df[text_column].fillna("")):
-                                status_text.caption(
-                                    f"Processing {i + 1}/{len(data_df)}..."
-                                )
+                                status_text.caption(f"Processing {i + 1}/{len(data_df)}...")
 
                                 if text and str(text).strip():
                                     result = pipeline.predict_single_email(str(text))
@@ -2247,9 +2196,7 @@ with tab2:
                                         confidence=conf,
                                         source="batch",
                                         url_count=url_analysis["total_urls"],
-                                        suspicious_urls=url_analysis[
-                                            "suspicious_count"
-                                        ],
+                                        suspicious_urls=url_analysis["suspicious_count"],
                                     )
 
                                     if pred == "Spam":
@@ -2365,7 +2312,6 @@ with tab3:
 
     @st.cache_resource(show_spinner="Loading model comparison data...")
     def get_model_comparison():
-
         mc = ModelComparison()
 
         loaded = mc.load()
@@ -2384,12 +2330,8 @@ with tab3:
         col1, col2, col3 = st.columns([1, 2, 1])
 
         with col2:
-            if st.button(
-                "🚀 Train Models Now", type="primary", use_container_width=True
-            ):
-                with st.spinner(
-                    "🔄 Training all models (this may take a few minutes)..."
-                ):
+            if st.button("🚀 Train Models Now", type="primary", use_container_width=True):
+                with st.spinner("🔄 Training all models (this may take a few minutes)..."):
                     from src.pipeline.training_pipeline import TrainingPipeline
 
                     tp = TrainingPipeline()
@@ -2407,9 +2349,7 @@ with tab3:
 
     else:
         if not HAS_PLOTLY:
-            st.warning(
-                "⚠️ Plotly is required for charts. Install with: `pip install plotly`"
-            )
+            st.warning("⚠️ Plotly is required for charts. Install with: `pip install plotly`")
 
             st.stop()
 
@@ -2418,9 +2358,7 @@ with tab3:
         df = mc.get_comparison_df()
 
         best_row = (
-            df[df["Best"] == "⭐"].iloc[0]
-            if not df.empty and "⭐" in df["Best"].values
-            else None
+            df[df["Best"] == "⭐"].iloc[0] if not df.empty and "⭐" in df["Best"].values else None
         )
 
         if best_row is not None:
@@ -2448,14 +2386,10 @@ with tab3:
                 font=dict(color=text_color),
                 polar=dict(
                     radialaxis=dict(
-                        gridcolor="#444"
-                        if st.session_state.theme == "dark"
-                        else "#e0e0e0"
+                        gridcolor="#444" if st.session_state.theme == "dark" else "#e0e0e0"
                     ),
                     angularaxis=dict(
-                        gridcolor="#444"
-                        if st.session_state.theme == "dark"
-                        else "#e0e0e0"
+                        gridcolor="#444" if st.session_state.theme == "dark" else "#e0e0e0"
                     ),
                 ),
             )
@@ -2474,9 +2408,7 @@ with tab3:
             column_config={
                 "Model": st.column_config.TextColumn("Model", width="medium"),
                 "Accuracy": st.column_config.NumberColumn("Accuracy", format="%.2f%%"),
-                "Precision": st.column_config.NumberColumn(
-                    "Precision", format="%.2f%%"
-                ),
+                "Precision": st.column_config.NumberColumn("Precision", format="%.2f%%"),
                 "Recall": st.column_config.NumberColumn("Recall", format="%.2f%%"),
                 "F1-Score": st.column_config.NumberColumn("F1-Score", format="%.2f%%"),
                 "Best": st.column_config.TextColumn(" ", width="small"),
@@ -2506,16 +2438,13 @@ with tab3:
 
                         if fig:
                             text_color = (
-                                "#e8eaed"
-                                if st.session_state.theme == "dark"
-                                else "#1a1a2e"
+                                "#e8eaed" if st.session_state.theme == "dark" else "#1a1a2e"
                             )
 
                             fig.update_layout(
                                 font=dict(color=text_color),
                                 title=dict(
-                                    text=("⭐ " if name == mc.best_model_name else "")
-                                    + name,
+                                    text=("⭐ " if name == mc.best_model_name else "") + name,
                                     font=dict(size=13),
                                 ),
                             )
@@ -2523,17 +2452,13 @@ with tab3:
                             st.plotly_chart(fig, use_container_width=True)
 
         else:
-            st.caption(
-                "Confusion matrices not available. Train models to generate them."
-            )
+            st.caption("Confusion matrices not available. Train models to generate them.")
 
         with st.expander("📁 Training Run Details"):
             if mc.run_dir:
                 st.markdown(f"**Run directory:** `{mc.run_dir}`")
 
-                meta_path = os.path.join(
-                    mc.run_dir, "observations", "model_metadata.json"
-                )
+                meta_path = os.path.join(mc.run_dir, "observations", "model_metadata.json")
 
                 if os.path.exists(meta_path):
                     with open(meta_path) as f:
@@ -2650,9 +2575,7 @@ with tab4:
     page_col1, page_col2, page_col3 = st.columns([1, 2, 1])
 
     with page_col2:
-        st.caption(
-            f"Page {st.session_state.history_page} of {total_pages} ({total_count} records)"
-        )
+        st.caption(f"Page {st.session_state.history_page} of {total_pages} ({total_count} records)")
 
     nav_col1, nav_col2, nav_col3, nav_col4, nav_col5 = st.columns([1, 1, 2, 1, 1])
 
@@ -2672,9 +2595,7 @@ with tab4:
             use_container_width=True,
             disabled=st.session_state.history_page >= total_pages,
         ):
-            st.session_state.history_page = min(
-                total_pages, st.session_state.history_page + 1
-            )
+            st.session_state.history_page = min(total_pages, st.session_state.history_page + 1)
 
             st.rerun()
 
@@ -2721,15 +2642,11 @@ with tab4:
             hide_index=True,
             column_config={
                 "Time": st.column_config.TextColumn("Time", width="small"),
-                "Prediction": st.column_config.TextColumn(
-                    "📊 Prediction", width="small"
-                ),
+                "Prediction": st.column_config.TextColumn("📊 Prediction", width="small"),
                 "Confidence": st.column_config.TextColumn("Confidence", width="small"),
                 "Source": st.column_config.TextColumn("Source", width="small"),
                 "URLs": st.column_config.TextColumn("🔗 URLs", width="small"),
-                "Subject": st.column_config.TextColumn(
-                    "Subject / Preview", width="large"
-                ),
+                "Subject": st.column_config.TextColumn("Subject / Preview", width="large"),
             },
         )
 
@@ -2748,8 +2665,7 @@ with tab4:
                         "Source": r.get("source", ""),
                         "URL Count": r.get("url_count", 0),
                         "Suspicious URLs": r.get("suspicious_urls", 0),
-                        "Subject/Text": r.get("email_subject", "")
-                        or r.get("email_text", ""),
+                        "Subject/Text": r.get("email_subject", "") or r.get("email_text", ""),
                     }
                 )
 
@@ -2778,9 +2694,7 @@ with tab4:
             )
 
     else:
-        st.info(
-            "📭 No classification history found. Classify some emails to see them here!"
-        )
+        st.info("📭 No classification history found. Classify some emails to see them here!")
 
 
 # ---------------------------------------------------------------------------
