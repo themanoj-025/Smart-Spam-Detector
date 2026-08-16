@@ -122,3 +122,7 @@ jobs:
           # versions (msgpack 1.1.2 / setuptools 70.3.0) even after they were
           # upgraded in the image.
           cache: false
+          # pip vendors its own msgpack (GHSA-6v7p-g79w-8964); the app never
+          # imports pip's vendored copy (site-packages are patched), so
+          # exclude it from the scan.
+          skip-dirs: /usr/local/lib/python3.11/site-packages/pip/_vendor
