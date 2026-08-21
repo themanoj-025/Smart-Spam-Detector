@@ -47,7 +47,7 @@ class ModelTraining:
     selects the best model based on F1-score, and saves all artifacts.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.config = Config()
         self.param_grids = ModelConfig().models
         self.cv_config = ModelConfig()

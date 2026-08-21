@@ -22,7 +22,7 @@ class DataIngestion:
 
     REQUIRED_COLUMNS = ["Category", "Message"]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.config = Config()
 
     def load_data(self, state: TrainingState) -> TrainingState:

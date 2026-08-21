@@ -63,7 +63,7 @@ _history_manager = None
 
 
 @st.cache_resource(show_spinner=False)
-def get_history_manager():
+def get_history_manager() -> None:
     return HistoryManager()
 
 
@@ -1102,7 +1102,7 @@ if st.session_state.theme == "dark":
 
 
 @st.cache_resource(show_spinner="Loading trained models...")
-def get_pipeline():
+def get_pipeline() -> None:
     """Initialize and load the prediction pipeline (cached)."""
 
     return PredictionPipeline(load_models=True)
@@ -1192,7 +1192,7 @@ with st.sidebar:
 
     theme_label = "Dark Mode" if current_theme == "light" else "Light Mode"
 
-    def toggle_theme():
+    def toggle_theme() -> None:
         st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
 
     st.button(
@@ -1295,7 +1295,7 @@ with st.sidebar:
 # ---------------------------------------------------------------------------
 
 
-def show_confidence_gauge(confidence: float, prediction: str, is_live: bool = False):
+def show_confidence_gauge(confidence: float, prediction: str, is_live: bool = False) -> None:
     """Render an animated circular gauge showing the spam confidence score."""
 
     spam_risk = confidence if prediction == "Spam" else 100.0 - confidence
@@ -1442,7 +1442,7 @@ def show_confidence_gauge(confidence: float, prediction: str, is_live: bool = Fa
     st.markdown(gauge_html, unsafe_allow_html=True)
 
 
-def show_confidence_bar(confidence: float, prediction: str):
+def show_confidence_bar(confidence: float, prediction: str) -> None:
     """Legacy horizontal confidence bar (used as secondary indicator)."""
 
     bar_color = "#ef5350" if prediction == "Spam" else "#66bb6a"
@@ -1486,7 +1486,7 @@ def show_confidence_bar(confidence: float, prediction: str):
 # ---------------------------------------------------------------------------
 
 
-def compute_live_prediction(text: str):
+def compute_live_prediction(text: str) -> None:
     """Run a lightweight prediction for real-time analysis (no SHAP)."""
 
     if not text or not text.strip():
@@ -1526,7 +1526,7 @@ def compute_live_prediction(text: str):
 # ---------------------------------------------------------------------------
 
 
-def show_explanation(explanation: dict, prediction: str):
+def show_explanation(explanation: dict, prediction: str) -> None:
     """Render the SHAP explanation UI components."""
 
     status = explanation.get("status", "unavailable")
@@ -2311,7 +2311,7 @@ with tab3:
     )
 
     @st.cache_resource(show_spinner="Loading model comparison data...")
-    def get_model_comparison():
+    def get_model_comparison() -> None:
         mc = ModelComparison()
 
         loaded = mc.load()

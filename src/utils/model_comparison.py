@@ -52,7 +52,7 @@ class ModelComparison:
         "f1_score": "F1-Score",
     }
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.config = Config()
         self.models: dict[str, Any] = {}
         self.metrics: dict[str, dict[str, float]] = {}

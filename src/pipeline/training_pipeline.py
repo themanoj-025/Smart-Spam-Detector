@@ -25,7 +25,7 @@ class TrainingPipeline:
         print(f"Best model: {state.best_model_name}")
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.state = TrainingState()
 
     def run_pipeline(self) -> TrainingState:

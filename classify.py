@@ -41,7 +41,7 @@ def classify(text: str) -> None:
         sys.exit(1)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Classify an email as Spam or Ham using a trained SVM model.",
         epilog="Examples:\n"

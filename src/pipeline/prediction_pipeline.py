@@ -32,7 +32,7 @@ class PredictionPipeline:
     of MBOX files. Models are loaded lazily and cached after first load.
     """
 
-    def __init__(self, load_models: bool = True):
+    def __init__(self, load_models: bool = True) -> None:
         """Initialize the prediction pipeline.
 
         Args:
