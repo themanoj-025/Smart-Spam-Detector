@@ -77,5 +77,8 @@ CLAUDE.md
 *.parquet
 mlruns/
 
+# Node.js
+node_modules/
+
 # === Streamlit secrets (NEVER COMMIT) ===
 .streamlit/secrets.toml
