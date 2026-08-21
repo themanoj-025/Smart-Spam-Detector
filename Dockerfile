@@ -81,6 +81,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -fsS http://localhost:8000/health || exit 1
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
+STOPSIGNAL SIGTERM
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
 
 # ── Streamlit stage ────────────────────────────────────────────────────
@@ -92,6 +93,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -fsS http://localhost:8501/_stcore/health || exit 1
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
+STOPSIGNAL SIGTERM
 CMD ["streamlit", "run", "app.py", \
      "--server.port=8501", \
      "--server.address=0.0.0.0", \
@@ -114,6 +116,7 @@ COPY --chown=appuser:appuser data/ ./data/
 # Dev default: Streamlit with polling file watcher (hot reload)
 EXPOSE 8000 8501
 
+STOPSIGNAL SIGTERM
 CMD ["streamlit", "run", "app.py", \
      "--server.port=8501", \
      "--server.address=0.0.0.0", \
