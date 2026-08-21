@@ -24,7 +24,7 @@ class DataTransformation:
     3. Apply TF-IDF vectorization to the text data
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.config = Config()
 
     def transform_data(self, state: TrainingState) -> TrainingState:

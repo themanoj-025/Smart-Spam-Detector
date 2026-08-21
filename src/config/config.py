@@ -71,7 +71,7 @@ class Config:
     test_size: float = 0.2
     random_state: int = 42
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Auto-discover latest model artifacts after initialization.
 
         All paths are resolved relative to the project root (two directories

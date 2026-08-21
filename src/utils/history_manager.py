@@ -32,7 +32,7 @@ class HistoryManager:
     Provides stats aggregation and search/filter capabilities.
     """
 
-    def __init__(self, db_path: str = DB_PATH):
+    def __init__(self, db_path: str = DB_PATH) -> None:
         self.db_path = db_path
         self._ensure_db()
 

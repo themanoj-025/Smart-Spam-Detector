@@ -112,7 +112,7 @@ def verify_api_key(
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> None:
     """Application lifespan: load models on startup, clean up on shutdown."""
     global pipeline, history_manager
     logger.info("Starting Spam Classifier API...")
@@ -177,7 +177,7 @@ app.add_middleware(
 
 
 @app.middleware("http")
-async def add_security_headers(request: Request, call_next):
+async def add_security_headers(request: Request, call_next) -> None:
     """Add security headers to every response."""
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
@@ -348,7 +348,7 @@ _start_time: float = time.time()
 # ---------------------------------------------------------------------------
 
 
-def _ensure_pipeline():
+def _ensure_pipeline() -> None:
     """Ensure the prediction pipeline is loaded. Raises 503 if not available."""
     if pipeline is None:
         raise HTTPException(
@@ -384,7 +384,7 @@ def _get_model_info() -> dict[str, Any] | None:
 
 
 @app.get("/", tags=["General"])
-async def root():
+async def root() -> None:
     """Root endpoint with API overview."""
     return {
         "name": "Spam Email Classifier API",
@@ -402,7 +402,7 @@ async def root():
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Monitoring"])
-async def health():
+async def health() -> None:
     """Health check endpoint for monitoring and orchestration."""
     _ensure_pipeline()
     return HealthResponse(
@@ -415,7 +415,7 @@ async def health():
 
 @app.get("/model/info", response_model=ModelInfo, tags=["Model"])
 @limiter.limit("60/minute")
-async def model_info(request: Request):
+async def model_info(request: Request) -> None:
     """Get information about the loaded model."""
     _ensure_pipeline()
     model_meta = _get_model_info()
@@ -442,7 +442,7 @@ async def model_info(request: Request):
 
 @app.post("/predict", response_model=PredictResponse, tags=["Prediction"])
 @limiter.limit("30/minute")
-async def predict(request: Request, body: PredictRequest):
+async def predict(request: Request, body: PredictRequest) -> None:
     """Classify a single email as Spam or Ham.
 
     Returns the prediction label, confidence score, and processing time.
@@ -475,7 +475,7 @@ async def predict(request: Request, body: PredictRequest):
 
 @app.post("/predict/explain", response_model=PredictResponse, tags=["Prediction"])
 @limiter.limit("10/minute")
-async def predict_with_explanation(request: Request, body: PredictRequest):
+async def predict_with_explanation(request: Request, body: PredictRequest) -> None:
     """Classify a single email with SHAP-based word-level explanation.
 
     Returns the prediction along with word-level contributions, top spam/ham words,
@@ -546,7 +546,7 @@ async def predict_with_explanation(request: Request, body: PredictRequest):
 
 @app.post("/predict/batch", response_model=BatchPredictResponse, tags=["Prediction"])
 @limiter.limit("10/minute")
-async def predict_batch(request: Request, body: BatchPredictRequest):
+async def predict_batch(request: Request, body: BatchPredictRequest) -> None:
     """Classify multiple emails in batch.
 
     Processes up to 1000 emails at once. If `include_explanations` is True,
