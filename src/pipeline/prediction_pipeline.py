@@ -353,7 +353,7 @@ class PredictionPipeline:
                 prediction_proba = self.model.predict_proba(features)
                 confidence = float(max(prediction_proba[0])) * 100
                 confidence = round(confidence, 2)
-        except (ValueError, TypeError):
+        except (ValueError, TypeError, RuntimeError):
             pass
 
         result = {

@@ -466,7 +466,7 @@ async def predict(request: Request, body: PredictRequest) -> None:
         raise HTTPException(
             status_code=422, detail={"error": "Validation error", "message": str(e)}
         )
-    except (RuntimeError, ValueError, KeyError, TypeError) as e:
+    except (RuntimeError, KeyError, TypeError) as e:
         logger.exception("Prediction failed")
         raise HTTPException(
             status_code=500, detail={"error": "Prediction failed", "message": str(e)}
@@ -537,7 +537,7 @@ async def predict_with_explanation(request: Request, body: PredictRequest) -> No
         raise HTTPException(
             status_code=422, detail={"error": "Validation error", "message": str(e)}
         )
-    except (RuntimeError, ValueError, KeyError, TypeError) as e:
+    except (RuntimeError, KeyError, TypeError) as e:
         logger.exception("Prediction with explanation failed")
         raise HTTPException(
             status_code=500, detail={"error": "Prediction failed", "message": str(e)}
