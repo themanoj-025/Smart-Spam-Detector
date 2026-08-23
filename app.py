@@ -10,6 +10,7 @@ SHAP-based explainable AI, dark/light theme, and real-time typing analysis.
 
 """
 
+import contextlib
 import json
 import os
 import tempfile
@@ -2090,11 +2091,9 @@ with tab2:
 
                         finally:
                             if os.path.exists(tmp_path):
-                                try:
+                                with contextlib.suppress(PermissionError):
                                     os.unlink(tmp_path)
 
-                                except PermissionError:
-                                    pass
 
                     except (OSError, ValueError, KeyError) as e:
                         st.error(f"⚠️ Error processing file: {e!s}")

@@ -14,7 +14,7 @@ import logging
 import os
 import secrets
 import time
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 from typing import Any
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
@@ -710,10 +710,8 @@ async def predict_file(
             finally:
                 import os
 
-                try:
+                with suppress(PermissionError, OSError):
                     os.unlink(tmp_path)
-                except (PermissionError, OSError):
-                    pass
         else:
             # Plain text file
             email_text = content.decode("utf-8", errors="ignore")
