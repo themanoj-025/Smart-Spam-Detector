@@ -1135,7 +1135,7 @@ except FileNotFoundError:
 
                 st.rerun()
 
-            except Exception as train_err:
+            except (RuntimeError, OSError, ValueError) as train_err:
                 st.error(f"⚠️ Training failed: {train_err!s}")
 
                 st.stop()
@@ -1147,7 +1147,7 @@ except FileNotFoundError:
 
     st.stop()
 
-except Exception as e:
+except (RuntimeError, OSError, ValueError) as e:
     st.error(
         f"⚠️ Unexpected error loading models: {e!s}\n\n"
         "If you just deployed, try clicking **Rerun** from the upper-right menu. "
@@ -1515,7 +1515,7 @@ def compute_live_prediction(text: str) -> None:
 
         return label, conf, spam_risk
 
-    except Exception:
+    except (ValueError, KeyError, TypeError):
         return None, None, None
 
 
@@ -1900,7 +1900,7 @@ with tab1:
 
                             st.dataframe(url_df, use_container_width=True, hide_index=True)
 
-                except Exception as e:
+                except (RuntimeError, ValueError, KeyError) as e:
                     st.error(f"⚠️ Error analyzing email: {e!s}")
 
             # Phase 2: Explanation (if enabled)
@@ -1917,7 +1917,7 @@ with tab1:
 
                         show_explanation(explanation, prediction)
 
-                    except Exception as e:
+                    except (RuntimeError, ValueError, KeyError) as e:
                         st.warning(f"⚠️ Explanation not available: {e!s}")
 
             # --- Report Download ---
@@ -2096,7 +2096,7 @@ with tab2:
                                 except PermissionError:
                                     pass
 
-                    except Exception as e:
+                    except (OSError, ValueError, KeyError) as e:
                         st.error(f"⚠️ Error processing file: {e!s}")
 
     else:  # CSV / Excel
@@ -2289,10 +2289,10 @@ with tab2:
                                 use_container_width=True,
                             )
 
-                        except Exception as e:
+                        except (OSError, ValueError, KeyError) as e:
                             st.error(f"⚠️ Error processing spreadsheet: {e!s}")
 
-            except Exception as e:
+            except (OSError, ValueError, KeyError) as e:
                 st.error(f"⚠️ Error loading file: {e!s}")
 
 
