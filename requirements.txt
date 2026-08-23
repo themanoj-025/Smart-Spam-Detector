@@ -36,3 +36,6 @@ httpx<0.29.0
 
 # Excel upload support (pd.read_excel in Batch Processing tab)
 openpyxl>=3.1.0
+
+# MLflow experiment tracking & model registry (optional)
+mlflow>=2.10.0
