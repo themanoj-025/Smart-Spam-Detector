@@ -78,7 +78,7 @@ class TrainingPipeline:
             return self.state
 
         except Exception as e:
-            logger.error(f"Pipeline failed at step: {str(e)}")
+            logger.error(f"Pipeline failed at step: {e!s}")
             raise
 
 

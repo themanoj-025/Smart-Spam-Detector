@@ -141,7 +141,7 @@ def analyze_url(url: str) -> dict[str, Any]:
     # Check TLD
     tld = None
     for suspected in SUSPICIOUS_TLDS:
-        if hostname.endswith(suspected) or hostname.endswith(suspected.lower()):
+        if hostname.endswith((suspected, suspected.lower())):
             tld = suspected
             flags.append(f"suspicious TLD: {suspected}")
             risk_score += 25.0
@@ -257,10 +257,10 @@ def _is_ip_address(hostname: str) -> bool:
     try:
         socket.inet_aton(hostname)
         return True
-    except (socket.error, OSError):
+    except OSError:
         # Also check for IPv6
         try:
             socket.inet_pton(socket.AF_INET6, hostname)
             return True
-        except (socket.error, OSError):
+        except OSError:
             return False
