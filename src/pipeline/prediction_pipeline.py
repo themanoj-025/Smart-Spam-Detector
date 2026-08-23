@@ -509,7 +509,7 @@ class PredictionPipeline:
         start_time = time.time()
         logger.info(f"Running predictions on {len(mail_data)} emails...")
 
-        for i, mail in enumerate(mail_data):
+        for _i, mail in enumerate(mail_data):
             body_text = mail.get("Body", "")
             if body_text:
                 features = self.feature_transformer.transform([body_text])

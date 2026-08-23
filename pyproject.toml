@@ -50,6 +50,12 @@ dev = [
 "Source Code" = "https://github.com/themanoj-025/Smart-Spam-Detector"
 "Bug Tracker" = "https://github.com/themanoj-025/Smart-Spam-Detector/issues"
 
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+ignore = ["DTZ005", "DTZ006", "RUF012", "SIM117", "B008", "RUF034", "SIM102"]
+
 [tool.black]
 line-length = 100
 target-version = ["py310"]
