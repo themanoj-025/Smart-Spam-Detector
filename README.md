@@ -41,7 +41,14 @@
 
 ---
 
-> 📸 **Screenshot placeholder:** Add a screenshot of the Streamlit dashboard's classification view.
+## 📸 Screenshots
+
+> _To add screenshots: run `streamlit run app.py`, capture your screen, save images to `docs/assets/`, and reference them below._
+>
+> **Suggested screenshots:**
+> - Streamlit dashboard classification view
+> - SHAP explanation for a spam prediction
+> - Batch classification results from .mbox file
 
 ---
 
