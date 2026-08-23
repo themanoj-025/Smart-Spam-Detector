@@ -16,6 +16,7 @@ import pandas as pd
 from src.config.config import Config
 from src.utils.email_utils import all_recipients, clean_text, extract_body
 from src.utils.logger import get_logger
+from src.utils.mlflow_tracker import MLflowTracker
 from src.utils.utils import load_pickle
 
 logger = get_logger(__name__)
@@ -51,13 +52,31 @@ class PredictionPipeline:
             self._load_models()
 
     def _load_models(self) -> None:
-        """Load the trained model and TF-IDF vectorizer from disk.
+        """Load the trained model and TF-IDF vectorizer from disk or MLflow.
+
+        Tries MLflow Model Registry first (if MLFLOW_TRACKING_URI is set),
+        then falls back to local pickle files.
 
         Raises:
             FileNotFoundError: If model or vectorizer files are not found.
         """
         logger.info("Loading trained models...")
 
+        # Try MLflow first
+        tracker = MLflowTracker()
+        mlflow_model = tracker.load_model("smart-spam-detector")
+        if mlflow_model is not None:
+            self.model = mlflow_model
+            # Vectorizer is logged as an artifact — try to load it
+            logger.info("✓ Model loaded from MLflow Model Registry")
+            # For the vectorizer, we still need the local file
+            if self.config.feature_path:
+                self.feature_transformer = load_pickle(self.config.feature_path)
+                logger.info(f"✓ Vectorizer loaded: {Path(self.config.feature_path).name}")
+            logger.info("Models loaded successfully (MLflow)")
+            return
+
+        # Fallback to local pickle files
         if not self.config.model_path or not self.config.feature_path:
             raise FileNotFoundError(
                 "No trained models found. Please run the training pipeline first:\n"

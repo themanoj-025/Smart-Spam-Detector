@@ -34,6 +34,7 @@ except ImportError:
 
 from src.config.config import Config, ModelConfig
 from src.utils.logger import get_logger
+from src.utils.mlflow_tracker import MLflowTracker
 from src.utils.state import TrainingState
 from src.utils.utils import ensure_dir, save_pickle
 
@@ -51,6 +52,7 @@ class ModelTraining:
         self.config = Config()
         self.param_grids = ModelConfig().models
         self.cv_config = ModelConfig()
+        self.tracker = MLflowTracker()
 
     def _get_model_instances(self) -> dict[str, object]:
         """Get dictionary of model name to untrained estimator instances.
@@ -382,6 +384,27 @@ class ModelTraining:
             # Save all artifacts
             output_dir = self.save_pickle_files(state)
             self.save_metrics_to_csv(state, output_dir)
+
+            # Log to MLflow
+            with self.tracker.start_run(run_name=f"{best_model_name}-{datetime.now().strftime('%Y%m%d-%H%M%S')}"):
+                self.tracker.log_params({
+                    "best_model": best_model_name,
+                    "cv_folds": self.cv_config.cv_folds,
+                    "scoring": self.cv_config.scoring,
+                    **{f"{best_model_name}_{k}": v for k, v in best_params.items() if isinstance(v, (str, int, float, bool))},
+                })
+                self.tracker.log_metrics({
+                    f"{name}_{metric}": value
+                    for name, metrics in model_metrics.items()
+                    for metric, value in metrics.items()
+                    if isinstance(value, (int, float))
+                })
+                self.tracker.log_model(
+                    best_model,
+                    "spam-model",
+                    registered_model_name="smart-spam-detector",
+                    extra_artifacts={"vectorizer": state.tfidf_vectorizer},
+                )
 
             logger.info(f"\n{'=' * 70}")
             logger.info("MODEL TRAINING COMPLETED SUCCESSFULLY")
