@@ -123,7 +123,7 @@ async def lifespan(app: FastAPI) -> None:
         logger.error(f"✗ Failed to load models: {e}")
         pipeline = None
         logger.warning("API will start but /predict endpoints will return 503")
-    except Exception as e:
+    except (OSError, ValueError, ImportError) as e:
         logger.error(f"✗ Unexpected error during startup: {e}")
         pipeline = None
 
@@ -131,7 +131,7 @@ async def lifespan(app: FastAPI) -> None:
     try:
         history_manager = HistoryManager()
         logger.info("✓ History manager initialized")
-    except Exception as e:
+    except (OSError, ValueError) as e:
         logger.error(f"✗ Failed to initialize history manager: {e}")
         history_manager = None
 
@@ -466,7 +466,7 @@ async def predict(request: Request, body: PredictRequest) -> None:
         raise HTTPException(
             status_code=422, detail={"error": "Validation error", "message": str(e)}
         )
-    except Exception as e:
+    except (RuntimeError, ValueError, KeyError, TypeError) as e:
         logger.exception("Prediction failed")
         raise HTTPException(
             status_code=500, detail={"error": "Prediction failed", "message": str(e)}
@@ -537,7 +537,7 @@ async def predict_with_explanation(request: Request, body: PredictRequest) -> No
         raise HTTPException(
             status_code=422, detail={"error": "Validation error", "message": str(e)}
         )
-    except Exception as e:
+    except (RuntimeError, ValueError, KeyError, TypeError) as e:
         logger.exception("Prediction with explanation failed")
         raise HTTPException(
             status_code=500, detail={"error": "Prediction failed", "message": str(e)}
@@ -634,7 +634,7 @@ async def predict_batch(request: Request, body: BatchPredictRequest) -> None:
             results=results,
             processing_time_ms=elapsed,
         )
-    except Exception as e:
+    except (RuntimeError, ValueError, KeyError, TypeError) as e:
         logger.exception("Batch prediction failed")
         raise HTTPException(
             status_code=500,
@@ -733,7 +733,7 @@ async def predict_file(
                 "processing_time_ms": elapsed,
             }
 
-    except Exception as e:
+    except (RuntimeError, ValueError, KeyError, TypeError) as e:
         logger.exception("File prediction failed")
         raise HTTPException(
             status_code=500,

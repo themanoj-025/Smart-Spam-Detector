@@ -36,7 +36,7 @@ def classify(text: str) -> None:
         print("\n  Run the training pipeline first:")
         print("    python -m src.pipeline.training_pipeline\n")
         sys.exit(1)
-    except Exception as e:
+    except (RuntimeError, ValueError, OSError) as e:
         print(f"\n  ❌  Error: {e}\n", file=sys.stderr)
         sys.exit(1)
 

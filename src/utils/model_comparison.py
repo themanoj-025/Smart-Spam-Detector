@@ -129,7 +129,7 @@ class ModelComparison:
             logger.info(f"Loaded metrics for {len(self.metrics)} models from CSV")
             return True
 
-        except Exception as e:
+        except (OSError, ValueError, KeyError) as e:
             logger.warning(f"Could not load metrics CSV: {e}")
             return False
 
@@ -158,7 +158,7 @@ class ModelComparison:
                 model = load_pickle(model_path)
                 self.models[name] = model
                 logger.info(f"  Loaded: {name}")
-            except Exception as e:
+            except (OSError, ValueError, ImportError) as e:
                 logger.warning(f"  Failed to load {name}: {e}")
 
         # Also load the vectorizer
@@ -166,7 +166,7 @@ class ModelComparison:
         if os.path.exists(vec_path):
             try:
                 self.vectorizer = load_pickle(vec_path)
-            except Exception:
+            except (OSError, ValueError, ImportError):
                 self.vectorizer = None
         else:
             self.vectorizer = None
@@ -227,7 +227,7 @@ class ModelComparison:
             logger.info(f"Test data prepared: {X_test_vec.shape[0]} samples")
             return True
 
-        except Exception as e:
+        except (OSError, ValueError, KeyError) as e:
             logger.warning(f"Could not prepare test data: {e}")
             return False
 
@@ -249,7 +249,7 @@ class ModelComparison:
                 cm = confusion_matrix(self.y_test, y_pred)
                 self.confusion_matrices[name] = cm
                 logger.info(f"  Confusion matrix computed for {name}")
-            except Exception as e:
+            except (ValueError, TypeError) as e:
                 logger.warning(f"  Could not compute CM for {name}: {e}")
 
     def load(self, run_dir: str | None = None) -> bool:
@@ -316,7 +316,7 @@ class ModelComparison:
                                 zero_division=0,
                             ),
                         }
-                    except Exception:
+                    except (ValueError, TypeError):
                         pass
 
         # Determine best model

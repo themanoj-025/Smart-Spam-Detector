@@ -88,7 +88,7 @@ class PredictionPipeline:
             sample_texts = df["Message"].dropna().tolist()
             self._background_data = self.feature_transformer.transform(sample_texts)
             logger.info(f"Loaded {len(sample_texts)} background samples for SHAP")
-        except Exception as e:
+        except (OSError, ValueError, KeyError) as e:
             logger.warning(f"Could not load background data for SHAP: {e}")
             self._background_data = None
 
@@ -136,7 +136,7 @@ class PredictionPipeline:
                 )
             self._feature_names = self.feature_transformer.get_feature_names_out()
             logger.info(f"✓ SHAP explainer initialized ({len(self._feature_names)} features)")
-        except Exception as e:
+        except (OSError, ValueError, ImportError) as e:
             logger.error(f"Failed to initialize SHAP explainer: {e}")
             self._shap_explainer = None
 
@@ -290,7 +290,7 @@ class PredictionPipeline:
                 prediction_proba = self.model.predict_proba(features)
                 confidence = float(max(prediction_proba[0])) * 100
                 confidence = round(confidence, 2)
-        except Exception:
+        except (ValueError, TypeError):
             pass
 
         logger.info(
@@ -353,7 +353,7 @@ class PredictionPipeline:
                 prediction_proba = self.model.predict_proba(features)
                 confidence = float(max(prediction_proba[0])) * 100
                 confidence = round(confidence, 2)
-        except Exception:
+        except (ValueError, TypeError):
             pass
 
         result = {
@@ -419,7 +419,7 @@ class PredictionPipeline:
                 result["explanation"]["error_message"] = (
                     "SHAP library is not installed. Install it with: pip install shap"
                 )
-            except Exception as e:
+            except (ValueError, RuntimeError, TypeError) as e:
                 logger.error(f"SHAP explanation failed: {e}")
                 result["explanation"]["status"] = "error"
                 result["explanation"]["error_message"] = f"Explanation failed: {e!s}"
