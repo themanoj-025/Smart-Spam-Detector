@@ -427,9 +427,7 @@ def generate_email_report(
 
     {
         (
-            '<div class="section"><h3>🧠 Explanation</h3><p>{}</p></div>'.format(
-                escape(explanation_summary)
-            )
+            f'<div class="section"><h3>🧠 Explanation</h3><p>{escape(explanation_summary)}</p></div>'
             if explanation_summary
             else ""
         )

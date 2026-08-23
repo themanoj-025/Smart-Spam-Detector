@@ -109,7 +109,7 @@ class Config:
         ]
         if not dirs:
             return None
-        return os.path.join(self.OUTPUT_BASE_DIR, sorted(dirs)[-1])
+        return os.path.join(self.OUTPUT_BASE_DIR, max(dirs))
 
     def _find_first(self, directory: str, pattern: str) -> str | None:
         """Find the first file matching a pattern in a directory."""

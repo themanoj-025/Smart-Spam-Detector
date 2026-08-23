@@ -124,8 +124,8 @@ class DataTransformation:
             return state
 
         except ValueError as e:
-            logger.error(f"Data validation error: {str(e)}")
+            logger.error(f"Data validation error: {e!s}")
             raise
         except Exception as e:
-            logger.error(f"Failed to transform data: {str(e)}")
+            logger.error(f"Failed to transform data: {e!s}")
             raise

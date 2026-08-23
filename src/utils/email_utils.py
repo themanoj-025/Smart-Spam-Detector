@@ -2,7 +2,6 @@ import re
 from email.message import Message
 from email.utils import getaddresses
 from html import unescape
-from typing import Union
 
 from bs4 import BeautifulSoup
 
@@ -65,7 +64,7 @@ def all_recipients(msg: Message) -> str:
     fields: list[tuple[str, str]] = []
     for h in ["From", "To", "Cc", "Bcc"]:
         fields.extend(getaddresses([msg.get(h, "")]))
-    return ", ".join(sorted(set(addr for _, addr in fields if addr)))
+    return ", ".join(sorted({addr for _, addr in fields if addr}))
 
 
 # ----------------------------------------------------------------------------
@@ -73,7 +72,7 @@ def all_recipients(msg: Message) -> str:
 # ----------------------------------------------------------------------------
 
 
-def clean_text(text: Union[str, None]) -> Union[str, None]:
+def clean_text(text: str | None) -> str | None:
     """Clean text for model input and Excel compatibility.
 
     Removes control characters, zero-width spaces, and truncates to

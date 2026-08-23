@@ -70,8 +70,8 @@ class DataIngestion:
             logger.error(f"Data file not found: {self.config.training_data_path}")
             raise
         except ValueError as e:
-            logger.error(f"Data validation failed: {str(e)}")
+            logger.error(f"Data validation failed: {e!s}")
             raise
         except Exception as e:
-            logger.error(f"Failed to load data: {str(e)}")
+            logger.error(f"Failed to load data: {e!s}")
             raise

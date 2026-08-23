@@ -400,7 +400,7 @@ class ModelComparison:
                     r=values_closed,
                     theta=labels_closed,
                     name=f"{name} {'⭐' if name == self.best_model_name else ''}",
-                    line=dict(color=color, width=line_width),
+                    line={"color": color, "width": line_width},
                     opacity=opacity,
                     fill="toself",
                     fillcolor=f"rgba{self._hex_to_rgba(color, 0.08)}",
@@ -418,35 +418,35 @@ class ModelComparison:
             min_val = max(0, min_val - 5)
 
         fig.update_layout(
-            polar=dict(
-                radialaxis=dict(
-                    visible=True,
-                    range=[min_val, max_val],
-                    tickfont=dict(size=11),
-                    gridcolor="#e0e0e0",
-                ),
-                angularaxis=dict(
-                    tickfont=dict(size=12, weight="bold"),
-                    gridcolor="#e0e0e0",
-                ),
-                bgcolor="rgba(0,0,0,0)",
-            ),
-            title=dict(
-                text="Model Performance Comparison (Radar Chart)",
-                font=dict(size=16),
-                x=0.5,
-            ),
-            legend=dict(
-                orientation="h",
-                yanchor="bottom",
-                y=-0.25,
-                xanchor="center",
-                x=0.5,
-                font=dict(size=11),
-            ),
-            margin=dict(l=80, r=80, t=60, b=60),
+            polar={
+                "radialaxis": {
+                    "visible": True,
+                    "range": [min_val, max_val],
+                    "tickfont": {"size": 11},
+                    "gridcolor": "#e0e0e0",
+                },
+                "angularaxis": {
+                    "tickfont": {"size": 12, "weight": "bold"},
+                    "gridcolor": "#e0e0e0",
+                },
+                "bgcolor": "rgba(0,0,0,0)",
+            },
+            title={
+                "text": "Model Performance Comparison (Radar Chart)",
+                "font": {"size": 16},
+                "x": 0.5,
+            },
+            legend={
+                "orientation": "h",
+                "yanchor": "bottom",
+                "y": -0.25,
+                "xanchor": "center",
+                "x": 0.5,
+                "font": {"size": 11},
+            },
+            margin={"l": 80, "r": 80, "t": 60, "b": 60},
             paper_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="var(--text-primary, #1a1a2e)"),
+            font={"color": "var(--text-primary, #1a1a2e)"},
             template="plotly_white",
             hovermode="closest",
         )
@@ -477,13 +477,13 @@ class ModelComparison:
         for i in range(cm.shape[0]):
             for j in range(cm.shape[1]):
                 annotations.append(
-                    dict(
-                        text=f"{cm[i, j]}<br><sub>{cm_pct[i, j]:.1f}%</sub>",
-                        x=j,
-                        y=i,
-                        font=dict(size=13, color="white" if cm_pct[i, j] > 40 else "#333"),
-                        showarrow=False,
-                    )
+                    {
+                        "text": f"{cm[i, j]}<br><sub>{cm_pct[i, j]:.1f}%</sub>",
+                        "x": j,
+                        "y": i,
+                        "font": {"size": 13, "color": "white" if cm_pct[i, j] > 40 else "#333"},
+                        "showarrow": False,
+                    }
                 )
 
         fig = go.Figure(
@@ -496,27 +496,27 @@ class ModelComparison:
                 hovertemplate="True: %{y}<br>Predicted: %{x}<br>Count: %{text}<br>Rate: %{z:.1f}%<extra></extra>",
                 colorscale="Blues",
                 showscale=True,
-                colorbar=dict(
-                    title="%",
-                    tickformat=".0f",
-                    thickness=15,
-                    len=0.7,
-                ),
+                colorbar={
+                    "title": "%",
+                    "tickformat": ".0f",
+                    "thickness": 15,
+                    "len": 0.7,
+                },
             )
         )
 
         fig.update_layout(
-            title=dict(
-                text=f"{'⭐ ' if is_best else ''}{model_name} — Confusion Matrix",
-                font=dict(size=14),
-                x=0.5,
-            ),
-            xaxis=dict(title="Predicted Label", side="bottom", tickfont=dict(size=12)),
-            yaxis=dict(title="True Label", tickfont=dict(size=12), autorange="reversed"),
-            margin=dict(l=60, r=40, t=50, b=60),
+            title={
+                "text": f"{'⭐ ' if is_best else ''}{model_name} — Confusion Matrix",
+                "font": {"size": 14},
+                "x": 0.5,
+            },
+            xaxis={"title": "Predicted Label", "side": "bottom", "tickfont": {"size": 12}},
+            yaxis={"title": "True Label", "tickfont": {"size": 12}, "autorange": "reversed"},
+            margin={"l": 60, "r": 40, "t": 50, "b": 60},
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="var(--text-primary, #1a1a2e)"),
+            font={"color": "var(--text-primary, #1a1a2e)"},
             width=400,
             height=360,
         )

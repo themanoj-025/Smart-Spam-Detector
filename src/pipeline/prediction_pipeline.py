@@ -422,7 +422,7 @@ class PredictionPipeline:
             except Exception as e:
                 logger.error(f"SHAP explanation failed: {e}")
                 result["explanation"]["status"] = "error"
-                result["explanation"]["error_message"] = f"Explanation failed: {str(e)}"
+                result["explanation"]["error_message"] = f"Explanation failed: {e!s}"
 
         return result
 

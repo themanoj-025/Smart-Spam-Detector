@@ -1136,7 +1136,7 @@ except FileNotFoundError:
                 st.rerun()
 
             except Exception as train_err:
-                st.error(f"⚠️ Training failed: {str(train_err)}")
+                st.error(f"⚠️ Training failed: {train_err!s}")
 
                 st.stop()
 
@@ -1149,7 +1149,7 @@ except FileNotFoundError:
 
 except Exception as e:
     st.error(
-        f"⚠️ Unexpected error loading models: {str(e)}\n\n"
+        f"⚠️ Unexpected error loading models: {e!s}\n\n"
         "If you just deployed, try clicking **Rerun** from the upper-right menu. "
         "If the error persists, check the Streamlit Cloud logs for details."
     )
@@ -1901,7 +1901,7 @@ with tab1:
                             st.dataframe(url_df, use_container_width=True, hide_index=True)
 
                 except Exception as e:
-                    st.error(f"⚠️ Error analyzing email: {str(e)}")
+                    st.error(f"⚠️ Error analyzing email: {e!s}")
 
             # Phase 2: Explanation (if enabled)
 
@@ -1918,7 +1918,7 @@ with tab1:
                         show_explanation(explanation, prediction)
 
                     except Exception as e:
-                        st.warning(f"⚠️ Explanation not available: {str(e)}")
+                        st.warning(f"⚠️ Explanation not available: {e!s}")
 
             # --- Report Download ---
 
@@ -2097,7 +2097,7 @@ with tab2:
                                     pass
 
                     except Exception as e:
-                        st.error(f"⚠️ Error processing file: {str(e)}")
+                        st.error(f"⚠️ Error processing file: {e!s}")
 
     else:  # CSV / Excel
         st.markdown(
@@ -2290,10 +2290,10 @@ with tab2:
                             )
 
                         except Exception as e:
-                            st.error(f"⚠️ Error processing spreadsheet: {str(e)}")
+                            st.error(f"⚠️ Error processing spreadsheet: {e!s}")
 
             except Exception as e:
-                st.error(f"⚠️ Error loading file: {str(e)}")
+                st.error(f"⚠️ Error loading file: {e!s}")
 
 
 # ---------------------------------------------------------------------------
@@ -2383,15 +2383,15 @@ with tab3:
             text_color = "#e8eaed" if st.session_state.theme == "dark" else "#1a1a2e"
 
             radar_fig.update_layout(
-                font=dict(color=text_color),
-                polar=dict(
-                    radialaxis=dict(
-                        gridcolor="#444" if st.session_state.theme == "dark" else "#e0e0e0"
-                    ),
-                    angularaxis=dict(
-                        gridcolor="#444" if st.session_state.theme == "dark" else "#e0e0e0"
-                    ),
-                ),
+                font={"color": text_color},
+                polar={
+                    "radialaxis": {
+                        "gridcolor": "#444" if st.session_state.theme == "dark" else "#e0e0e0"
+                    },
+                    "angularaxis": {
+                        "gridcolor": "#444" if st.session_state.theme == "dark" else "#e0e0e0"
+                    },
+                },
             )
 
             st.plotly_chart(radar_fig, use_container_width=True)
@@ -2442,11 +2442,11 @@ with tab3:
                             )
 
                             fig.update_layout(
-                                font=dict(color=text_color),
-                                title=dict(
-                                    text=("⭐ " if name == mc.best_model_name else "") + name,
-                                    font=dict(size=13),
-                                ),
+                                font={"color": text_color},
+                                title={
+                                    "text": ("⭐ " if name == mc.best_model_name else "") + name,
+                                    "font": {"size": 13},
+                                },
                             )
 
                             st.plotly_chart(fig, use_container_width=True)

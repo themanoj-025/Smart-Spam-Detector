@@ -157,7 +157,7 @@ class ModelTraining:
             return output_dir
 
         except Exception as e:
-            logger.error(f"Failed to save artifacts: {str(e)}")
+            logger.error(f"Failed to save artifacts: {e!s}")
             raise
 
     def save_metrics_to_csv(self, state: TrainingState, output_dir: str) -> None:
@@ -391,5 +391,5 @@ class ModelTraining:
             return state
 
         except Exception as e:
-            logger.error(f"Model training failed: {str(e)}")
+            logger.error(f"Model training failed: {e!s}")
             raise
