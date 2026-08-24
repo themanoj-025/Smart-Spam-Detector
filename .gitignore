@@ -60,8 +60,7 @@ history/classifications.db
 # Virtual environments (uv)
 .venv2/
 
-# Lock files (Streamlit Cloud uses pip, not uv)
-uv.lock
+# uv.lock is committed for reproducible installs (uv sync)
 
 .gemini/
 .cursorrules
