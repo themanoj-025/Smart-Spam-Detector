@@ -196,6 +196,26 @@ app = FastAPI(
     version="2.0.0",
     lifespan=lifespan,
     dependencies=[Depends(verify_api_key)] if API_KEY else [],
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_tags=[
+        {
+            "name": "General",
+            "description": "API information and health check",
+        },
+        {
+            "name": "Monitoring",
+            "description": "Health check and uptime monitoring",
+        },
+        {
+            "name": "Model",
+            "description": "Model information and metadata",
+        },
+        {
+            "name": "Prediction",
+            "description": "Email classification (single, batch, explain, file upload)",
+        },
+    ],
 )
 
 # CORS — configurable via env var; defaults to localhost for dev
