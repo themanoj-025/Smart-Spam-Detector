@@ -56,14 +56,54 @@ limiter = Limiter(
 )
 
 # ---------------------------------------------------------------------------
-# Logging — respect LOG_LEVEL env var
+# Logging — structured JSON + readable console
 # ---------------------------------------------------------------------------
+import json
+import threading
+import uuid
+from datetime import UTC, datetime
+from pathlib import Path as _Path
+from typing import Any as _Any
+
+
+class _StructuredFormatter(logging.Formatter):
+    """JSON structured log formatter for production log aggregation."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        log_entry: dict[str, _Any] = {
+            "timestamp": datetime.fromtimestamp(record.created, tz=UTC).isoformat(),
+            "level": record.levelname,
+            "logger": record.name,
+            "message": record.getMessage(),
+        }
+        for key in ("method", "path", "status_code", "duration_ms", "prediction"):
+            val = getattr(record, key, None)
+            if val is not None:
+                log_entry[key] = val
+        if record.exc_info and record.exc_info[1] is not None:
+            log_entry["exception"] = {
+                "type": type(record.exc_info[1]).__name__,
+                "message": str(record.exc_info[1]),
+            }
+        return json.dumps(log_entry, ensure_ascii=False, default=str)
+
+
 log_level = os.environ.get("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(
     level=getattr(logging, log_level, logging.INFO),
     format="%(asctime)s | %(name)s | %(levelname)s | %(message)s",
 )
 logger = logging.getLogger("api")
+
+# Add structured JSON file handler
+try:
+    _log_dir = _Path(__file__).resolve().parent / "logs"
+    _log_dir.mkdir(exist_ok=True)
+    _file_handler = logging.FileHandler(_log_dir / "api.log", encoding="utf-8")
+    _file_handler.setFormatter(_StructuredFormatter())
+    logger.addHandler(_file_handler)
+except OSError:
+    pass
 
 # ---------------------------------------------------------------------------
 # Global pipeline (lazy-loaded at startup) + history manager
