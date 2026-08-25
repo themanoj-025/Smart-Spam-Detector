@@ -17,7 +17,7 @@ import time
 from contextlib import asynccontextmanager, suppress
 from typing import Any
 
-from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, ConfigDict, Field
@@ -32,6 +32,13 @@ from slowapi.util import get_remote_address
 
 from src.pipeline.prediction_pipeline import PredictionPipeline
 from src.utils.history_manager import HistoryManager
+
+try:
+    from prometheus_client import Counter, Histogram, generate_latest
+
+    _PROM_AVAILABLE = True
+except ImportError:
+    _PROM_AVAILABLE = False
 
 
 def _rate_limit_key(request: Request) -> str:
@@ -185,6 +192,22 @@ async def lifespan(app: FastAPI) -> None:
     logger.info("Shutting down Spam Classifier API...")
 
 
+# ── Prometheus metrics ────────────────────────────────────────────────────
+if _PROM_AVAILABLE:
+    SPAM_REQUEST_COUNT = Counter(
+        "spam_requests_total",
+        "Total HTTP requests",
+        ["method", "endpoint", "status"],
+    )
+    SPAM_REQUEST_LATENCY = Histogram(
+        "spam_request_duration_seconds",
+        "HTTP request latency in seconds",
+        ["method", "endpoint"],
+        buckets=[0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0],
+    )
+    SPAM_PREDICTIONS = Counter(
+        "spam_predictions_total", "Email predictions made", ["result"])
+
 # ---------------------------------------------------------------------------
 # FastAPI app
 # ---------------------------------------------------------------------------
@@ -248,7 +271,27 @@ async def add_security_headers(request: Request, call_next) -> None:
         "camera=(), microphone=(), geolocation=(), interest-cohort=()"
     )
     response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none';"
+
+    if _PROM_AVAILABLE:
+        import time as _time
+
+        path = request.url.path
+        SPAM_REQUEST_COUNT.labels(
+            method=request.method, endpoint=path, status=response.status_code
+        ).inc()
+        if hasattr(request.state, "start_time"):
+            SPAM_REQUEST_LATENCY.labels(method=request.method, endpoint=path).observe(
+                _time.time() - request.state.start_time
+            )
+
     return response
+
+
+@app.middleware("http")
+async def track_request_metrics(request: Request, call_next):
+    import time as _time
+    request.state.start_time = _time.time()
+    return await call_next(request)
 
 
 # Rate limiting — slowapi
@@ -446,19 +489,30 @@ def _get_model_info() -> dict[str, Any] | None:
 @app.get("/", tags=["General"])
 async def root() -> None:
     """Root endpoint with API overview."""
+    endpoints = {
+        "GET /health": "Health check",
+        "GET /model/info": "Model information",
+        "POST /predict": "Single email prediction",
+        "POST /predict/explain": "Single email prediction with SHAP explanation",
+        "POST /predict/batch": "Batch email prediction",
+    }
+    if _PROM_AVAILABLE:
+        endpoints["GET /metrics"] = "Prometheus metrics"
     return {
         "name": "Spam Email Classifier API",
         "version": "1.0.0",
         "docs": "/docs",
         "openapi": "/openapi.json",
-        "endpoints": {
-            "GET /health": "Health check",
-            "GET /model/info": "Model information",
-            "POST /predict": "Single email prediction",
-            "POST /predict/explain": "Single email prediction with SHAP explanation",
-            "POST /predict/batch": "Batch email prediction",
-        },
+        "endpoints": endpoints,
     }
+
+
+@app.get("/metrics", tags=["Monitoring"])
+async def metrics():
+    """Prometheus metrics endpoint."""
+    if not _PROM_AVAILABLE:
+        return {"status": "prometheus_client not installed"}
+    return Response(content=generate_latest(), media_type="text/plain")
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Monitoring"])
@@ -513,6 +567,8 @@ async def predict(request: Request, body: PredictRequest) -> None:
     start = time.time()
     try:
         result = pipeline.predict_single_email(body.email)
+        if _PROM_AVAILABLE:
+            SPAM_PREDICTIONS.labels(result=result["prediction"]).inc()
         elapsed = round((time.time() - start) * 1000, 2)  # ms
 
         return PredictResponse(
