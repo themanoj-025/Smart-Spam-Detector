@@ -17,7 +17,7 @@ import time
 from contextlib import asynccontextmanager, suppress
 from typing import Any
 
-from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, Response, UploadFile
+from fastapi import APIRouter, Depends, FastAPI, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, ConfigDict, Field
@@ -482,52 +482,12 @@ def _get_model_info() -> dict[str, Any] | None:
 
 
 # ---------------------------------------------------------------------------
-# Endpoints
+# API v1 Router
 # ---------------------------------------------------------------------------
+v1_router = APIRouter(prefix="/api/v1")
 
 
-@app.get("/", tags=["General"])
-async def root() -> None:
-    """Root endpoint with API overview."""
-    endpoints = {
-        "GET /health": "Health check",
-        "GET /model/info": "Model information",
-        "POST /predict": "Single email prediction",
-        "POST /predict/explain": "Single email prediction with SHAP explanation",
-        "POST /predict/batch": "Batch email prediction",
-    }
-    if _PROM_AVAILABLE:
-        endpoints["GET /metrics"] = "Prometheus metrics"
-    return {
-        "name": "Spam Email Classifier API",
-        "version": "1.0.0",
-        "docs": "/docs",
-        "openapi": "/openapi.json",
-        "endpoints": endpoints,
-    }
-
-
-@app.get("/metrics", tags=["Monitoring"])
-async def metrics():
-    """Prometheus metrics endpoint."""
-    if not _PROM_AVAILABLE:
-        return {"status": "prometheus_client not installed"}
-    return Response(content=generate_latest(), media_type="text/plain")
-
-
-@app.get("/health", response_model=HealthResponse, tags=["Monitoring"])
-async def health() -> None:
-    """Health check endpoint for monitoring and orchestration."""
-    _ensure_pipeline()
-    return HealthResponse(
-        status="healthy",
-        model_loaded=pipeline is not None,
-        api_version="1.0.0",
-        uptime_seconds=round(time.time() - _start_time, 2),
-    )
-
-
-@app.get("/model/info", response_model=ModelInfo, tags=["Model"])
+@v1_router.get("/model/info", response_model=ModelInfo, tags=["Model"])
 @limiter.limit("60/minute")
 async def model_info(request: Request) -> None:
     """Get information about the loaded model."""
@@ -554,7 +514,7 @@ async def model_info(request: Request) -> None:
     )
 
 
-@app.post("/predict", response_model=PredictResponse, tags=["Prediction"])
+@v1_router.post("/predict", response_model=PredictResponse, tags=["Prediction"])
 @limiter.limit("30/minute")
 async def predict(request: Request, body: PredictRequest) -> None:
     """Classify a single email as Spam or Ham.
@@ -589,7 +549,7 @@ async def predict(request: Request, body: PredictRequest) -> None:
         )
 
 
-@app.post("/predict/explain", response_model=PredictResponse, tags=["Prediction"])
+@v1_router.post("/predict/explain", response_model=PredictResponse, tags=["Prediction"])
 @limiter.limit("10/minute")
 async def predict_with_explanation(request: Request, body: PredictRequest) -> None:
     """Classify a single email with SHAP-based word-level explanation.
@@ -660,7 +620,7 @@ async def predict_with_explanation(request: Request, body: PredictRequest) -> No
         )
 
 
-@app.post("/predict/batch", response_model=BatchPredictResponse, tags=["Prediction"])
+@v1_router.post("/predict/batch", response_model=BatchPredictResponse, tags=["Prediction"])
 @limiter.limit("10/minute")
 async def predict_batch(request: Request, body: BatchPredictRequest) -> None:
     """Classify multiple emails in batch.
@@ -758,7 +718,7 @@ async def predict_batch(request: Request, body: BatchPredictRequest) -> None:
         )
 
 
-@app.post("/predict/file", tags=["Prediction"])
+@v1_router.post("/predict/file", tags=["Prediction"])
 @limiter.limit("10/minute")
 async def predict_file(
     request: Request,
@@ -853,3 +813,55 @@ async def predict_file(
             status_code=500,
             detail={"error": "File prediction failed", "message": str(e)},
         )
+
+
+app.include_router(v1_router)
+
+
+# ---------------------------------------------------------------------------
+# Unversioned endpoints (health, metrics, root)
+# ---------------------------------------------------------------------------
+
+
+@app.get("/", tags=["General"])
+async def root() -> None:
+    """Root endpoint with API overview."""
+    endpoints = {
+        "GET /health": "Health check",
+        "GET /model/info": "Model information",
+        "POST /predict": "Single email prediction",
+        "POST /predict/explain": "Single email prediction with SHAP explanation",
+        "POST /predict/batch": "Batch email prediction",
+    }
+    if _PROM_AVAILABLE:
+        endpoints["GET /metrics"] = "Prometheus metrics"
+    return {
+        "name": "Spam Email Classifier API",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "openapi": "/openapi.json",
+        "endpoints": endpoints,
+    }
+
+
+@app.get("/metrics", tags=["Monitoring"])
+async def metrics():
+    """Prometheus metrics endpoint."""
+    if not _PROM_AVAILABLE:
+        return {"status": "prometheus_client not installed"}
+    return Response(content=generate_latest(), media_type="text/plain")
+
+
+@app.get("/health", response_model=HealthResponse, tags=["Monitoring"])
+async def health() -> None:
+    """Health check endpoint for monitoring and orchestration."""
+    _ensure_pipeline()
+    return HealthResponse(
+        status="healthy",
+        model_loaded=pipeline is not None,
+        api_version="1.0.0",
+        uptime_seconds=round(time.time() - _start_time, 2),
+    )
+
+
+# (old unversioned endpoints removed — now under /api/v1 via v1_router)
