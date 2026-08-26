@@ -76,7 +76,7 @@ class TestInputValidation:
     def test_none_raises_value_error(self, pipeline):
         _make_models_ready(pipeline)
         with pytest.raises(ValueError, match="Email body is empty"):
-            pipeline.predict_with_explanation(None)  # type: ignore[arg-type]
+            pipeline.predict_with_explanation(None)  # type: ignore[arg-type] — intentional: testing None rejection
 
 
 # =======================  EXPLANATION DISABLED  =============================
