@@ -182,6 +182,6 @@ class MLflowTracker:
         try:
             model_uri = f"models:/{model_name}/{version}"
             return self._mlflow.sklearn.load_model(model_uri)
-        except Exception as e:
+        except (OSError, ValueError) as e:
             logger.warning(f"Failed to load model from MLflow: {e}")
             return None

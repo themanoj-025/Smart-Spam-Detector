@@ -72,6 +72,6 @@ class DataIngestion:
         except ValueError as e:
             logger.error(f"Data validation failed: {e!s}")
             raise
-        except Exception as e:
+        except (OSError, ValueError) as e:
             logger.error(f"Failed to load data: {e!s}")
             raise

@@ -158,7 +158,7 @@ class ModelTraining:
             logger.info(f"All artifacts saved to: {output_dir}/")
             return output_dir
 
-        except Exception as e:
+        except (RuntimeError, ValueError, OSError) as e:
             logger.error(f"Failed to save artifacts: {e!s}")
             raise
 
@@ -413,6 +413,6 @@ class ModelTraining:
 
             return state
 
-        except Exception as e:
+        except (RuntimeError, ValueError, OSError) as e:
             logger.error(f"Model training failed: {e!s}")
             raise
