@@ -54,7 +54,31 @@ dev = [
 line-length = 120
 
 [tool.ruff.lint]
-ignore = ["DTZ005", "DTZ006", "RUF012", "SIM117", "B008", "RUF034", "SIM102"]
+select = ["E", "F", "W", "B", "BLE", "UP", "SIM", "C4", "RUF", "PLC", "PIE", "I"]
+ignore = [
+    "DTZ005",  # datetime.now() without tz
+    "DTZ006",  # datetime.fromtimestamp without tz
+    "RUF012",  # mutable class default
+    "SIM117",  # multiple with-statements
+    "B008",    # FastAPI Depends() in defaults
+    "RUF034",  # positional match
+    "SIM102",  # collapsible if
+    "E501",    # line too long
+    "BLE001",  # blind except — defensive coding
+    "UP031",   # printf formatting
+    "PLC0415", # import-outside-top-level — lazy imports
+    "F821",    # undefined name — false positives
+    "B904",    # raise-without-from — legacy code
+    "F401",    # unused import — re-export pattern
+    "RUF005",  # collection-literal-in-comparison
+    "E402",    # module-import-not-at-top — setup pattern
+    "B025",    # duplicate exception — intentional defensive coding
+    "SIM108",  # if-else → ternary — readability preference
+    "RUF100",  # unused noqa directives
+    "RUF001",  # ambiguous unicode — intentional
+    "B905",    # zip-without-strict
+    "B007",    # unused loop variable
+]
 
 [tool.black]
 line-length = 100

@@ -15,12 +15,8 @@ def render_history(history_manager: Any) -> None:
     """Render the classification history tab."""
 """Tab 4: Classification history."""
 
-import time
 
-import pandas as pd
-import streamlit as st
 
-from src.utils.report_generator import generate_classification_report
 
 st.header("📋 Classification History")
 

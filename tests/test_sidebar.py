@@ -1,7 +1,5 @@
 """Tests for sidebar component."""
 
-import pytest
-from unittest.mock import MagicMock, patch
 
 from src.ui.sidebar import SidebarRenderer
 

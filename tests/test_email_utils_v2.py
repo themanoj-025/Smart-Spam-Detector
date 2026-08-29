@@ -1,9 +1,8 @@
 """Tests for email utility functions."""
 
-import pytest
 from email.message import Message
 
-from src.utils.email_utils import extract_body, all_recipients, clean_text
+from src.utils.email_utils import all_recipients, clean_text, extract_body
 
 
 class TestExtractBody:

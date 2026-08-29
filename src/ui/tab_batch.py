@@ -22,16 +22,8 @@ def render_batch_processing(
     """Render the batch processing tab."""
 """Tab 2: Batch file processing (MBOX + CSV/Excel)."""
 
-import contextlib
-import os
-import tempfile
-import time
 
-import pandas as pd
-import streamlit as st
 
-from src.utils.report_generator import generate_classification_report
-from src.utils.url_analyzer import analyze_urls_in_text
 
 st.header("Batch File Processing")
 

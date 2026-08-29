@@ -16,7 +16,7 @@ class TestConfig:
         # Paths are now resolved relative to the project root (via __file__)
         project_root = Path(__file__).resolve().parents[1]
         assert config.training_data_path == str(project_root / "data" / "dataset" / "dataset.csv")
-        assert config.OUTPUT_BASE_DIR == str(project_root / "outputs")
+        assert str(project_root / "outputs") == config.OUTPUT_BASE_DIR
         assert config.test_size == 0.2
         assert config.random_state == 42
 

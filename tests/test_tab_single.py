@@ -1,7 +1,5 @@
 """Tests for single prediction tab."""
 
-import pytest
-from unittest.mock import MagicMock, patch
 
 from src.ui.tab_single import SinglePredictionTab
 

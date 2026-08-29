@@ -1,6 +1,5 @@
 """Tests for UI helper functions."""
 
-import pytest
 
 from src.ui.helpers import format_confidence, get_risk_color, get_risk_label
 

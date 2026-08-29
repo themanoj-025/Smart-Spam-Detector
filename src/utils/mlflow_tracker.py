@@ -138,8 +138,8 @@ class MLflowTracker:
 
         # Log extra artifacts (e.g., vectorizer)
         if extra_artifacts:
-            import tempfile
             import pickle
+            import tempfile
 
             for name, obj in extra_artifacts.items():
                 with tempfile.NamedTemporaryFile(suffix=".pkl", delete=False) as f:
