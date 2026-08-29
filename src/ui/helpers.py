@@ -1,6 +1,7 @@
 """UI helper functions for prediction display."""
 
 import streamlit as st
+
 from src.utils.email_utils import clean_text
 
 # ---------------------------------------------------------------------------

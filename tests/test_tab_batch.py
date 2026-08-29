@@ -1,7 +1,5 @@
 """Tests for batch prediction tab."""
 
-import pytest
-from unittest.mock import MagicMock, patch
 
 from src.ui.tab_batch import BatchPredictionTab
 

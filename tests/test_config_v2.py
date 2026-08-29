@@ -1,8 +1,6 @@
 """Tests for config module."""
 
 import os
-from pathlib import Path
-from unittest.mock import patch
 
 from src.config.config import Config, ModelConfig, find_latest_artifacts
 

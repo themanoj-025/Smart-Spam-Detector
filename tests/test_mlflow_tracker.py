@@ -1,7 +1,6 @@
 """Tests for MLflow tracker module."""
 
-import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from src.utils.mlflow_tracker import MLFlowTracker
 

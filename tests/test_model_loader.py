@@ -1,7 +1,5 @@
 """Tests for model loader utility."""
 
-import pytest
-from unittest.mock import MagicMock, patch
 
 from src.ui.model_loader import ModelLoader
 

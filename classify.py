@@ -68,7 +68,7 @@ def main() -> None:
     # Priority: --file > positional arg > stdin
     if args.file:
         try:
-            with open(args.file, "r", encoding="utf-8") as f:
+            with open(args.file, encoding="utf-8") as f:
                 text = f.read().strip()
         except FileNotFoundError:
             print(f"  [ERROR]  File not found: {args.file}", file=sys.stderr)

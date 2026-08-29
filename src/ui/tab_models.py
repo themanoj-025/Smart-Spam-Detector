@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any
 
 import streamlit as st
 
@@ -25,12 +24,8 @@ def render_model_comparison() -> None:
     """Render the model comparison dashboard tab."""
 """Tab 3: Model comparison dashboard."""
 
-import json
-import os
 
-import streamlit as st
 
-from src.utils.model_comparison import ModelComparison
 
 # Try to load Plotly
 try:

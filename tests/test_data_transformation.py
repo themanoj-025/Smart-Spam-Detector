@@ -1,9 +1,7 @@
 """Tests for data transformation pipeline."""
 
-import numpy as np
 import pandas as pd
 import pytest
-from unittest.mock import MagicMock, patch
 
 from src.components.data_transformation import DataTransformation
 from src.utils.state import TrainingState

@@ -9,7 +9,6 @@ import pandas as pd
 import streamlit as st
 
 from src.ui.helpers import compute_live_prediction, show_confidence_bar, show_confidence_gauge, show_explanation
-from src.utils.email_utils import clean_text
 from src.utils.report_generator import generate_email_report
 from src.utils.url_analyzer import analyze_urls_in_text
 
@@ -23,9 +22,6 @@ def render_single_email(
 ) -> None:
     """Render the single email classification tab."""
 
-from src.utils.email_utils import clean_text
-from src.utils.report_generator import generate_email_report
-from src.utils.url_analyzer import analyze_urls_in_text
 
 st.header("Check a Single Email")
 

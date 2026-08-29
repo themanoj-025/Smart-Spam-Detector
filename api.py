@@ -10,7 +10,6 @@ Usage:
 """
 
 import hashlib
-import logging
 import os
 import secrets
 import time
@@ -20,7 +19,6 @@ from typing import Any
 from fastapi import APIRouter, Depends, FastAPI, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseModel, ConfigDict, Field
 
 # ---------------------------------------------------------------------------
 # Rate limiting — slowapi
@@ -271,7 +269,6 @@ from api_pkg.models import (  # noqa: E402
     PredictResponse,
     WordContribution,
 )
-
 
 # ---------------------------------------------------------------------------
 # Startup timestamp for uptime tracking
