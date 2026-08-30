@@ -75,4 +75,11 @@ history_manager: HistoryManager | None = None
 API_KEY = os.environ.get("SPAM_API_KEY", "")
 security = HTTPBearer(auto_error=False)
 
-from api_middleware import *  # noqa: F401
+from api_middleware import (
+    app,
+    verify_api_key,
+    _ensure_pipeline,
+    _get_model_info,
+    HISTORY_MANAGER,
+    PREDICTION_PIPELINE,
+)
