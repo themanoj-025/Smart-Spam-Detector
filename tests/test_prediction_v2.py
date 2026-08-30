@@ -4,9 +4,6 @@ from unittest.mock import MagicMock, patch
 
 from src.pipeline.prediction_pipeline import PredictionPipeline
 
-
-
-
 pytestmark = pytest.mark.slow
 class TestPredictionPipeline:
     """Tests for PredictionPipeline."""

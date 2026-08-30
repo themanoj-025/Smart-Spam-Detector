@@ -3,9 +3,6 @@
 
 from src.ui.model_loader import ModelLoader
 
-
-
-
 pytestmark = pytest.mark.slow
 class TestModelLoader:
     """Tests for ModelLoader."""
