@@ -33,7 +33,7 @@ def pipeline():
 
 
 @pytest.fixture
-def mock_model_and_transformer(pipeline):
+def mock_model_and_transformer(pipeline) -> tuple[object, ...]:
     """Set up mock model (with predict_proba) and mock transformer on the pipeline."""
     model = MagicMock()
     model.predict.return_value = np.array([0])  # spam
@@ -52,7 +52,7 @@ def mock_model_and_transformer(pipeline):
 # ---------------------------------------------------------------------------
 
 
-def _make_models_ready(pipeline, model=None, transformer=None):
+def _make_models_ready(pipeline, model=None, transformer=None) -> None:
     """Assign model & transformer so the method's lazy-load check is skipped."""
     pipeline.model = model or MagicMock()
     pipeline.feature_transformer = transformer or MagicMock()
@@ -64,17 +64,17 @@ def _make_models_ready(pipeline, model=None, transformer=None):
 class TestInputValidation:
     """Empty / whitespace-only input must raise ValueError."""
 
-    def test_empty_string_raises_value_error(self, pipeline):
+    def test_empty_string_raises_value_error(self, pipeline) -> None:
         _make_models_ready(pipeline)
         with pytest.raises(ValueError, match="Email body is empty"):
             pipeline.predict_with_explanation("")
 
-    def test_whitespace_only_raises_value_error(self, pipeline):
+    def test_whitespace_only_raises_value_error(self, pipeline) -> None:
         _make_models_ready(pipeline)
         with pytest.raises(ValueError, match="Email body is empty"):
             pipeline.predict_with_explanation("   \t\n  ")
 
-    def test_none_raises_value_error(self, pipeline):
+    def test_none_raises_value_error(self, pipeline) -> None:
         _make_models_ready(pipeline)
         with pytest.raises(ValueError, match="Email body is empty"):
             pipeline.predict_with_explanation(None)  # type: ignore[arg-type] — intentional: testing None rejection
@@ -86,7 +86,7 @@ class TestInputValidation:
 class TestExplanationDisabled:
     """When explanation_enabled=False the explanation dict has status 'unavailable'."""
 
-    def test_returns_unavailable_status(self, pipeline):
+    def test_returns_unavailable_status(self, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([0])
         _make_models_ready(pipeline, model=model)
@@ -99,7 +99,7 @@ class TestExplanationDisabled:
         assert result["explanation"]["top_ham_words"] == []
         assert result["explanation"]["highlighted_html"] == ""
 
-    def test_prediction_is_still_produced(self, pipeline):
+    def test_prediction_is_still_produced(self, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([1])
         _make_models_ready(pipeline, model=model)
@@ -118,7 +118,7 @@ class TestExplainerNotInitialized:
     'unavailable' with a descriptive error message."""
 
     @patch.object(PredictionPipeline, "_init_explainer")
-    def test_shap_explainer_is_none(self, mock_init, pipeline):
+    def test_shap_explainer_is_none(self, mock_init, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([0])
         _make_models_ready(pipeline, model=model)
@@ -131,7 +131,7 @@ class TestExplainerNotInitialized:
         assert "could not be initialized" in result["explanation"]["error_message"]
 
     @patch.object(PredictionPipeline, "_init_explainer")
-    def test_shap_explainer_stays_none_after_init(self, mock_init, pipeline):
+    def test_shap_explainer_stays_none_after_init(self, mock_init, pipeline) -> None:
         """When _shap_explainer remains None after _init_explainer returns
         (mocked to do nothing), status is 'unavailable' with a message."""
         model = MagicMock()
@@ -164,7 +164,7 @@ class TestExplanationAvailable:
 
         return pipeline
 
-    def test_successful_explanation_with_list_shap_values(self, pipeline):
+    def test_successful_explanation_with_list_shap_values(self, pipeline) -> None:
         """SHAP values returned as a list (binary classification style)."""
         # shap_values returns a list: [spam_class_values, ham_class_values]
         pipeline._shap_explainer.shap_values.return_value = [
@@ -195,7 +195,7 @@ class TestExplanationAvailable:
         assert isinstance(result["explanation"]["highlighted_html"], str)
         assert len(result["explanation"]["highlighted_html"]) > 0
 
-    def test_successful_explanation_with_2d_array_shap_values(self, pipeline):
+    def test_successful_explanation_with_2d_array_shap_values(self, pipeline) -> None:
         """SHAP values returned as a 2D array (single-class style)."""
         pipeline._shap_explainer.shap_values.return_value = np.array([[0.85, 0.72, -0.45, 0.0]])
 
@@ -206,7 +206,7 @@ class TestExplanationAvailable:
         assert result["explanation"]["status"] == "available"
         assert len(result["explanation"]["word_contributions"]) == 3
 
-    def test_prediction_label_spam(self, pipeline):
+    def test_prediction_label_spam(self, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([0])
         model.predict_proba.return_value = np.array([[0.99, 0.01]])
@@ -219,7 +219,7 @@ class TestExplanationAvailable:
         assert result["prediction"] == "Spam"
         assert result["raw_prediction"] == 0
 
-    def test_prediction_label_ham(self, pipeline):
+    def test_prediction_label_ham(self, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([1])
         model.predict_proba.return_value = np.array([[0.01, 0.99]])
@@ -232,7 +232,7 @@ class TestExplanationAvailable:
         assert result["prediction"] == "Ham"
         assert result["raw_prediction"] == 1
 
-    def test_confidence_is_rounded_percentage(self, pipeline):
+    def test_confidence_is_rounded_percentage(self, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([1])
         model.predict_proba.return_value = np.array([[0.1234, 0.8766]])
@@ -251,7 +251,7 @@ class TestExplanationAvailable:
 class TestConfidenceEdgeCases:
     """Confidence should be None when the model lacks predict_proba."""
 
-    def test_model_without_predict_proba_returns_none_confidence(self, pipeline):
+    def test_model_without_predict_proba_returns_none_confidence(self, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([0])
         # Remove predict_proba so hasattr check in method returns False
@@ -261,7 +261,7 @@ class TestConfidenceEdgeCases:
         result = pipeline.predict_with_explanation("test", explanation_enabled=False)
         assert result["confidence"] is None
 
-    def test_predict_proba_raises_exception_returns_none_confidence(self, pipeline):
+    def test_predict_proba_raises_exception_returns_none_confidence(self, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([0])
         model.predict_proba.side_effect = RuntimeError("proba failed")
@@ -279,7 +279,7 @@ class TestExplanationExceptions:
     to 'error' with a descriptive message."""
 
     @patch.object(PredictionPipeline, "_init_explainer")
-    def test_importerror_caught(self, mock_init, pipeline):
+    def test_importerror_caught(self, mock_init, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([0])
         model.predict_proba.return_value = np.array([[0.99, 0.01]])
@@ -296,7 +296,7 @@ class TestExplanationExceptions:
         assert "SHAP library is not installed" in result["explanation"]["error_message"]
 
     @patch.object(PredictionPipeline, "_init_explainer")
-    def test_generic_exception_caught(self, mock_init, pipeline):
+    def test_generic_exception_caught(self, mock_init, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([0])
         model.predict_proba.return_value = np.array([[0.99, 0.01]])
@@ -320,7 +320,7 @@ class TestLazyLoading:
     """When model / transformer are None, the method should call _load_models."""
 
     @patch.object(PredictionPipeline, "_load_models")
-    def test_lazy_loads_models_when_none(self, mock_load, pipeline):
+    def test_lazy_loads_models_when_none(self, mock_load, pipeline) -> None:
         # Both are None (the default after load_models=False)
         assert pipeline.model is None
         assert pipeline.feature_transformer is None
@@ -332,7 +332,7 @@ class TestLazyLoading:
 
         # We need to patch the model AFTER _load_models would have been called
         # but before the code uses it — we'll set them manually after lazy load
-        def _side_effect():
+        def _side_effect() -> None:
             pipeline.model = mock_model
             pipeline.feature_transformer = MagicMock()
 
@@ -344,7 +344,7 @@ class TestLazyLoading:
         assert result["prediction"] == "Ham"
 
     @patch.object(PredictionPipeline, "_load_models")
-    def test_load_models_not_called_when_already_loaded(self, mock_load, pipeline):
+    def test_load_models_not_called_when_already_loaded(self, mock_load, pipeline) -> None:
         _make_models_ready(pipeline)
         pipeline.predict_with_explanation("test", explanation_enabled=False)
         mock_load.assert_not_called()
@@ -366,7 +366,7 @@ class TestReturnStructure:
         "error_message",
     }
 
-    def _assert_structure(self, result):
+    def _assert_structure(self, result) -> None:
         assert self.EXPECTED_KEYS.issubset(result.keys()), (
             f"Missing keys in top-level result: {self.EXPECTED_KEYS - result.keys()}"
         )
@@ -374,12 +374,12 @@ class TestReturnStructure:
             f"Missing keys in explanation: {self.EXPLANATION_KEYS - result['explanation'].keys()}"
         )
 
-    def test_disabled_structure(self, pipeline):
+    def test_disabled_structure(self, pipeline) -> None:
         _make_models_ready(pipeline)
         result = pipeline.predict_with_explanation("test", explanation_enabled=False)
         self._assert_structure(result)
 
-    def test_available_structure(self, pipeline):
+    def test_available_structure(self, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([0])
         model.predict_proba.return_value = np.array([[0.99, 0.01]])
@@ -392,7 +392,7 @@ class TestReturnStructure:
         self._assert_structure(result)
 
     @patch.object(PredictionPipeline, "_init_explainer")
-    def test_error_structure(self, mock_init, pipeline):
+    def test_error_structure(self, mock_init, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([0])
         model.predict_proba.return_value = np.array([[0.99, 0.01]])

@@ -8,18 +8,18 @@ from src.config.config import Config, ModelConfig, find_latest_artifacts
 class TestFindLatestArtifacts:
     """Tests for find_latest_artifacts."""
 
-    def test_no_outputs_dir(self, tmp_path):
+    def test_no_outputs_dir(self, tmp_path) -> None:
         model, feat = find_latest_artifacts(tmp_path)
         assert model is None
         assert feat is None
 
-    def test_no_runs(self, tmp_path):
+    def test_no_runs(self, tmp_path) -> None:
         os.makedirs(tmp_path / "outputs")
         model, feat = find_latest_artifacts(tmp_path)
         assert model is None
         assert feat is None
 
-    def test_finds_artifacts(self, tmp_path):
+    def test_finds_artifacts(self, tmp_path) -> None:
         run_dir = tmp_path / "outputs" / "20250101_120000" / "models"
         os.makedirs(run_dir)
         (run_dir / "test_model.pkl").touch()
@@ -34,12 +34,12 @@ class TestFindLatestArtifacts:
 class TestConfig:
     """Tests for Config dataclass."""
 
-    def test_default_config(self):
+    def test_default_config(self) -> None:
         config = Config()
         assert config.test_size == 0.2
         assert config.random_state == 42
 
-    def test_model_config_defaults(self):
+    def test_model_config_defaults(self) -> None:
         mc = ModelConfig()
         assert mc.cv_folds == 5
         assert mc.scoring == "f1"

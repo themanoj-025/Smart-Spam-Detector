@@ -7,6 +7,6 @@ from src.pipeline.training_pipeline import TrainingPipeline
 class TestTrainingPipeline:
     """Tests for TrainingPipeline."""
 
-    def test_init(self):
+    def test_init(self) -> None:
         pipeline = TrainingPipeline()
         assert pipeline is not None

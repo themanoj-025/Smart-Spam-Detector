@@ -10,13 +10,13 @@ from src.utils.report_generator import (
 class TestGenerateClassificationReport:
     """Tests for generate_classification_report function."""
 
-    def test_empty_results(self):
+    def test_empty_results(self) -> None:
         html = generate_classification_report([], title="Test Report")
         assert "<!DOCTYPE html>" in html
         assert "Test Report" in html
         assert "0 emails" in html or "0 total" in html.lower() or "0" in html
 
-    def test_single_result(self):
+    def test_single_result(self) -> None:
         results = [
             {
                 "prediction": "Spam",
@@ -29,7 +29,7 @@ class TestGenerateClassificationReport:
         assert "Spam" in html
         assert "1" in html  # count
 
-    def test_spam_ham_counts(self):
+    def test_spam_ham_counts(self) -> None:
         results = [
             {"prediction": "Spam", "confidence": 90.0},
             {"prediction": "Ham", "confidence": 85.0},
@@ -39,7 +39,7 @@ class TestGenerateClassificationReport:
         assert "Spam" in html
         assert "Ham" in html
 
-    def test_with_url_data(self):
+    def test_with_url_data(self) -> None:
         results = [
             {"prediction": "Spam", "url_count": 5, "suspicious_urls": 3},
         ]
@@ -47,14 +47,14 @@ class TestGenerateClassificationReport:
         # Should include URL info somewhere
         assert any(kw in html.lower() for kw in ["url", "suspicious"])
 
-    def test_includes_timestamp(self):
+    def test_includes_timestamp(self) -> None:
         results = [
             {"prediction": "Spam", "timestamp": 1000000},
         ]
         html = generate_classification_report(results)
         assert "1970" in html  # epoch timestamp
 
-    def test_without_charts(self):
+    def test_without_charts(self) -> None:
         results = [
             {"prediction": "Spam"},
             {"prediction": "Ham"},
@@ -62,7 +62,7 @@ class TestGenerateClassificationReport:
         html = generate_classification_report(results, include_charts=False)
         assert "<svg" not in html  # No SVG charts
 
-    def test_without_details(self):
+    def test_without_details(self) -> None:
         results = [
             {"prediction": "Spam"},
             {"prediction": "Ham"},
@@ -74,16 +74,16 @@ class TestGenerateClassificationReport:
 class TestGenerateEmailReport:
     """Tests for generate_email_report function."""
 
-    def test_empty_email(self):
+    def test_empty_email(self) -> None:
         html = generate_email_report("", "Spam")
         assert "<!DOCTYPE html>" in html
         assert "Spam" in html
 
-    def test_with_confidence(self):
+    def test_with_confidence(self) -> None:
         html = generate_email_report("Hello", "Ham", confidence=98.5)
         assert "98.5" in html or "98" in html
 
-    def test_with_url_analysis(self):
+    def test_with_url_analysis(self) -> None:
         url_analysis = {
             "total_urls": 2,
             "suspicious_count": 1,
@@ -108,7 +108,7 @@ class TestGenerateEmailReport:
         assert "URL Analysis" in html
         assert "example.com" in html
 
-    def test_with_explanation(self):
+    def test_with_explanation(self) -> None:
         html = generate_email_report("Hello", "Spam", explanation_summary="Keyword 'free' detected")
         assert "free" in html
 
@@ -116,7 +116,7 @@ class TestGenerateEmailReport:
 class TestBarChartSvg:
     """Tests for the internal _bar_chart_svg function."""
 
-    def test_generates_svg(self):
+    def test_generates_svg(self) -> None:
         data = [{"label": "Spam", "value": 5}, {"label": "Ham", "value": 10}]
         svg = _bar_chart_svg(data, "value", "label", "Test Chart")
         assert "<svg" in svg
@@ -124,6 +124,6 @@ class TestBarChartSvg:
         assert "Spam" in svg
         assert "Ham" in svg
 
-    def test_empty_data(self):
+    def test_empty_data(self) -> None:
         svg = _bar_chart_svg([], "value", "label", "Empty")
         assert svg == "<p>No data available</p>"

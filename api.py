@@ -78,7 +78,7 @@ security = HTTPBearer(auto_error=False)
 
 def verify_api_key(
     credentials: HTTPAuthorizationCredentials | None = Depends(security),
-):
+) -> bool:
     """Verify API key if authentication is configured.
 
     If SPAM_API_KEY env var is set, all endpoints (except /docs, /openapi.json)
@@ -566,7 +566,7 @@ async def predict_file(
     request: Request,
     file: UploadFile = File(..., description="Text or MBOX file to classify"),
     include_explanations: bool = Form(False, description="Whether to compute SHAP explanations"),
-):
+) -> dict[str, object]:
     """Upload a text or MBOX file for classification.
 
     For MBOX files, all emails are extracted and classified.
@@ -687,7 +687,7 @@ async def root() -> None:
 
 
 @app.get("/metrics", tags=["Monitoring"])
-async def metrics():
+async def metrics() -> dict[str, object]:
     """Prometheus metrics endpoint."""
     if not _PROM_AVAILABLE:
         return {"status": "prometheus_client not installed"}

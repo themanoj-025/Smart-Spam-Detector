@@ -18,7 +18,7 @@ def client():
 
 
 @pytest.fixture(autouse=True)
-def reset_pipeline():
+def reset_pipeline() -> None:
     """Reset the global pipeline before each test."""
     import api as api_module
 
@@ -30,7 +30,7 @@ def reset_pipeline():
 class TestRoot:
     """Test the root endpoint."""
 
-    def test_root_returns_endpoints(self, client):
+    def test_root_returns_endpoints(self, client) -> None:
         """GET / should return API metadata with endpoint list."""
         with patch("api.pipeline", MagicMock()):
             resp = client.get("/")
@@ -45,7 +45,7 @@ class TestRoot:
 class TestHealth:
     """Test the health check endpoint."""
 
-    def test_health_healthy(self, client):
+    def test_health_healthy(self, client) -> None:
         """GET /health should return healthy status when model is loaded."""
         with patch("api.pipeline", MagicMock()):
             with patch("api._ensure_pipeline", return_value=None):
@@ -56,7 +56,7 @@ class TestHealth:
         assert data["api_version"] == "1.0.0"
         assert data["uptime_seconds"] is not None
 
-    def test_health_no_model(self, client):
+    def test_health_no_model(self, client) -> None:
         """GET /health should return 503 when model is not loaded."""
         resp = client.get("/health")
         assert resp.status_code == 503
@@ -65,7 +65,7 @@ class TestHealth:
 class TestModelInfo:
     """Test the model info endpoint."""
 
-    def test_model_info_loaded(self, client):
+    def test_model_info_loaded(self, client) -> None:
         """GET /model/info should return model metadata when loaded."""
         mock_pipeline = MagicMock()
         mock_pipeline.model = MagicMock()
@@ -89,7 +89,7 @@ class TestModelInfo:
         assert data["vocabulary_size"] == 2
         assert data["supports_explanations"] is False
 
-    def test_model_info_no_model(self, client):
+    def test_model_info_no_model(self, client) -> None:
         """GET /model/info should return 503 when no model is loaded."""
         resp = client.get("/model/info")
         assert resp.status_code == 503
@@ -98,7 +98,7 @@ class TestModelInfo:
 class TestPredict:
     """Test the /predict endpoint."""
 
-    def test_predict_spam(self, client):
+    def test_predict_spam(self, client) -> None:
         """POST /predict should classify a spam email correctly."""
         mock_pipeline = MagicMock()
         mock_pipeline.predict_single_email.return_value = {
@@ -118,7 +118,7 @@ class TestPredict:
         assert data["explanation"] is None
         assert data["processing_time_ms"] is not None
 
-    def test_predict_ham(self, client):
+    def test_predict_ham(self, client) -> None:
         """POST /predict should classify a ham email correctly."""
         mock_pipeline = MagicMock()
         mock_pipeline.predict_single_email.return_value = {
@@ -135,7 +135,7 @@ class TestPredict:
         assert data["prediction"] == "Ham"
         assert data["confidence"] == 95.5
 
-    def test_predict_empty_email(self, client):
+    def test_predict_empty_email(self, client) -> None:
         """POST /predict with empty email should return 422."""
         mock_pipeline = MagicMock()
         mock_pipeline.predict_single_email.side_effect = ValueError("Email body is empty.")
@@ -146,12 +146,12 @@ class TestPredict:
 
         assert resp.status_code == 422
 
-    def test_predict_no_model(self, client):
+    def test_predict_no_model(self, client) -> None:
         """POST /predict should return 503 when no model is loaded."""
         resp = client.post("/predict", json={"email": "test email"})
         assert resp.status_code == 503
 
-    def test_predict_server_error(self, client):
+    def test_predict_server_error(self, client) -> None:
         """POST /predict should return 500 on unexpected errors."""
         mock_pipeline = MagicMock()
         mock_pipeline.predict_single_email.side_effect = RuntimeError("Unexpected error")
@@ -165,7 +165,7 @@ class TestPredict:
 class TestPredictWithExplanation:
     """Test the /predict/explain endpoint."""
 
-    def test_predict_with_explanation(self, client):
+    def test_predict_with_explanation(self, client) -> None:
         """POST /predict/explain should return prediction + SHAP explanation."""
         mock_pipeline = MagicMock()
         mock_pipeline.predict_with_explanation.return_value = {
@@ -202,7 +202,7 @@ class TestPredictWithExplanation:
         assert len(data["explanation"]["top_ham_words"]) == 1
         assert data["explanation"]["highlighted_html"] != ""
 
-    def test_predict_explanation_no_model(self, client):
+    def test_predict_explanation_no_model(self, client) -> None:
         """POST /predict/explain should return 503 when no model is loaded."""
         resp = client.post("/predict/explain", json={"email": "test email"})
         assert resp.status_code == 503
@@ -211,11 +211,11 @@ class TestPredictWithExplanation:
 class TestPredictBatch:
     """Test the /predict/batch endpoint."""
 
-    def test_batch_basic(self, client):
+    def test_batch_basic(self, client) -> dict[str, object]:
         """POST /predict/batch should classify multiple emails."""
         mock_pipeline = MagicMock()
 
-        def mock_single(email):
+        def mock_single(email) -> dict[str, object]:
             is_spam = "win" in email.lower() or "free" in email.lower()
             return {
                 "prediction": "Spam" if is_spam else "Ham",
@@ -246,7 +246,7 @@ class TestPredictBatch:
         assert data["results"][0]["prediction"] == "Spam"
         assert data["results"][1]["prediction"] == "Ham"
 
-    def test_batch_with_explanations(self, client):
+    def test_batch_with_explanations(self, client) -> None:
         """POST /predict/batch with explanations should include SHAP data."""
         mock_pipeline = MagicMock()
         mock_pipeline.predict_with_explanation.return_value = {
@@ -277,11 +277,11 @@ class TestPredictBatch:
         assert data["results"][0]["explanation"] is not None
         assert data["results"][0]["explanation"]["status"] == "available"
 
-    def test_batch_empty_email(self, client):
+    def test_batch_empty_email(self, client) -> dict[str, object]:
         """Empty strings in batch should be handled gracefully."""
         mock_pipeline = MagicMock()
 
-        def mock_single(email):
+        def mock_single(email) -> dict[str, object]:
             return {
                 "prediction": "Ham",
                 "confidence": 90.0,
@@ -313,7 +313,7 @@ class TestPredictBatch:
         assert data["results"][1]["prediction"] == "Ham"
         assert data["results"][2]["prediction"] == "Unknown"
 
-    def test_batch_no_model(self, client):
+    def test_batch_no_model(self, client) -> None:
         """POST /predict/batch should return 503 when no model is loaded."""
         resp = client.post(
             "/predict/batch",
@@ -328,7 +328,7 @@ class TestPredictBatch:
 class TestPredictFile:
     """Test the /predict/file endpoint."""
 
-    def test_predict_text_file(self, client):
+    def test_predict_text_file(self, client) -> None:
         """POST /predict/file with text file should classify content."""
         mock_pipeline = MagicMock()
         mock_pipeline.predict_single_email.return_value = {
@@ -351,7 +351,7 @@ class TestPredictFile:
         assert data["filename"] == "email.txt"
         assert data["size_bytes"] > 0
 
-    def test_predict_file_no_model(self, client):
+    def test_predict_file_no_model(self, client) -> None:
         """POST /predict/file should return 503 when no model is loaded."""
         resp = client.post(
             "/predict/file",
@@ -363,7 +363,7 @@ class TestPredictFile:
 class TestCORS:
     """Test CORS middleware configuration."""
 
-    def test_cors_headers(self, client):
+    def test_cors_headers(self, client) -> None:
         """API should include CORS headers in responses for allowed origins."""
         resp = client.options(
             "/",

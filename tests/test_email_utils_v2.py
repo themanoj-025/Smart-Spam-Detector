@@ -8,14 +8,14 @@ from src.utils.email_utils import all_recipients, clean_text, extract_body
 class TestExtractBody:
     """Tests for extract_body."""
 
-    def test_plain_text(self):
+    def test_plain_text(self) -> None:
         msg = Message()
         msg.set_type("text/plain")
         msg.set_payload("Hello, this is a test email body.")
         body = extract_body(msg)
         assert "test email body" in body
 
-    def test_html_body(self):
+    def test_html_body(self) -> None:
         msg = Message()
         msg.set_type("text/html")
         msg.set_payload("<p>Hello <b>world</b></p>")
@@ -24,7 +24,7 @@ class TestExtractBody:
         assert "world" in body
         assert "<b>" not in body
 
-    def test_empty_message(self):
+    def test_empty_message(self) -> None:
         msg = Message()
         body = extract_body(msg)
         assert body == ""
@@ -33,7 +33,7 @@ class TestExtractBody:
 class TestAllRecipients:
     """Tests for all_recipients."""
 
-    def test_from_and_to(self):
+    def test_from_and_to(self) -> None:
         msg = Message()
         msg["From"] = "sender@example.com"
         msg["To"] = "recipient@example.com"
@@ -41,7 +41,7 @@ class TestAllRecipients:
         assert "sender@example.com" in recipients
         assert "recipient@example.com" in recipients
 
-    def test_cc(self):
+    def test_cc(self) -> None:
         msg = Message()
         msg["From"] = "a@x.com"
         msg["To"] = "b@x.com"
@@ -49,7 +49,7 @@ class TestAllRecipients:
         recipients = all_recipients(msg)
         assert "c@x.com" in recipients
 
-    def test_deduplication(self):
+    def test_deduplication(self) -> None:
         msg = Message()
         msg["From"] = "a@x.com"
         msg["To"] = "a@x.com"
@@ -61,36 +61,36 @@ class TestAllRecipients:
 class TestCleanText:
     """Tests for clean_text."""
 
-    def test_none_passthrough(self):
+    def test_none_passthrough(self) -> None:
         assert clean_text(None) is None
 
-    def test_integer_passthrough(self):
+    def test_integer_passthrough(self) -> None:
         assert clean_text(42) == 42
 
-    def test_formula_injection_escape(self):
+    def test_formula_injection_escape(self) -> None:
         result = clean_text("=SUM(A1:A10)")
         assert result.startswith("'")
 
-    def test_control_char_removal(self):
+    def test_control_char_removal(self) -> None:
         result = clean_text("hello\x00world")
         assert "\x00" not in result
 
-    def test_empty_string(self):
+    def test_empty_string(self) -> None:
         assert clean_text("") == ""
 
-    def test_long_text_truncated(self):
+    def test_long_text_truncated(self) -> None:
         long_text = "a" * 40000
         result = clean_text(long_text)
         assert len(result) <= 32767
 
-    def test_plus_prefix_escaped(self):
+    def test_plus_prefix_escaped(self) -> None:
         result = clean_text("+cmd")
         assert result.startswith("'")
 
-    def test_minus_prefix_escaped(self):
+    def test_minus_prefix_escaped(self) -> None:
         result = clean_text("-cmd")
         assert result.startswith("'")
 
-    def test_at_prefix_escaped(self):
+    def test_at_prefix_escaped(self) -> None:
         result = clean_text("@cmd")
         assert result.startswith("'")

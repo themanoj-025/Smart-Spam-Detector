@@ -10,7 +10,7 @@ from src.config.config import Config, ModelConfig, find_latest_artifacts
 class TestConfig:
     """Test the Config dataclass."""
 
-    def test_config_defaults(self):
+    def test_config_defaults(self) -> None:
         """Test that Config resolves absolute paths from project root."""
         config = Config()
         # Paths are now resolved relative to the project root (via __file__)
@@ -20,7 +20,7 @@ class TestConfig:
         assert config.test_size == 0.2
         assert config.random_state == 42
 
-    def test_config_custom_values(self):
+    def test_config_custom_values(self) -> None:
         """Test that Config accepts custom values."""
         config = Config(
             training_data_path="custom/path.csv",
@@ -35,7 +35,7 @@ class TestConfig:
 class TestModelConfig:
     """Test the ModelConfig dataclass."""
 
-    def test_model_config_has_models(self):
+    def test_model_config_has_models(self) -> None:
         """Test that ModelConfig contains model definitions."""
         config = ModelConfig()
         assert len(config.models) > 0
@@ -44,7 +44,7 @@ class TestModelConfig:
         assert config.cv_folds == 5
         assert config.scoring == "f1"
 
-    def test_model_config_has_param_grids(self):
+    def test_model_config_has_param_grids(self) -> None:
         """Test that each model has hyperparameter grids."""
         config = ModelConfig()
         for model_name, param_grid in config.models.items():
@@ -54,7 +54,7 @@ class TestModelConfig:
 class TestFindLatestArtifacts:
     """Test the find_latest_artifacts function."""
 
-    def _create_output_structure(self, base_dir: str, has_models: bool = False):
+    def _create_output_structure(self, base_dir: str, has_models: bool = False) -> None:
         """Helper to create mock output directories."""
         run_dir = os.path.join(base_dir, "outputs", "2025-01-01_00-00-00")
         os.makedirs(os.path.join(run_dir, "models"), exist_ok=True)
@@ -66,7 +66,7 @@ class TestFindLatestArtifacts:
             Path(os.path.join(models_dir, "SVM_model.pkl")).touch()
             Path(os.path.join(models_dir, "vectorizer.pkl")).touch()
 
-    def test_no_outputs_dir(self):
+    def test_no_outputs_dir(self) -> None:
         """Test when outputs directory doesn't exist (via project_root override)."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp_root = Path(tmpdir)
@@ -74,7 +74,7 @@ class TestFindLatestArtifacts:
             assert model_path is None
             assert feature_path is None
 
-    def test_empty_outputs_dir(self):
+    def test_empty_outputs_dir(self) -> None:
         """Test when outputs directory exists but has no model artifacts."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp_root = Path(tmpdir)
@@ -83,7 +83,7 @@ class TestFindLatestArtifacts:
             assert model_path is None
             assert feature_path is None
 
-    def test_with_model_artifacts(self):
+    def test_with_model_artifacts(self) -> None:
         """Test when valid model artifacts exist (via project_root override)."""
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp_root = Path(tmpdir)

@@ -9,7 +9,7 @@ from src.utils.history_manager import HistoryManager
 
 
 @pytest.fixture
-def hm():
+def hm() -> None:
     """Create a HistoryManager with a temporary database path."""
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = os.path.join(tmpdir, "test_history.db")
@@ -20,7 +20,7 @@ def hm():
 class TestHistoryManager:
     """Tests for HistoryManager CRUD operations."""
 
-    def test_add_entry(self, hm):
+    def test_add_entry(self, hm) -> None:
         entry_id = hm.add_entry(
             email_text="Test email",
             prediction="Spam",
@@ -33,11 +33,11 @@ class TestHistoryManager:
         )
         assert entry_id > 0
 
-    def test_get_history_empty(self, hm):
+    def test_get_history_empty(self, hm) -> None:
         records = hm.get_history(limit=10)
         assert records == []
 
-    def test_add_and_retrieve(self, hm):
+    def test_add_and_retrieve(self, hm) -> None:
         hm.add_entry(
             email_text="Win a free prize",
             prediction="Spam",
@@ -49,7 +49,7 @@ class TestHistoryManager:
         assert records[0]["prediction"] == "Spam"
         assert records[0]["email_text"] == "Win a free prize"
 
-    def test_multiple_entries(self, hm):
+    def test_multiple_entries(self, hm) -> None:
         hm.add_entry(email_text="Email 1", prediction="Spam", source="manual")
         hm.add_entry(email_text="Email 2", prediction="Ham", source="batch")
         hm.add_entry(email_text="Email 3", prediction="Spam", source="api")
@@ -57,7 +57,7 @@ class TestHistoryManager:
         records = hm.get_history(limit=10)
         assert len(records) == 3
 
-    def test_prediction_filter(self, hm):
+    def test_prediction_filter(self, hm) -> None:
         hm.add_entry(email_text="A", prediction="Spam", source="manual")
         hm.add_entry(email_text="B", prediction="Ham", source="manual")
         hm.add_entry(email_text="C", prediction="Spam", source="manual")
@@ -68,7 +68,7 @@ class TestHistoryManager:
         ham_records = hm.get_history(limit=10, prediction_filter="Ham")
         assert len(ham_records) == 1
 
-    def test_source_filter(self, hm):
+    def test_source_filter(self, hm) -> None:
         hm.add_entry(email_text="A", prediction="Spam", source="manual")
         hm.add_entry(email_text="B", prediction="Ham", source="batch")
         hm.add_entry(email_text="C", prediction="Spam", source="api")
@@ -76,7 +76,7 @@ class TestHistoryManager:
         manual = hm.get_history(limit=10, source_filter="manual")
         assert len(manual) == 1
 
-    def test_search_text(self, hm):
+    def test_search_text(self, hm) -> None:
         hm.add_entry(
             email_text="Free money now",
             prediction="Spam",
@@ -96,21 +96,21 @@ class TestHistoryManager:
         results = hm.get_history(limit=10, search_text="Meeting")
         assert len(results) == 1
 
-    def test_days_back_filter(self, hm):
+    def test_days_back_filter(self, hm) -> None:
         hm.add_entry(email_text="Old email", prediction="Spam", source="manual")
 
         # Records from last 1 day should find it
         recent = hm.get_history(limit=10, days_back=1)
         assert len(recent) == 1
 
-    def test_total_count(self, hm):
+    def test_total_count(self, hm) -> None:
         assert hm.get_total_count() == 0
         hm.add_entry(email_text="A", prediction="Spam", source="manual")
         hm.add_entry(email_text="B", prediction="Ham", source="manual")
         assert hm.get_total_count() == 2
         assert hm.get_total_count(prediction_filter="Spam") == 1
 
-    def test_get_stats(self, hm):
+    def test_get_stats(self, hm) -> None:
         hm.add_entry(
             email_text="A",
             prediction="Spam",
@@ -136,7 +136,7 @@ class TestHistoryManager:
         assert stats["total_urls"] == 3
         assert stats["total_suspicious_urls"] == 2
 
-    def test_clear_history(self, hm):
+    def test_clear_history(self, hm) -> None:
         hm.add_entry(email_text="A", prediction="Spam", source="manual")
         hm.add_entry(email_text="B", prediction="Ham", source="manual")
 
@@ -144,7 +144,7 @@ class TestHistoryManager:
         hm.clear_history()
         assert hm.get_total_count() == 0
 
-    def test_get_entry_by_id(self, hm):
+    def test_get_entry_by_id(self, hm) -> None:
         entry_id = hm.add_entry(email_text="Find me", prediction="Spam", source="manual")
         entry = hm.get_entry_by_id(entry_id)
         assert entry is not None
@@ -153,7 +153,7 @@ class TestHistoryManager:
         missing = hm.get_entry_by_id(99999)
         assert missing is None
 
-    def test_custom_metadata(self, hm):
+    def test_custom_metadata(self, hm) -> None:
         meta = {"explanation": "keyword triggered", "top_word": "free"}
         hm.add_entry(
             email_text="Test",
@@ -164,7 +164,7 @@ class TestHistoryManager:
         records = hm.get_history(limit=10)
         assert records[0]["metadata"] == meta
 
-    def test_pagination(self, hm):
+    def test_pagination(self, hm) -> None:
         for i in range(10):
             hm.add_entry(
                 email_text=f"Email {i}",
