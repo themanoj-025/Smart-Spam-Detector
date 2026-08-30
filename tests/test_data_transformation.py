@@ -10,7 +10,7 @@ from src.utils.state import TrainingState
 class TestDataTransformation:
     """Tests for DataTransformation.transform_data."""
 
-    def test_transform_basic(self):
+    def test_transform_basic(self) -> None:
         dt = DataTransformation()
         state = TrainingState()
         state.training_data = pd.DataFrame({
@@ -24,21 +24,21 @@ class TestDataTransformation:
         assert result.y_train is not None
         assert result.y_test is not None
 
-    def test_transform_empty_data_raises(self):
+    def test_transform_empty_data_raises(self) -> None:
         dt = DataTransformation()
         state = TrainingState()
         state.training_data = pd.DataFrame()
         with pytest.raises(ValueError, match="No training data"):
             dt.transform_data(state)
 
-    def test_transform_none_data_raises(self):
+    def test_transform_none_data_raises(self) -> None:
         dt = DataTransformation()
         state = TrainingState()
         state.training_data = None
         with pytest.raises(ValueError, match="No training data"):
             dt.transform_data(state)
 
-    def test_label_encoding(self):
+    def test_label_encoding(self) -> None:
         dt = DataTransformation()
         state = TrainingState()
         state.training_data = pd.DataFrame({
@@ -50,7 +50,7 @@ class TestDataTransformation:
         assert all(v in [0, 1] for v in result.y_train)
         assert all(v in [0, 1] for v in result.y_test)
 
-    def test_tfidf_features_shape(self):
+    def test_tfidf_features_shape(self) -> None:
         dt = DataTransformation()
         state = TrainingState()
         state.training_data = pd.DataFrame({

@@ -72,7 +72,7 @@ class MLflowTracker:
             logger.info(f"MLflow tracking disabled: {reason}")
 
     @contextmanager
-    def start_run(self, run_name: str | None = None):
+    def start_run(self, run_name: str | None = None) -> None:
         """Context manager for an MLflow run.
 
         Usage:

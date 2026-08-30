@@ -19,7 +19,7 @@ from src.utils.utils import (
 class TestEnsureDir:
     """Tests for ensure_dir function."""
 
-    def test_ensure_dir_creates(self):
+    def test_ensure_dir_creates(self) -> None:
         """Test that ensure_dir creates a new directory."""
         with tempfile.TemporaryDirectory() as tmpdir:
             new_dir = os.path.join(tmpdir, "test", "nested", "dirs")
@@ -28,7 +28,7 @@ class TestEnsureDir:
             assert os.path.isdir(new_dir)
             assert isinstance(result, Path)
 
-    def test_ensure_dir_existing(self):
+    def test_ensure_dir_existing(self) -> None:
         """Test that ensure_dir handles existing directories."""
         with tempfile.TemporaryDirectory() as tmpdir:
             result = ensure_dir(tmpdir)
@@ -39,7 +39,7 @@ class TestEnsureDir:
 class TestPickleFunctions:
     """Tests for save_pickle and load_pickle."""
 
-    def test_save_and_load_pickle(self):
+    def test_save_and_load_pickle(self) -> None:
         """Test round-trip save and load of pickle files."""
         data = {"key": "value", "list": [1, 2, 3], "number": 42}
 
@@ -55,7 +55,7 @@ class TestPickleFunctions:
             loaded = load_pickle(filepath)
             assert loaded == data
 
-    def test_load_pickle_not_found(self):
+    def test_load_pickle_not_found(self) -> None:
         """Test that load_pickle raises FileNotFoundError."""
         with pytest.raises(FileNotFoundError):
             load_pickle("/nonexistent/path/file.pkl")
@@ -64,7 +64,7 @@ class TestPickleFunctions:
 class TestValidateDataset:
     """Tests for validate_dataset function."""
 
-    def test_valid_dataset(self):
+    def test_valid_dataset(self) -> None:
         """Test validation passes for correct dataset."""
         df = pd.DataFrame(
             {
@@ -75,7 +75,7 @@ class TestValidateDataset:
         result = validate_dataset(df, ["Category", "Message"])
         assert result is True
 
-    def test_missing_columns(self):
+    def test_missing_columns(self) -> None:
         """Test validation raises ValueError for missing columns."""
         df = pd.DataFrame(
             {
@@ -90,7 +90,7 @@ class TestValidateDataset:
 class TestGetDatasetStats:
     """Tests for get_dataset_stats function."""
 
-    def test_basic_stats(self):
+    def test_basic_stats(self) -> None:
         """Test that stats returns expected structure."""
         df = pd.DataFrame(
             {
@@ -105,7 +105,7 @@ class TestGetDatasetStats:
         assert "dtypes" in stats
         assert "missing_values" in stats
 
-    def test_missing_values(self):
+    def test_missing_values(self) -> None:
         """Test that missing values are reported."""
         df = pd.DataFrame(
             {

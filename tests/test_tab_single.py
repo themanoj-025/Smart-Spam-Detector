@@ -7,6 +7,6 @@ from src.ui.tab_single import SinglePredictionTab
 class TestSinglePredictionTab:
     """Tests for SinglePredictionTab."""
 
-    def test_init(self):
+    def test_init(self) -> None:
         tab = SinglePredictionTab()
         assert tab is not None
