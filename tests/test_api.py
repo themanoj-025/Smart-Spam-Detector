@@ -11,6 +11,8 @@ from fastapi.testclient import TestClient
 from api import app
 
 
+
+pytestmark = pytest.mark.slow
 @pytest.fixture
 def client():
     """Create a TestClient for the FastAPI app."""
@@ -21,6 +23,7 @@ def client():
 def reset_pipeline():
     """Reset the global pipeline before each test."""
     import api as api_module
+
 
     api_module.pipeline = None
     yield
