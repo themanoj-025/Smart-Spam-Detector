@@ -19,8 +19,6 @@ import pytest
 
 from src.pipeline.prediction_pipeline import PredictionPipeline
 
-
-
 pytestmark = pytest.mark.slow
 # ---------------------------------------------------------------------------
 # Fixtures
