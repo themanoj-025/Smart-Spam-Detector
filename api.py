@@ -171,17 +171,6 @@ app = FastAPI(
     version="2.0.0",
     lifespan=lifespan,
     dependencies=[Depends(verify_api_key)] if API_KEY else [],
-
-# --- OpenTelemetry distributed tracing (OTEL_ENABLED=true) ---
-try:
-    from src.tracing import setup_tracing
-    _otel_ok = setup_tracing("smartspam-api")
-    if _otel_ok:
-        from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-        FastAPIInstrumentor.instrument_app(app)
-except ImportError:
-    pass
-
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_tags=[
@@ -203,6 +192,16 @@ except ImportError:
         },
     ],
 )
+
+# --- OpenTelemetry distributed tracing (OTEL_ENABLED=true) ---
+try:
+    from src.tracing import setup_tracing
+    _otel_ok = setup_tracing("smartspam-api")
+    if _otel_ok:
+        from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+        FastAPIInstrumentor.instrument_app(app)
+except ImportError:
+    pass
 
 # CORS — configurable via env var; defaults to localhost for dev
 # Set CORS_ORIGINS env var for production (comma-separated)
