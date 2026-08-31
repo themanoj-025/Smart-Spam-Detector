@@ -177,7 +177,7 @@ async def add_security_headers(request: Request, call_next) -> None:
 
 
 @app.middleware("http")
-async def track_request_metrics(request: Request, call_next):
+async def track_request_metrics(request: Request, call_next) -> None:
     import time as _time
     request.state.start_time = _time.time()
     return await call_next(request)

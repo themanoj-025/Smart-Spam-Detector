@@ -12,7 +12,7 @@ from api import app
 
 pytestmark = pytest.mark.slow
 @pytest.fixture
-def client():
+def client() -> None:
     """Create a TestClient for the FastAPI app."""
     return TestClient(app)
 
