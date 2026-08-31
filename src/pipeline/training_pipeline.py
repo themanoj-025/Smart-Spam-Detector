@@ -22,7 +22,7 @@ class TrainingPipeline:
     Usage:
         pipeline = TrainingPipeline()
         state = pipeline.run_pipeline()
-        print(f"Best model: {state.best_model_name}")
+        logger.info(f"Best model: {state.best_model_name}")
     """
 
     def __init__(self) -> None:
@@ -86,20 +86,21 @@ if __name__ == "__main__":
     pipeline = TrainingPipeline()
     state = pipeline.run_pipeline()
 
-    # Print final comparison table
-    print("\n[MODEL PERFORMANCE COMPARISON]")
-    print("-" * 70)
-    print(f"{'Model':<22} {'Accuracy':<12} {'Precision':<12} {'Recall':<12} {'F1-Score':<12}")
-    print("-" * 70)
+    # Log final comparison table
+    logger.info("[MODEL PERFORMANCE COMPARISON]")
+    logger.info("-" * 70)
+    logger.info("%-22s %-12s %-12s %-12s %-12s", "Model", "Accuracy", "Precision", "Recall", "F1-Score")
+    logger.info("-" * 70)
     for model_name, metrics in sorted(
         state.model_metrics.items(), key=lambda x: x[1]["f1_score"], reverse=True
     ):
-        best = " *" if model_name == state.best_model_name else "  "
-        print(
-            f"{model_name:<20}{best} "
-            f"{metrics['accuracy']:.4f}      "
-            f"{metrics['precision']:.4f}      "
-            f"{metrics['recall']:.4f}      "
-            f"{metrics['f1_score']:.4f}"
+        best = "*" if model_name == state.best_model_name else " "
+        logger.info(
+            "%-20s%s %.4f      %.4f      %.4f      %.4f",
+            model_name, best,
+            metrics["accuracy"],
+            metrics["precision"],
+            metrics["recall"],
+            metrics["f1_score"],
         )
-    print("-" * 70)
+    logger.info("-" * 70)
