@@ -14,7 +14,7 @@
 # ═══════════════════════════════════════════════════════════════════════
 
 # ── Base stage ─────────────────────────────────────────────────────────
-FROM python:3.11-slim AS base
+FROM python:3.14-slim AS base
 
 LABEL org.opencontainers.image.title="Spam Email Classifier"
 LABEL org.opencontainers.image.description="ML spam classifier — FastAPI + Streamlit with SHAP explainability"
