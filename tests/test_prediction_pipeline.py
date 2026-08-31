@@ -26,7 +26,7 @@ pytestmark = pytest.mark.slow
 
 
 @pytest.fixture
-def pipeline():
+def pipeline() -> None:
     """Return a PredictionPipeline with models NOT loaded so all
     _load_models / TF-IDF / model interactions can be mocked."""
     return PredictionPipeline(load_models=False)
@@ -152,7 +152,7 @@ class TestExplanationAvailable:
     """When SHAP is fully initialised and returns values."""
 
     @pytest.fixture(autouse=True)
-    def setup_mocks(self, pipeline):
+    def setup_mocks(self, pipeline) -> None:
         model = MagicMock()
         model.predict.return_value = np.array([0])
         model.predict_proba.return_value = np.array([[0.99, 0.01]])
