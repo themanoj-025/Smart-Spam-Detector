@@ -114,7 +114,7 @@ class MLflowTracker:
         artifact_name: str,
         registered_model_name: str | None = None,
         extra_artifacts: dict[str, Any] | None = None,
-    ) -> str | None:
+    ) -> str | None -> None:
         """Log a model to MLflow.
 
         Args:

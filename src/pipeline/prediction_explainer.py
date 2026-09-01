@@ -18,7 +18,7 @@ def get_word_contributions(
     shap_values: np.ndarray,
     feature_names: np.ndarray | None,
     class_index: int,
-) -> list[dict[str, Any]]:
+) -> list[dict[str, Any]] -> None:
     """Convert raw SHAP values into per-word contribution records.
 
     Handles both numpy arrays and ``shap.Explanation`` objects so the
@@ -69,7 +69,7 @@ def highlight_text(
     text: str,
     contributions: list[dict[str, Any]],
     max_words: int = 40,
-) -> str:
+) -> str -> None:
     """Generate HTML with word-level highlighting based on SHAP contributions.
 
     Args:

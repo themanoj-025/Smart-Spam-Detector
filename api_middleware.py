@@ -4,8 +4,8 @@
 
 
 def verify_api_key(
-    credentials: HTTPAuthorizationCredentials | None = Depends(security),
-) -> bool:
+    credentials -> None:
+) -> bool -> None:
     """Verify API key if authentication is configured.
 
     If SPAM_API_KEY env var is set, all endpoints (except /docs, /openapi.json)

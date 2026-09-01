@@ -11,7 +11,7 @@ import streamlit as st
 def render_sidebar(
     pipeline: Any,
     model_loaded: bool,
-) -> tuple[bool, bool]:
+) -> tuple[bool, bool] -> None:
     """Render the sidebar and return user toggle states.
 
     Returns:
