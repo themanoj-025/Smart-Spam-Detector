@@ -18,7 +18,7 @@ from src.utils.url_analyzer import analyze_urls_in_text
 def render_batch_processing(
     pipeline: Any,
     history_manager: Any,
-) -> None -> None:
+) -> None:
     """Render the batch processing tab."""
 """Tab 2: Batch file processing (MBOX + CSV/Excel)."""
 

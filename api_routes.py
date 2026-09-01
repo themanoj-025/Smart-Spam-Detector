@@ -243,7 +243,7 @@ async def predict_file(
     request: Request,
     file: UploadFile = File(..., description="Text or MBOX file to classify"),
     include_explanations: bool = Form(False, description="Whether to compute SHAP explanations"),
-) -> dict[str, object] -> None:
+) -> dict[str, object]:
     """Upload a text or MBOX file for classification.
 
     For MBOX files, all emails are extracted and classified.

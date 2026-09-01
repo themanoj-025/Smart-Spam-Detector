@@ -183,7 +183,7 @@ class PredictionPipeline:
         self,
         email_body: str,
         explanation_enabled: bool = True,
-    ) -> dict[str, Any] -> None:
+    ) -> dict[str, Any]:
         """Classify a single email with SHAP-based word-level explanation."""
         if not email_body or not email_body.strip():
             raise ValueError("Email body is empty. Please provide email text to classify.")
@@ -295,7 +295,7 @@ class PredictionPipeline:
 
     def predict_mbox_file(
         self, mailbox_path: str, output_path: str | None = None
-    ) -> pd.DataFrame -> None:
+    ) -> pd.DataFrame:
         """Complete pipeline: load MBOX, process emails, run predictions."""
         if self.model is None or self.feature_transformer is None:
             self._load_models()
