@@ -78,7 +78,7 @@ class HistoryManager:
         suspicious_urls: int = 0,
         metadata: dict[str, Any] | None = None,
         email_subject: str = "",
-    ) -> int -> None:
+    ) -> int:
         """Insert a new classification record.
 
         Args:
@@ -135,7 +135,7 @@ class HistoryManager:
         source_filter: str | None = None,
         days_back: int | None = None,
         search_text: str | None = None,
-    ) -> list[dict[str, Any]] -> None:
+    ) -> list[dict[str, Any]]:
         """Retrieve classification history with filters.
 
         Args:
@@ -209,7 +209,7 @@ class HistoryManager:
         source_filter: str | None = None,
         days_back: int | None = None,
         search_text: str | None = None,
-    ) -> int -> None:
+    ) -> int:
         """Get total record count matching filters (for pagination)."""
         conditions = []
         params = []

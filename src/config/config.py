@@ -16,7 +16,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 def find_latest_artifacts(
     project_root: Path | None = None,
-) -> tuple[str | None, str | None] -> None:
+) -> tuple[str | None, str | None]:
     """Auto-discover the latest trained model and vectorizer from the outputs directory.
 
     Args:
