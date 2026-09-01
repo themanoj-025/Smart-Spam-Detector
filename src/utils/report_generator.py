@@ -74,7 +74,7 @@ def generate_classification_report(
     title: str = "Email Classification Report",
     include_charts: bool = True,
     include_details: bool = True,
-) -> str:
+) -> str -> None:
     """Generate a self-contained HTML report string.
 
     Args:
@@ -320,7 +320,7 @@ def generate_email_report(
     spam_risk: float | None = None,
     url_analysis: dict[str, Any] | None = None,
     explanation_summary: str | None = None,
-) -> str:
+) -> str -> None:
     """Generate a single-email detailed HTML report.
 
     Args:

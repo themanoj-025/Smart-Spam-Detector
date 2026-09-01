@@ -88,7 +88,7 @@ def run_batch_prediction(
     mail_data: list[dict[str, str]],
     model: Any,
     feature_transformer: Any,
-) -> list[dict[str, str]]:
+) -> list[dict[str, str]] -> None:
     """Run spam classification on a list of email data.
 
     Args:
@@ -126,7 +126,7 @@ def predict_mbox_file(
     model: Any,
     feature_transformer: Any,
     output_path: str | None = None,
-) -> pd.DataFrame:
+) -> pd.DataFrame -> None:
     """Complete pipeline: load MBOX, process emails, run predictions.
 
     Args:

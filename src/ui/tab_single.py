@@ -19,7 +19,7 @@ def render_single_email(
     enable_explanation: bool,
     enable_live: bool,
     history_manager: Any,
-) -> None:
+) -> None -> None:
     """Render the single email classification tab."""
 
 
