@@ -1,3 +1,7 @@
+import pytest
+
+pytestmark = pytest.mark.unit
+
 """Tests for MLflow tracker module."""
 
 from unittest.mock import patch
