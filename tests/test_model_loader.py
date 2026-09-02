@@ -1,9 +1,9 @@
 """Tests for model loader utility."""
 
 
-from src.ui.model_loader import ModelLoader
-
 import pytest
+
+from src.ui.model_loader import ModelLoader
 
 pytestmark = pytest.mark.slow
 class TestModelLoader:
