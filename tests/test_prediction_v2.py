@@ -1,3 +1,7 @@
+import pytest
+
+pytestmark = pytest.mark.unit
+
 """Tests for prediction pipeline."""
 
 from unittest.mock import MagicMock, patch

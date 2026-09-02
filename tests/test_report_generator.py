@@ -1,3 +1,7 @@
+import pytest
+
+pytestmark = pytest.mark.integration
+
 """Tests for the report generator module."""
 
 from src.utils.report_generator import (

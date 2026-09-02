@@ -1,3 +1,7 @@
+import pytest
+
+pytestmark = pytest.mark.integration
+
 """Tests for the URL analyzer module."""
 
 from src.utils.url_analyzer import (
