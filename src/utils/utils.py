@@ -1,5 +1,8 @@
 """Utility functions for the Spam Email Classification system."""
 
+import hashlib
+import hmac
+import io
 import json
 import os
 import pickle
@@ -24,8 +27,61 @@ def ensure_dir(path: str) -> Path:
     return path_obj
 
 
+class _RestrictedUnpickler(pickle.Unpickler):
+    """Unpickler that only allows safe types to be deserialized.
+
+    This prevents arbitrary code execution via crafted pickle files (CWE-502).
+    """
+
+    _SAFE_TYPES = frozenset({
+        # Builtins
+        "builtins", "__builtin__",
+        # Standard library
+        "collections", "re", "copyreg",
+        # NumPy
+        "numpy", "numpy.core.multiarray", "numpy.core.numeric",
+        "numpy.ma.core", "numpy.ma.core._MaskedArray",
+        "numpy.dtype", "numpy.float64", "numpy.int64",
+        "numpy.ndarray", "numpy.bool_",
+        # scikit-learn
+        "sklearn", "sklearn.pipeline", "sklearn.feature_extraction.text",
+        "sklearn.feature_extraction", "sklearn.linear_model",
+        "sklearn.naive_bayes", "sklearn.svm", "sklearn.ensemble",
+        "sklearn.tree", "sklearn.calibration",
+        # pandas
+        "pandas.core.frame", "pandas.core.series",
+        "pandas.core.indexes.base", "pandas.core.indexes.range",
+        # XGBoost
+        "xgboost", "xgboost.core",
+        # joblib
+        "joblib", "joblib.numpy_pickle",
+        # typing
+        "typing",
+    })
+
+    def find_class(self, module: str, name: str) -> Any:
+        # Allow safe modules
+        top = module.split(".")[0]
+        if top in self._SAFE_TYPES or module in self._SAFE_TYPES:
+            return super().find_class(module, name)
+        raise pickle.UnpicklingError(
+            f"Disallowed type: {module}.{name} — only safe ML types permitted"
+        )
+
+
+def _compute_hmac(data: bytes, key: bytes) -> str:
+    """Compute HMAC-SHA256 hex digest for data integrity verification."""
+    return hmac.new(key, data, hashlib.sha256).hexdigest()
+
+
+# HMAC key for model file integrity (set via env var or use a default for dev)
+_HMAC_KEY = os.environ.get(
+    "SPAM_MODEL_HMAC_KEY", "smart-spam-default-dev-key-not-for-prod"
+).encode()
+
+
 def save_pickle(obj: Any, filepath: str) -> str:
-    """Save an object to a pickle file.
+    """Save an object to a pickle file with HMAC integrity signature.
 
     Args:
         obj: Object to serialize.
@@ -35,13 +91,19 @@ def save_pickle(obj: Any, filepath: str) -> str:
         The path where the file was saved.
     """
     ensure_dir(os.path.dirname(filepath))
+    raw = pickle.dumps(obj)
+    sig = _compute_hmac(raw, _HMAC_KEY)
+    payload = {"data": raw, "hmac": sig}
     with open(filepath, "wb") as f:
-        pickle.dump(obj, f)
+        pickle.dump(payload, f)
     return filepath
 
 
 def load_pickle(filepath: str) -> Any:
-    """Load an object from a pickle file.
+    """Load an object from a pickle file with HMAC integrity verification.
+
+    Verifies the file has not been tampered with before deserializing.
+    Uses a restricted unpickler to prevent arbitrary code execution.
 
     Args:
         filepath: Path to the pickle file.
@@ -51,11 +113,26 @@ def load_pickle(filepath: str) -> Any:
 
     Raises:
         FileNotFoundError: If the file does not exist.
+        ValueError: If HMAC verification fails (file tampered).
     """
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"Pickle file not found: {filepath}")
     with open(filepath, "rb") as f:
-        return pickle.load(f)
+        envelope = pickle.load(f)
+
+    # Support both legacy (raw pickle) and new (HMAC-wrapped) formats
+    if isinstance(envelope, dict) and "data" in envelope and "hmac" in envelope:
+        expected_sig = envelope["hmac"]
+        raw = envelope["data"]
+        actual_sig = _compute_hmac(raw, _HMAC_KEY)
+        if not hmac.compare_digest(expected_sig, actual_sig):
+            raise ValueError(
+                f"HMAC verification failed for {filepath} — file may be tampered with"
+            )
+        return _RestrictedUnpickler(io.BytesIO(raw)).load()
+    else:
+        # Legacy format: raw pickle without HMAC wrapper
+        return _RestrictedUnpickler(io.BytesIO(pickle.dumps(envelope))).load()
 
 
 def save_metadata(metadata: dict[str, Any], filepath: str) -> None:
