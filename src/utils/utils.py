@@ -83,6 +83,12 @@ _HMAC_KEY = os.environ.get(
 def save_pickle(obj: Any, filepath: str) -> str:
     """Save an object to a pickle file with HMAC integrity signature.
 
+    Why not JSON? These files store fitted scikit-learn estimators (vectorizer,
+    classifiers), which have no JSON representation. JSON is used everywhere
+    else (metadata, caches); pickle is deliberately limited to model artifacts
+    and is mitigated by (1) HMAC integrity so only files we wrote are loaded,
+    and (2) a restricted unpickler that blocks arbitrary code (CWE-502).
+
     Args:
         obj: Object to serialize.
         filepath: Path where to save the pickle file.
@@ -103,7 +109,8 @@ def load_pickle(filepath: str) -> Any:
     """Load an object from a pickle file with HMAC integrity verification.
 
     Verifies the file has not been tampered with before deserializing.
-    Uses a restricted unpickler to prevent arbitrary code execution.
+    Uses a restricted unpickler to prevent arbitrary code execution
+    (CWE-502) — see save_pickle for why JSON isn't used for model files.
 
     Args:
         filepath: Path to the pickle file.
