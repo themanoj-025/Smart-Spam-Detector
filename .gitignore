@@ -81,3 +81,11 @@ node_modules/
 
 # === Streamlit secrets (NEVER COMMIT) ===
 .streamlit/secrets.toml
+
+# ── Portfolio-standard ignores (sweep 2026-09) ──────────────
+radar_balance.txt
+*.db
+*.db-shm
+*.db-wal
+.coverage.*
+coverage.xml
