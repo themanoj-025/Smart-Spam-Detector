@@ -257,4 +257,6 @@ jobs:
           sudo dpkg -i dive_0.12.0_linux_amd64.deb
       - name: Run dive (efficiency check)
         run: |
-          CI=true dive dive-audit:latest --highestWastedBytes=51200000 --highestUserWastedPercent=0.5 --lowestEfficiency=0.5
+          # 15% user-waste ceiling: the deliberate `apt-get upgrade` CVE fix
+          # supersedes ~90MB of base-image libs in earlier layers; 0.5% is unattainable.
+          CI=true dive dive-audit:latest --highestWastedBytes=51200000 --highestUserWastedPercent=0.15 --lowestEfficiency=0.5
