@@ -80,6 +80,11 @@ ignore = [
     "B007",    # unused loop variable
 ]
 
+[tool.ruff.lint.per-file-ignores]
+# .format() is required here: bandit B608's `# nosec` cannot attach inside
+# f-string text, so the dynamic WHERE clause must stay a format call.
+"src/utils/history_manager.py" = ["UP032"]
+
 [tool.black]
 line-length = 100
 target-version = ["py310"]
