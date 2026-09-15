@@ -134,9 +134,10 @@ jobs:
           dockerfile: Dockerfile
           # DL3008/DL3013: apt/pip pins are managed via requirements.txt ranges
           # and the trivy CVE gate, not hardcoded in the Dockerfile.
+          # DL3005: apt-get upgrade IS the CVE fix for base-image packages.
           # DL3066 (info): USER appuser resolves via /etc/passwd (uid 10001).
           failure-threshold: warning
-          ignore: DL3008,DL3013
+          ignore: DL3008,DL3013,DL3005
 
   docker:
     name: Docker build & security scan

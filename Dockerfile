@@ -40,6 +40,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # setuptools 78.1.1+) in /usr/local, but Trivy scans every copy — so the
     # unpatched apt copies must be purged or the image scan fails.
     && apt-get purge -y --auto-remove python3-msgpack python3-setuptools \
+    # Patch debian base packages (gzip/pcre2/sqlite/perl CVEs surface within
+    # days of a new slim base image; upgrade now or the trivy gate fails).
+    && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
