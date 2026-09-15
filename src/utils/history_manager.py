@@ -174,15 +174,14 @@ class HistoryManager:
             params.extend([f"%{search_text}%", f"%{search_text}%"])
 
         where_clause = " AND ".join(conditions) if conditions else "1=1"
-        # nosec B608 - where_clause is built from fixed condition strings; values are parameterized
-        query = f"""
+        query = """
             SELECT id, timestamp, email_text, prediction, confidence, spam_risk,
                    model_used, source, url_count, suspicious_urls, metadata, email_subject
             FROM classifications
-            WHERE {where_clause}
+            WHERE {}
             ORDER BY timestamp DESC
             LIMIT ? OFFSET ?
-        """
+        """.format(where_clause)  # nosec B608 - where_clause is built from fixed condition strings; values are parameterized
         params.extend([limit, offset])
 
         conn = sqlite3.connect(self.db_path)
