@@ -110,9 +110,7 @@ def highlight_text(
             color = word_color(token.strip(".,!?;'\"()[]{}"))
             if color:
                 contrib = word_map[token.lower()]["contribution"]
-                highlighted.append(
-                    f'<span style="{color}" title="contribution: {contrib:.4f}">{token}</span>'
-                )
+                highlighted.append(f'<span style="{color}" title="contribution: {contrib:.4f}">{token}</span>')
             else:
                 highlighted.append(token)
 

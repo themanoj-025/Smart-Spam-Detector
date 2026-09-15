@@ -38,7 +38,7 @@ def load_mailbox_file(mailbox_path: str) -> mailbox.mbox:
     return mbox
 
 
-def process_mailbox_messages(mbox: mailbox.mbox) -> list[dict[str, str]]:
+def process_mailbox_messages(mbox: mailbox.mbox) -> list[dict[str, Any]]:
     """Process all emails in a loaded MBOX and extract relevant fields.
 
     Args:
@@ -55,13 +55,15 @@ def process_mailbox_messages(mbox: mailbox.mbox) -> list[dict[str, str]]:
         category = (
             "Spam"
             if "spam" in labels
-            else "Promotions"
-            if "category_promotions" in labels
-            else "Social"
-            if "category_social" in labels
-            else "Updates"
-            if "category_updates" in labels
-            else "Inbox"
+            else (
+                "Promotions"
+                if "category_promotions" in labels
+                else "Social"
+                if "category_social" in labels
+                else "Updates"
+                if "category_updates" in labels
+                else "Inbox"
+            )
         )
 
         data.append(
@@ -85,10 +87,10 @@ def process_mailbox_messages(mbox: mailbox.mbox) -> list[dict[str, str]]:
 
 
 def run_batch_prediction(
-    mail_data: list[dict[str, str]],
+    mail_data: list[dict[str, Any]],
     model: Any,
     feature_transformer: Any,
-) -> list[dict[str, str]]:
+) -> list[dict[str, Any]]:
     """Run spam classification on a list of email data.
 
     Args:
@@ -113,9 +115,7 @@ def run_batch_prediction(
 
     elapsed = time.time() - start_time
     spam_count = sum(1 for m in mail_data if m.get("Prediction") == "Spam")
-    logger.info(
-        f"✓ Predictions completed in {elapsed:.2f}s ({len(mail_data) / elapsed:.0f} emails/sec)"
-    )
+    logger.info(f"✓ Predictions completed in {elapsed:.2f}s ({len(mail_data) / elapsed:.0f} emails/sec)")
     logger.info(f"  Spam: {spam_count} | Ham: {len(mail_data) - spam_count}")
 
     return mail_data

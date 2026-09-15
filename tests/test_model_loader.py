@@ -1,11 +1,12 @@
 """Tests for model loader utility."""
 
-
 import pytest
 
 from src.ui.model_loader import ModelLoader
 
 pytestmark = pytest.mark.slow
+
+
 class TestModelLoader:
     """Tests for ModelLoader."""
 

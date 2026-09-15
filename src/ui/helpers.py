@@ -1,5 +1,7 @@
 """UI helper functions for prediction display."""
 
+from typing import Any
+
 import streamlit as st
 
 from src.utils.email_utils import clean_text
@@ -202,7 +204,7 @@ def show_confidence_bar(confidence: float, prediction: str) -> None:
 # ---------------------------------------------------------------------------
 
 
-def compute_live_prediction(text: str, pipeline: object) -> None:
+def compute_live_prediction(text: str, pipeline: Any) -> tuple[str, float | None, float] | tuple[None, None, None]:
     """Run a lightweight prediction for real-time analysis (no SHAP)."""
 
     if not text or not text.strip():
@@ -254,8 +256,7 @@ def show_explanation(explanation: dict, prediction: str) -> None:
 
     if status == "unavailable":
         st.info(
-            "💡 Explanation unavailable for this model. Some models don't support "
-            "per-word analysis in real time.",
+            "💡 Explanation unavailable for this model. Some models don't support per-word analysis in real time.",
             icon="🧠",
         )
 
@@ -373,4 +374,25 @@ def show_explanation(explanation: dict, prediction: str) -> None:
     st.markdown("</div>", unsafe_allow_html=True)
 
 
+# ---------------------------------------------------------------------------
+# Formatting helpers (test-facing API)
+# ---------------------------------------------------------------------------
 
+
+def format_confidence(confidence: float) -> str:
+    """Format a 0-1 confidence score as a percentage string."""
+    return f"{confidence * 100:.1f}%"
+
+
+def get_risk_color(spam_risk: float) -> str:
+    """Map a 0-100 spam-risk score to a semantic color string."""
+    if spam_risk >= 70.0:
+        return "#e74c3c"  # red — high risk
+    if spam_risk >= 40.0:
+        return "#f39c12"  # amber — medium risk
+    return "#2ecc71"  # green — low risk
+
+
+def get_risk_label(prediction: str) -> str:
+    """Map a prediction label to a human-readable risk label."""
+    return "High Risk" if prediction == "Spam" else "Low Risk"

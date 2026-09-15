@@ -73,6 +73,7 @@ class TestCleanText:
 
     def test_control_char_removal(self) -> None:
         result = clean_text("hello\x00world")
+        assert result is not None
         assert "\x00" not in result
 
     def test_empty_string(self) -> None:

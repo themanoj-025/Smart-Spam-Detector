@@ -1,6 +1,5 @@
 """Tests for single prediction tab."""
 
-
 from src.ui.tab_single import SinglePredictionTab
 
 

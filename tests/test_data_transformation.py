@@ -13,10 +13,12 @@ class TestDataTransformation:
     def test_transform_basic(self) -> None:
         dt = DataTransformation()
         state = TrainingState()
-        state.training_data = pd.DataFrame({
-            "Message": ["Buy now!!!", "Hey, how are you?", "Free money!", "Meeting tomorrow"],
-            "Category": ["spam", "ham", "spam", "ham"],
-        })
+        state.training_data = pd.DataFrame(
+            {
+                "Message": ["Buy now!!!", "Hey, how are you?", "Free money!", "Meeting tomorrow"],
+                "Category": ["spam", "ham", "spam", "ham"],
+            }
+        )
         result = dt.transform_data(state)
         assert result.X_train_tfidf is not None
         assert result.X_test_tfidf is not None
@@ -41,10 +43,12 @@ class TestDataTransformation:
     def test_label_encoding(self) -> None:
         dt = DataTransformation()
         state = TrainingState()
-        state.training_data = pd.DataFrame({
-            "Message": ["a", "b", "c", "d"],
-            "Category": ["spam", "ham", "spam", "ham"],
-        })
+        state.training_data = pd.DataFrame(
+            {
+                "Message": ["a", "b", "c", "d"],
+                "Category": ["spam", "ham", "spam", "ham"],
+            }
+        )
         result = dt.transform_data(state)
         # spam=0, ham=1
         assert all(v in [0, 1] for v in result.y_train)
@@ -53,10 +57,12 @@ class TestDataTransformation:
     def test_tfidf_features_shape(self) -> None:
         dt = DataTransformation()
         state = TrainingState()
-        state.training_data = pd.DataFrame({
-            "Message": ["hello world"] * 10 + ["goodbye world"] * 10,
-            "Category": ["ham"] * 10 + ["spam"] * 10,
-        })
+        state.training_data = pd.DataFrame(
+            {
+                "Message": ["hello world"] * 10 + ["goodbye world"] * 10,
+                "Category": ["ham"] * 10 + ["spam"] * 10,
+            }
+        )
         result = dt.transform_data(state)
         assert result.X_train_tfidf.shape[0] == len(result.y_train)
         assert result.X_test_tfidf.shape[0] == len(result.y_test)

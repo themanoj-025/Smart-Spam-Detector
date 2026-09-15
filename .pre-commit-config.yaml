@@ -2,10 +2,11 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.16.4
     hooks:
+      # No explicit line-length: ruff reads [tool.ruff] line-length = 120
+      # from pyproject.toml, keeping hooks and CI/lint consistent.
       - id: ruff
-        args: [--fix, --line-length=100]
+        args: [--fix]
       - id: ruff-format
-        args: [--line-length=100]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v2.3.1

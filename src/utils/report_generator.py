@@ -141,9 +141,7 @@ def generate_classification_report(
             pred_class = "spam-row" if pred == "Spam" else "ham-row"
             confidence = r.get("confidence", "")
             timestamp = r.get("datetime") or (
-                datetime.fromtimestamp(r["timestamp"]).strftime("%Y-%m-%d %H:%M")
-                if r.get("timestamp")
-                else ""
+                datetime.fromtimestamp(r["timestamp"]).strftime("%Y-%m-%d %H:%M") if r.get("timestamp") else ""
             )
             subject = escape(r.get("email_subject", ""))
             urls_info = ""
@@ -154,7 +152,8 @@ def generate_classification_report(
                 n = r["url_count"]
                 urls_info = f'<span class="badge badge-ok">{n} urls</span>'
 
-            rows.append(f"""
+            rows.append(
+                f"""
             <tr class="{pred_class}">
                 <td>{i + 1}</td>
                 <td>{timestamp}</td>
@@ -164,7 +163,8 @@ def generate_classification_report(
                 <td>{urls_info}</td>
                 <td>{escape(str(r.get("source", "")))}</td>
             </tr>
-            """)
+            """
+            )
 
         table_html = f"""
         <div class="table-section">
@@ -343,7 +343,8 @@ def generate_email_report(
             risk_label = "High" if risk >= 50 else "Medium" if risk >= 20 else "Low"
             risk_bg = "#f44336" if risk >= 50 else "#ffa726" if risk >= 20 else "#66bb6a"
             flags = ", ".join(u.get("flags", []))
-            url_rows.append(f"""
+            url_rows.append(
+                f"""
             <tr>
                 <td style="word-break:break-all;max-width:300px;">
                     {escape(str(u.get("url", "")))}</td>
@@ -352,7 +353,8 @@ def generate_email_report(
                     {risk_label}</span></td>
                 <td style="font-size:0.8rem;color:#888;">{escape(flags)}</td>
             </tr>
-            """)
+            """
+            )
 
         urls_html = f"""
         <h3 style="margin:20px 0 10px;">🔗 URL Analysis</h3>
@@ -383,13 +385,7 @@ def generate_email_report(
     .prediction-badge {{
         display:inline-block; padding:6px 20px;
         border-radius:20px; font-weight:700; font-size:1.2rem;
-        {
-        (
-            "background:#ffebee;color:#c62828"
-            if prediction == "Spam"
-            else "background:#e8f5e9;color:#2e7d32"
-        )
-    }
+        {("background:#ffebee;color:#c62828" if prediction == "Spam" else "background:#e8f5e9;color:#2e7d32")}
     }}
     .section {{ background:#fff; border-radius:10px; padding:16px; margin-bottom:16px; box-shadow:0 1px 6px rgba(0,0,0,0.06); }}
     .section h3 {{ margin-bottom:8px; color:#333; }}

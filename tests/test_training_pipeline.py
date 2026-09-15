@@ -1,6 +1,5 @@
 """Tests for training pipeline."""
 
-
 from src.pipeline.training_pipeline import TrainingPipeline
 
 
