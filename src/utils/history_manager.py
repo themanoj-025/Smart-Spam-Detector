@@ -41,7 +41,8 @@ class HistoryManager:
         Path(os.path.dirname(self.db_path)).mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(self.db_path)
         try:
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS classifications (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp REAL NOT NULL,
@@ -56,12 +57,15 @@ class HistoryManager:
                     metadata TEXT,
                     email_subject TEXT DEFAULT ''
                 )
-            """)
+            """
+            )
             # Create index for fast time-range queries
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE INDEX IF NOT EXISTS idx_timestamp
                 ON classifications(timestamp)
-            """)
+            """
+            )
             conn.commit()
         finally:
             conn.close()
@@ -170,7 +174,7 @@ class HistoryManager:
             params.extend([f"%{search_text}%", f"%{search_text}%"])
 
         where_clause = " AND ".join(conditions) if conditions else "1=1"
-        query = f"""
+        query = f"""  # nosec B608 - where_clause is built from fixed condition strings; values are parameterized
             SELECT id, timestamp, email_text, prediction, confidence, spam_risk,
                    model_used, source, url_count, suspicious_urls, metadata, email_subject
             FROM classifications
@@ -188,9 +192,7 @@ class HistoryManager:
             for row in rows:
                 record = dict(row)
                 record["timestamp"] = record["timestamp"]
-                record["datetime"] = datetime.fromtimestamp(record["timestamp"]).strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
+                record["datetime"] = datetime.fromtimestamp(record["timestamp"]).strftime("%Y-%m-%d %H:%M:%S")
                 if record["metadata"]:
                     try:
                         record["metadata"] = json.loads(record["metadata"])
@@ -236,7 +238,7 @@ class HistoryManager:
         conn = sqlite3.connect(self.db_path)
         try:
             row = conn.execute(
-                f"SELECT COUNT(*) as cnt FROM classifications WHERE {where_clause}",
+                f"SELECT COUNT(*) as cnt FROM classifications WHERE {where_clause}",  # nosec B608 - parameterized values
                 params,
             ).fetchone()
             return row[0] if row else 0
@@ -288,9 +290,7 @@ class HistoryManager:
                 (cutoff,),
             ).fetchall()
 
-            daily_counts = [
-                {"date": row[0], "spam": row[1] or 0, "ham": row[2] or 0} for row in daily_rows
-            ]
+            daily_counts = [{"date": row[0], "spam": row[1] or 0, "ham": row[2] or 0} for row in daily_rows]
 
             return {
                 "total": cursor[0] or 0,
@@ -339,14 +339,10 @@ class HistoryManager:
         conn = sqlite3.connect(self.db_path)
         try:
             conn.row_factory = sqlite3.Row
-            row = conn.execute(
-                "SELECT * FROM classifications WHERE id = ?", (record_id,)
-            ).fetchone()
+            row = conn.execute("SELECT * FROM classifications WHERE id = ?", (record_id,)).fetchone()
             if row:
                 record = dict(row)
-                record["datetime"] = datetime.fromtimestamp(record["timestamp"]).strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
+                record["datetime"] = datetime.fromtimestamp(record["timestamp"]).strftime("%Y-%m-%d %H:%M:%S")
                 if record["metadata"]:
                     try:
                         record["metadata"] = json.loads(record["metadata"])

@@ -18,6 +18,7 @@ class TestCleanText:
         """Test removal of special characters."""
         text = "Hello\u200bworld"  # zero-width space
         result = clean_text(text)
+        assert result is not None
         assert "\u200b" not in result
 
     def test_clean_excel_injection(self) -> None:

@@ -33,40 +33,59 @@ class _RestrictedUnpickler(pickle.Unpickler):
     This prevents arbitrary code execution via crafted pickle files (CWE-502).
     """
 
-    _SAFE_TYPES = frozenset({
-        # Builtins
-        "builtins", "__builtin__",
-        # Standard library
-        "collections", "re", "copyreg",
-        # NumPy
-        "numpy", "numpy.core.multiarray", "numpy.core.numeric",
-        "numpy.ma.core", "numpy.ma.core._MaskedArray",
-        "numpy.dtype", "numpy.float64", "numpy.int64",
-        "numpy.ndarray", "numpy.bool_",
-        # scikit-learn
-        "sklearn", "sklearn.pipeline", "sklearn.feature_extraction.text",
-        "sklearn.feature_extraction", "sklearn.linear_model",
-        "sklearn.naive_bayes", "sklearn.svm", "sklearn.ensemble",
-        "sklearn.tree", "sklearn.calibration",
-        # pandas
-        "pandas.core.frame", "pandas.core.series",
-        "pandas.core.indexes.base", "pandas.core.indexes.range",
-        # XGBoost
-        "xgboost", "xgboost.core",
-        # joblib
-        "joblib", "joblib.numpy_pickle",
-        # typing
-        "typing",
-    })
+    _SAFE_TYPES = frozenset(
+        {
+            # Builtins
+            "builtins",
+            "__builtin__",
+            # Standard library
+            "collections",
+            "re",
+            "copyreg",
+            # NumPy
+            "numpy",
+            "numpy.core.multiarray",
+            "numpy.core.numeric",
+            "numpy.ma.core",
+            "numpy.ma.core._MaskedArray",
+            "numpy.dtype",
+            "numpy.float64",
+            "numpy.int64",
+            "numpy.ndarray",
+            "numpy.bool_",
+            # scikit-learn
+            "sklearn",
+            "sklearn.pipeline",
+            "sklearn.feature_extraction.text",
+            "sklearn.feature_extraction",
+            "sklearn.linear_model",
+            "sklearn.naive_bayes",
+            "sklearn.svm",
+            "sklearn.ensemble",
+            "sklearn.tree",
+            "sklearn.calibration",
+            # pandas
+            "pandas.core.frame",
+            "pandas.core.series",
+            "pandas.core.indexes.base",
+            "pandas.core.indexes.range",
+            # XGBoost
+            "xgboost",
+            "xgboost.core",
+            # joblib
+            "joblib",
+            "joblib.numpy_pickle",
+            # typing
+            "typing",
+        }
+    )
 
     def find_class(self, module: str, name: str) -> Any:
         # Allow safe modules
-        top = module.split(".")[0]
+        top = module.partition(".")[0]
         if top in self._SAFE_TYPES or module in self._SAFE_TYPES:
             return super().find_class(module, name)
-        raise pickle.UnpicklingError(
-            f"Disallowed type: {module}.{name} — only safe ML types permitted"
-        )
+        raise pickle.UnpicklingError(f"Disallowed type: {module}.{name} — only safe ML types permitted")
 
 
 def _compute_hmac(data: bytes, key: bytes) -> str:
@@ -75,9 +94,7 @@ def _compute_hmac(data: bytes, key: bytes) -> str:
 
 
 # HMAC key for model file integrity (set via env var or use a default for dev)
-_HMAC_KEY = os.environ.get(
-    "SPAM_MODEL_HMAC_KEY", "smart-spam-default-dev-key-not-for-prod"
-).encode()
+_HMAC_KEY = os.environ.get("SPAM_MODEL_HMAC_KEY", "smart-spam-default-dev-key-not-for-prod").encode()
 
 
 def save_pickle(obj: Any, filepath: str) -> str:
@@ -125,7 +142,7 @@ def load_pickle(filepath: str) -> Any:
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"Pickle file not found: {filepath}")
     with open(filepath, "rb") as f:
-        envelope = pickle.load(f)
+        envelope = pickle.load(f)  # nosec B301 - outer envelope only; payload is loaded via _RestrictedUnpickler
 
     # Support both legacy (raw pickle) and new (HMAC-wrapped) formats
     if isinstance(envelope, dict) and "data" in envelope and "hmac" in envelope:
@@ -133,9 +150,7 @@ def load_pickle(filepath: str) -> Any:
         raw = envelope["data"]
         actual_sig = _compute_hmac(raw, _HMAC_KEY)
         if not hmac.compare_digest(expected_sig, actual_sig):
-            raise ValueError(
-                f"HMAC verification failed for {filepath} — file may be tampered with"
-            )
+            raise ValueError(f"HMAC verification failed for {filepath} — file may be tampered with")
         return _RestrictedUnpickler(io.BytesIO(raw)).load()
     else:
         # Legacy format: raw pickle without HMAC wrapper
@@ -182,9 +197,7 @@ def validate_dataset(df: pd.DataFrame, required_columns: list[str]) -> bool:
     """
     missing = [col for col in required_columns if col not in df.columns]
     if missing:
-        raise ValueError(
-            f"Dataset missing required columns: {missing}. Available columns: {df.columns.tolist()}"
-        )
+        raise ValueError(f"Dataset missing required columns: {missing}. Available columns: {df.columns.tolist()}")
     return True
 
 

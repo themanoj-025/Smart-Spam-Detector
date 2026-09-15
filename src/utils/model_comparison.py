@@ -269,8 +269,7 @@ class ModelComparison:
 
         if run_dir is None:
             self._error_message = (
-                "No training runs found. Please train models first:\n"
-                "  python -m src.pipeline.training_pipeline"
+                "No training runs found. Please train models first:\n  python -m src.pipeline.training_pipeline"
             )
             return False
 
@@ -408,9 +407,7 @@ class ModelComparison:
             )
 
         # Compute dynamic range: round down min value to nearest 5%
-        all_vals = [
-            metrics.get(m, 0) * 100 for metrics in self.metrics.values() for m in radar_metrics
-        ]
+        all_vals = [metrics.get(m, 0) * 100 for metrics in self.metrics.values() for m in radar_metrics]
         min_val = (min(all_vals) // 5) * 5 if all_vals else 85
         max_val = 100
         # Ensure at least a 5% spread
@@ -530,9 +527,7 @@ class ModelComparison:
             Dict of model_name -> plotly figure.
         """
         return {
-            name: self.get_confusion_matrix_heatmap(name)
-            for name in self.models
-            if name in self.confusion_matrices
+            name: self.get_confusion_matrix_heatmap(name) for name in self.models if name in self.confusion_matrices
         }
 
     @staticmethod

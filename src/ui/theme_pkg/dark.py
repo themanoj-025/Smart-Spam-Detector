@@ -1,4 +1,4 @@
-DARK_THEME_CSS = '''
+DARK_THEME_CSS = """
 <style>
 
         .stApp {
@@ -58,4 +58,4 @@ DARK_THEME_CSS = '''
         }
 
 </style>
-'''
+"""

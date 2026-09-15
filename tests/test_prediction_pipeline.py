@@ -29,7 +29,7 @@ pytestmark = pytest.mark.slow
 
 
 @pytest.fixture
-def pipeline() -> None:
+def pipeline() -> PredictionPipeline:
     """Return a PredictionPipeline with models NOT loaded so all
     _load_models / TF-IDF / model interactions can be mocked."""
     return PredictionPipeline(load_models=False)
@@ -175,9 +175,7 @@ class TestExplanationAvailable:
             np.array([[-0.85, -0.72, 0.45, 0.0]]),  # ham class
         ]
 
-        result = pipeline.predict_with_explanation(
-            "free win meeting hello", explanation_enabled=True
-        )
+        result = pipeline.predict_with_explanation("free win meeting hello", explanation_enabled=True)
 
         assert result["explanation"]["status"] == "available"
         assert result["explanation"]["error_message"] == ""
@@ -202,9 +200,7 @@ class TestExplanationAvailable:
         """SHAP values returned as a 2D array (single-class style)."""
         pipeline._shap_explainer.shap_values.return_value = np.array([[0.85, 0.72, -0.45, 0.0]])
 
-        result = pipeline.predict_with_explanation(
-            "free win meeting hello", explanation_enabled=True
-        )
+        result = pipeline.predict_with_explanation("free win meeting hello", explanation_enabled=True)
 
         assert result["explanation"]["status"] == "available"
         assert len(result["explanation"]["word_contributions"]) == 3
@@ -311,9 +307,7 @@ class TestExplanationExceptions:
         result = pipeline.predict_with_explanation("hello", explanation_enabled=True)
 
         assert result["explanation"]["status"] == "error"
-        assert (
-            "Explanation failed: SHAP computation failed" in result["explanation"]["error_message"]
-        )
+        assert "Explanation failed: SHAP computation failed" in result["explanation"]["error_message"]
 
 
 # ========================  LAZY MODEL LOADING  ==============================

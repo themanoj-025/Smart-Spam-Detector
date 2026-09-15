@@ -7,6 +7,27 @@ from typing import Any
 
 import streamlit as st
 
+from src.utils.utils import load_pickle
+
+
+class ModelLoader:
+    """Class-based facade over the model-loading helpers (test-facing API).
+
+    ``load_model``/``load_vectorizer`` return ``None`` when no path is
+    given — mirroring the graceful-degradation contract of the module-level
+    :func:`load_model` used by the dashboard.
+    """
+
+    def load_model(self, model_path: str | None) -> Any:
+        if model_path is None:
+            return None
+        return load_pickle(model_path)
+
+    def load_vectorizer(self, vectorizer_path: str | None) -> Any:
+        if vectorizer_path is None:
+            return None
+        return load_pickle(vectorizer_path)
+
 
 @st.cache_resource(show_spinner="Loading trained models...")
 def _load_pipeline() -> Any:

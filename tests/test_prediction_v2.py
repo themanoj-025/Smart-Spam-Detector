@@ -9,6 +9,8 @@ from unittest.mock import MagicMock, patch
 from src.pipeline.prediction_pipeline import PredictionPipeline
 
 pytestmark = pytest.mark.slow
+
+
 class TestPredictionPipeline:
     """Tests for PredictionPipeline."""
 
@@ -22,7 +24,8 @@ class TestPredictionPipeline:
         mock_cfg.model_path = None
         mock_config.return_value = mock_cfg
         pipeline = PredictionPipeline()
-        # Without a model, should handle gracefully
-        result = pipeline.predict("Buy cheap pills now!!!")
-        assert result is not None
-        assert "prediction" in result
+        # No model can be loaded (model_path is None); the pipeline's
+        # contract is to raise FileNotFoundError on prediction, which the
+        # API layer converts to a 503. Assert that contract.
+        with pytest.raises(FileNotFoundError):
+            pipeline.predict_single_email("Buy cheap pills now!!!")

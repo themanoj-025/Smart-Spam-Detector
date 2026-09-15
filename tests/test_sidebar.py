@@ -1,6 +1,5 @@
 """Tests for sidebar component."""
 
-
 from src.ui.sidebar import SidebarRenderer
 
 

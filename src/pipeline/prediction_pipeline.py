@@ -133,9 +133,7 @@ class PredictionPipeline:
                     link="logit",
                 )
             except TypeError:
-                logger.info(
-                    "SHAP KernelExplainer does not accept 'link' param, retrying without it"
-                )
+                logger.info("SHAP KernelExplainer does not accept 'link' param, retrying without it")
                 self._shap_explainer = shap.KernelExplainer(
                     self.model.predict_proba,
                     background,
@@ -169,9 +167,7 @@ class PredictionPipeline:
         except (ValueError, TypeError):
             pass
 
-        logger.info(
-            f"Prediction: {prediction_label} {f'(confidence: {confidence}%)' if confidence else ''}"
-        )
+        logger.info(f"Prediction: {prediction_label} {f'(confidence: {confidence}%)' if confidence else ''}")
 
         return {
             "prediction": prediction_label,
@@ -293,9 +289,7 @@ class PredictionPipeline:
 
         return run_batch_prediction(mail_data, self.model, self.feature_transformer)
 
-    def predict_mbox_file(
-        self, mailbox_path: str, output_path: str | None = None
-    ) -> pd.DataFrame:
+    def predict_mbox_file(self, mailbox_path: str, output_path: str | None = None) -> pd.DataFrame:
         """Complete pipeline: load MBOX, process emails, run predictions."""
         if self.model is None or self.feature_transformer is None:
             self._load_models()
