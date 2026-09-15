@@ -29,6 +29,10 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 3
+    ignore:
+      # numpy/scipy have no wheels for py3.13+/3.14 yet; stay on 3.12-slim
+      - dependency-name: "python"
+        versions: [">=3.13-slim"]
     labels:
       - "dependencies"
       - "docker"
