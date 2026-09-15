@@ -256,4 +256,4 @@ jobs:
           sudo dpkg -i dive_0.12.0_linux_amd64.deb
       - name: Run dive (efficiency check)
         run: |
-          CI=true dive dive-audit:latest --ci-image-size-threshold=1024 --ci-wasted-bytes-threshold=51200000
+          CI=true dive dive-audit:latest --highestWastedBytes=51200000 --highestUserWastedPercent=0.5 --lowestEfficiency=0.5
