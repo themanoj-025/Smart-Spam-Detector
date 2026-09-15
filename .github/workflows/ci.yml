@@ -174,7 +174,9 @@ jobs:
           # pip vendors its own msgpack (GHSA-6v7p-g79w-8964); the app never
           # imports pip's vendored copy (site-packages are patched), so
           # exclude it from the scan.
-          skip-dirs: /usr/local/lib/python3.11/site-packages/pip/_vendor
+          # pip's vendored msgpack is security-only (upgraded at runtime); update
+          # the pythonX.Y path if the Docker base image changes.
+          skip-dirs: /usr/local/lib/python3.12/site-packages/pip/_vendor
 
   typecheck:
     timeout-minutes: 15
@@ -257,6 +259,6 @@ jobs:
           sudo dpkg -i dive_0.12.0_linux_amd64.deb
       - name: Run dive (efficiency check)
         run: |
-          # 15% user-waste ceiling: the deliberate `apt-get upgrade` CVE fix
-          # supersedes ~90MB of base-image libs in earlier layers; 0.5% is unattainable.
-          CI=true dive dive-audit:latest --highestWastedBytes=51200000 --highestUserWastedPercent=0.15 --lowestEfficiency=0.5
+          # Waste ceilings sized for the deliberate `apt-get upgrade` CVE fix,
+          # which supersedes ~91MB of base-image libs in earlier layers.
+          CI=true dive dive-audit:latest --highestWastedBytes=120000000 --highestUserWastedPercent=0.15 --lowestEfficiency=0.5
