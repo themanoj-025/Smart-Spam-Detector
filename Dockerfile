@@ -17,7 +17,7 @@
 # 3.12 (not 3.14): the pinned scientific stack (numpy>=2.2.6,<2.3.0,
 # scikit-learn, scipy, shap) has no cp314 wheels yet — pip falls back to a
 # source build that fails (no compiler in slim images).
-FROM python:3.14-slim AS base
+FROM python:3.12-slim AS base
 
 LABEL org.opencontainers.image.title="Spam Email Classifier"
 LABEL org.opencontainers.image.description="ML spam classifier — FastAPI + Streamlit with SHAP explainability"
