@@ -3,6 +3,7 @@
 Uses FastAPI's TestClient for fast, server-free endpoint testing.
 """
 
+from collections.abc import Iterator
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -14,17 +15,18 @@ pytestmark = pytest.mark.integration
 
 
 pytestmark = pytest.mark.slow
+
+
 @pytest.fixture
-def client() -> None:
+def client() -> Iterator[TestClient]:
     """Create a TestClient for the FastAPI app."""
-    return TestClient(app)
+    yield TestClient(app)
 
 
 @pytest.fixture(autouse=True)
-def reset_pipeline() -> None:
+def reset_pipeline() -> Iterator[None]:
     """Reset the global pipeline before each test."""
     import api as api_module
-
 
     api_module.pipeline = None
     yield
@@ -214,7 +216,7 @@ class TestPredictWithExplanation:
 class TestPredictBatch:
     """Test the /predict/batch endpoint."""
 
-    def test_batch_basic(self, client) -> dict[str, object]:
+    def test_batch_basic(self, client) -> None:
         """POST /predict/batch should classify multiple emails."""
         mock_pipeline = MagicMock()
 
@@ -280,7 +282,7 @@ class TestPredictBatch:
         assert data["results"][0]["explanation"] is not None
         assert data["results"][0]["explanation"]["status"] == "available"
 
-    def test_batch_empty_email(self, client) -> dict[str, object]:
+    def test_batch_empty_email(self, client) -> None:
         """Empty strings in batch should be handled gracefully."""
         mock_pipeline = MagicMock()
 

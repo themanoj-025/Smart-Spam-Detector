@@ -14,7 +14,10 @@
 # ═══════════════════════════════════════════════════════════════════════
 
 # ── Base stage ─────────────────────────────────────────────────────────
-FROM python:3.14-slim AS base
+# 3.12 (not 3.14): the pinned scientific stack (numpy>=2.2.6,<2.3.0,
+# scikit-learn, scipy, shap) has no cp314 wheels yet — pip falls back to a
+# source build that fails (no compiler in slim images).
+FROM python:3.12-slim AS base
 
 LABEL org.opencontainers.image.title="Spam Email Classifier"
 LABEL org.opencontainers.image.description="ML spam classifier — FastAPI + Streamlit with SHAP explainability"
@@ -30,7 +33,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN apt-get update && apt-get install -y --no-install-recommends \
         tini \
         curl \
-    # Remove Debian's apt-managed python packages: python:3.11-slim ships
+    # Remove Debian's apt-managed python packages: python:3.12-slim ships
     # python3-msgpack 1.1.2 (GHSA-6v7p-g79w-8964, HIGH) and python3-setuptools
     # 70.3.0 (CVE-2025-47273) in /usr/lib/python3/dist-packages. The pip
     # install in the deps stage provides patched versions (msgpack 1.2.1,
@@ -78,7 +81,7 @@ FROM appfiles AS api
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -fsS http://localhost:8000/health || exit 1
+    CMD ["curl", "-fsS", "http://localhost:8000/health"]
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 STOPSIGNAL SIGTERM
@@ -90,7 +93,7 @@ FROM appfiles AS streamlit
 EXPOSE 8501
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -fsS http://localhost:8501/_stcore/health || exit 1
+    CMD ["curl", "-fsS", "http://localhost:8501/_stcore/health"]
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 STOPSIGNAL SIGTERM

@@ -2,6 +2,7 @@
 
 import os
 import tempfile
+from collections.abc import Iterator
 
 import pytest
 
@@ -9,7 +10,7 @@ from src.utils.history_manager import HistoryManager
 
 
 @pytest.fixture
-def hm() -> None:
+def hm() -> Iterator[HistoryManager]:
     """Create a HistoryManager with a temporary database path."""
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = os.path.join(tmpdir, "test_history.db")

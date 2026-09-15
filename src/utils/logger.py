@@ -7,7 +7,7 @@ _LOG_FILE = None
 _LOG_FILE_FAILED = False
 
 
-def get_logger(name: str) -> None:
+def get_logger(name: str) -> logging.Logger:
     global _LOG_FILE, _LOG_FILE_FAILED
 
     logger = logging.getLogger(name)

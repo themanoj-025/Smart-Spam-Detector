@@ -55,9 +55,7 @@ class DataTransformation:
 
             # Check for unmapped labels
             if data["Category"].isnull().any():
-                unknown_labels = state.training_data.loc[
-                    data["Category"].isnull(), "Category"
-                ].unique()
+                unknown_labels = state.training_data.loc[data["Category"].isnull(), "Category"].unique()
                 raise ValueError(f"Unknown labels found: {unknown_labels}")
 
             # Ensure Category column is integer type

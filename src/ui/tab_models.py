@@ -22,9 +22,9 @@ except ImportError:
 
 def render_model_comparison() -> None:
     """Render the model comparison dashboard tab."""
+
+
 """Tab 3: Model comparison dashboard."""
-
-
 
 
 # Try to load Plotly
@@ -41,17 +41,18 @@ except ImportError:
 st.header("📊 Model Performance Comparison")
 
 st.markdown(
-    "Compare all trained models side-by-side with radar charts, "
-    "confusion matrices, and detailed performance metrics."
+    "Compare all trained models side-by-side with radar charts, confusion matrices, and detailed performance metrics."
 )
 
+
 @st.cache_resource(show_spinner="Loading model comparison data...")
-def get_model_comparison() -> None:
+def get_model_comparison() -> tuple[ModelComparison, bool]:
     mc = ModelComparison()
 
     loaded = mc.load()
 
     return mc, loaded
+
 
 mc, comparison_loaded = get_model_comparison()
 
@@ -92,9 +93,7 @@ else:
 
     df = mc.get_comparison_df()
 
-    best_row = (
-        df[df["Best"] == "⭐"].iloc[0] if not df.empty and "⭐" in df["Best"].values else None
-    )
+    best_row = df[df["Best"] == "⭐"].iloc[0] if not df.empty and "⭐" in df["Best"].values else None
 
     if best_row is not None:
         cols = st.columns(4)
@@ -120,12 +119,8 @@ else:
         radar_fig.update_layout(
             font={"color": text_color},
             polar={
-                "radialaxis": {
-                    "gridcolor": "#444" if st.session_state.theme == "dark" else "#e0e0e0"
-                },
-                "angularaxis": {
-                    "gridcolor": "#444" if st.session_state.theme == "dark" else "#e0e0e0"
-                },
+                "radialaxis": {"gridcolor": "#444" if st.session_state.theme == "dark" else "#e0e0e0"},
+                "angularaxis": {"gridcolor": "#444" if st.session_state.theme == "dark" else "#e0e0e0"},
             },
         )
 
@@ -152,10 +147,7 @@ else:
 
     st.subheader("🔢 Confusion Matrices")
 
-    st.markdown(
-        "Each cell shows **count** and **percentage** (by row). "
-        "Rows = true labels, columns = predictions."
-    )
+    st.markdown("Each cell shows **count** and **percentage** (by row). Rows = true labels, columns = predictions.")
 
     cm_figs = mc.get_all_confusion_matrices()
 
@@ -172,9 +164,7 @@ else:
                     fig = cm_figs[name]
 
                     if fig:
-                        text_color = (
-                            "#e8eaed" if st.session_state.theme == "dark" else "#1a1a2e"
-                        )
+                        text_color = "#e8eaed" if st.session_state.theme == "dark" else "#1a1a2e"
 
                         fig.update_layout(
                             font={"color": text_color},
@@ -217,7 +207,3 @@ else:
         st.cache_resource.clear()
 
         st.rerun()
-
-
-
-

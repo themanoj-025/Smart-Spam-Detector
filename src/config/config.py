@@ -102,11 +102,7 @@ class Config:
         """Get the most recent timestamped output directory."""
         if not os.path.exists(self.OUTPUT_BASE_DIR):
             return None
-        dirs = [
-            d
-            for d in os.listdir(self.OUTPUT_BASE_DIR)
-            if os.path.isdir(os.path.join(self.OUTPUT_BASE_DIR, d))
-        ]
+        dirs = [d for d in os.listdir(self.OUTPUT_BASE_DIR) if os.path.isdir(os.path.join(self.OUTPUT_BASE_DIR, d))]
         if not dirs:
             return None
         return os.path.join(self.OUTPUT_BASE_DIR, max(dirs))

@@ -18,6 +18,7 @@ Usage:
 """
 
 import os
+from collections.abc import Iterator
 from contextlib import contextmanager
 from typing import Any
 
@@ -55,24 +56,18 @@ class MLflowTracker:
     def __init__(self, experiment_name: str = "smart-spam-detector") -> None:
         self.experiment_name = experiment_name
         self._mlflow = _get_mlflow()
-        self._enabled = self._mlflow is not None and bool(
-            os.environ.get("MLFLOW_TRACKING_URI", "")
-        )
+        self._enabled = self._mlflow is not None and bool(os.environ.get("MLFLOW_TRACKING_URI", ""))
         self._run: Any = None
 
         if self._enabled:
             self._mlflow.set_experiment(experiment_name)
             logger.info(f"MLflow tracking enabled: {experiment_name}")
         else:
-            reason = (
-                "MLFLOW_TRACKING_URI not set"
-                if self._mlflow is not None
-                else "mlflow not installed"
-            )
+            reason = "MLFLOW_TRACKING_URI not set" if self._mlflow is not None else "mlflow not installed"
             logger.info(f"MLflow tracking disabled: {reason}")
 
     @contextmanager
-    def start_run(self, run_name: str | None = None) -> None:
+    def start_run(self, run_name: str | None = None) -> Iterator[MLflowTracker]:
         """Context manager for an MLflow run.
 
         Usage:
@@ -185,3 +180,7 @@ class MLflowTracker:
         except (OSError, ValueError) as e:
             logger.warning(f"Failed to load model from MLflow: {e}")
             return None
+
+
+# Backwards-compatible alias (tests and older call-sites use this spelling)
+MLFlowTracker = MLflowTracker

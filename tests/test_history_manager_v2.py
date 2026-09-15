@@ -3,6 +3,7 @@
 import os
 import tempfile
 import time
+from collections.abc import Iterator
 
 import pytest
 
@@ -10,7 +11,7 @@ from src.utils.history_manager import HistoryManager
 
 
 @pytest.fixture
-def history_db() -> None:
+def history_db() -> Iterator[HistoryManager]:
     """Create a temporary database for testing."""
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = os.path.join(tmpdir, "test_history.db")
@@ -86,9 +87,9 @@ class TestHistoryManager:
         old_id = history_db.add_entry("old email", "Ham")
         # Mark as old by updating timestamp
         import sqlite3
+
         conn = sqlite3.connect(history_db.db_path)
-        conn.execute("UPDATE classifications SET timestamp = ? WHERE id = ?",
-                     (time.time() - 30 * 86400, old_id))
+        conn.execute("UPDATE classifications SET timestamp = ? WHERE id = ?", (time.time() - 30 * 86400, old_id))
         conn.commit()
         conn.close()
         recent = history_db.get_history(days_back=1)

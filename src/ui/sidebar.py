@@ -64,8 +64,7 @@ def render_sidebar(
         enable_live = st.checkbox(
             "Real-time typing analysis",
             value=True,
-            help="Shows a live spam likelihood gauge while you type. "
-            "Updates automatically as you edit the email text.",
+            help="Shows a live spam likelihood gauge while you type. Updates automatically as you edit the email text.",
         )
         st.caption(
             "The gauge updates whenever you interact with the text area. "
@@ -76,7 +75,8 @@ def render_sidebar(
 
         # --- About ---
         st.header("ℹ️ About")
-        st.markdown("""
+        st.markdown(
+            """
 This application uses a **TF-IDF Vectorizer** and trained **ML classifiers**
 to detect spam emails with high accuracy.
 
@@ -89,9 +89,22 @@ to detect spam emails with high accuracy.
 - 📊 Model comparison dashboard
 - 📋 Persistent classification history
 - 📄 Downloadable reports (HTML / CSV)
-        """)
+        """
+        )
 
         st.divider()
         st.caption("Built using Streamlit, scikit-learn & SHAP")
 
     return enable_explanation, enable_live
+
+
+class SidebarRenderer:
+    """Class-based facade for the sidebar renderer (test-facing API).
+
+    Construction must not touch Streamlit session state, so this only
+    validates that the module is importable — the functional entry point
+    remains :func:`render_sidebar`.
+    """
+
+    def __init__(self) -> None:
+        pass

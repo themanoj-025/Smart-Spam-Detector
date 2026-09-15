@@ -1,6 +1,5 @@
 """Tests for batch prediction tab."""
 
-
 from src.ui.tab_batch import BatchPredictionTab
 
 

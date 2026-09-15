@@ -61,21 +61,15 @@ class ModelTraining:
             Dictionary mapping model names to sklearn estimators.
         """
         models = {
-            "LogisticRegression": LogisticRegression(
-                random_state=self.config.random_state, class_weight="balanced"
-            ),
-            "DecisionTree": DecisionTreeClassifier(
-                random_state=self.config.random_state, class_weight="balanced"
-            ),
+            "LogisticRegression": LogisticRegression(random_state=self.config.random_state, class_weight="balanced"),
+            "DecisionTree": DecisionTreeClassifier(random_state=self.config.random_state, class_weight="balanced"),
             "SVM": SVC(
                 random_state=self.config.random_state,
                 probability=True,
                 class_weight="balanced",
             ),
             "KNN": KNeighborsClassifier(),
-            "RandomForest": RandomForestClassifier(
-                random_state=self.config.random_state, class_weight="balanced"
-            ),
+            "RandomForest": RandomForestClassifier(random_state=self.config.random_state, class_weight="balanced"),
         }
         if HAS_XGBOOST:
             models["XGBoost"] = XGBClassifier(
@@ -138,12 +132,8 @@ class ModelTraining:
                 "timestamp": timestamp,
                 "best_model_name": state.best_model_name,
                 "best_model_params": str(state.best_params),
-                "best_model_f1_score": float(
-                    state.model_metrics[state.best_model_name]["f1_score"]
-                ),
-                "best_model_accuracy": float(
-                    state.model_metrics[state.best_model_name]["accuracy"]
-                ),
+                "best_model_f1_score": float(state.model_metrics[state.best_model_name]["f1_score"]),
+                "best_model_accuracy": float(state.model_metrics[state.best_model_name]["accuracy"]),
                 "all_models_trained": list(state.trained_models.keys()),
                 "tfidf_features": state.X_train_tfidf.shape[1],
                 "vocabulary_size": len(state.tfidf_vectorizer.vocabulary_),
@@ -189,9 +179,7 @@ class ModelTraining:
 
         df_summary = pd.DataFrame(metrics_data)
         df_summary = df_summary.sort_values("F1_Score", ascending=False)
-        df_summary.to_csv(
-            os.path.join(observations_dir, "model_comparison_summary.csv"), index=False
-        )
+        df_summary.to_csv(os.path.join(observations_dir, "model_comparison_summary.csv"), index=False)
         logger.info("Saved: model_comparison_summary.csv")
 
         # 2. Best Parameters for Each Model
@@ -278,7 +266,7 @@ class ModelTraining:
             y_test = state.y_test
 
             trained_models: dict[str, object] = {}
-            model_metrics: dict[str, dict[str, float]] = {}
+            model_metrics: dict[str, dict[str, Any]] = {}
             cv_results: dict[str, dict[str, Any]] = {}
 
             models = self._get_model_instances()
@@ -387,18 +375,26 @@ class ModelTraining:
 
             # Log to MLflow
             with self.tracker.start_run(run_name=f"{best_model_name}-{datetime.now().strftime('%Y%m%d-%H%M%S')}"):
-                self.tracker.log_params({
-                    "best_model": best_model_name,
-                    "cv_folds": self.cv_config.cv_folds,
-                    "scoring": self.cv_config.scoring,
-                    **{f"{best_model_name}_{k}": v for k, v in best_params.items() if isinstance(v, (str, int, float, bool))},
-                })
-                self.tracker.log_metrics({
-                    f"{name}_{metric}": value
-                    for name, metrics in model_metrics.items()
-                    for metric, value in metrics.items()
-                    if isinstance(value, (int, float))
-                })
+                self.tracker.log_params(
+                    {
+                        "best_model": best_model_name,
+                        "cv_folds": self.cv_config.cv_folds,
+                        "scoring": self.cv_config.scoring,
+                        **{
+                            f"{best_model_name}_{k}": v
+                            for k, v in best_params.items()
+                            if isinstance(v, (str, int, float, bool))
+                        },
+                    }
+                )
+                self.tracker.log_metrics(
+                    {
+                        f"{name}_{metric}": value
+                        for name, metrics in model_metrics.items()
+                        for metric, value in metrics.items()
+                        if isinstance(value, (int, float))
+                    }
+                )
                 self.tracker.log_model(
                     best_model,
                     "spam-model",

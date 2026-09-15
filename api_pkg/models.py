@@ -41,15 +41,9 @@ class Explanation(BaseModel):
         default_factory=list,
         description="All word-level contributions sorted by absolute value",
     )
-    top_spam_words: list[WordContribution] = Field(
-        default_factory=list, description="Top 10 words pushing toward spam"
-    )
-    top_ham_words: list[WordContribution] = Field(
-        default_factory=list, description="Top 10 words pushing toward ham"
-    )
-    highlighted_html: str = Field(
-        default="", description="HTML with words color-coded by contribution"
-    )
+    top_spam_words: list[WordContribution] = Field(default_factory=list, description="Top 10 words pushing toward spam")
+    top_ham_words: list[WordContribution] = Field(default_factory=list, description="Top 10 words pushing toward ham")
+    highlighted_html: str = Field(default="", description="HTML with words color-coded by contribution")
     error_message: str = Field(default="", description="Error message if status is 'error'")
 
 
@@ -59,12 +53,8 @@ class PredictResponse(BaseModel):
     prediction: str = Field(..., description="'Spam' or 'Ham'")
     confidence: float | None = Field(None, description="Confidence percentage (0-100)")
     raw_prediction: int = Field(..., description="Integer prediction (0 = Spam, 1 = Ham)")
-    explanation: Explanation | None = Field(
-        None, description="SHAP-based explanation (only with /predict/explain)"
-    )
-    processing_time_ms: float | None = Field(
-        None, description="Time taken for prediction in milliseconds"
-    )
+    explanation: Explanation | None = Field(None, description="SHAP-based explanation (only with /predict/explain)")
+    processing_time_ms: float | None = Field(None, description="Time taken for prediction in milliseconds")
 
 
 class BatchPredictRequest(BaseModel):
@@ -115,13 +105,9 @@ class ModelInfo(BaseModel):
     model_name: str | None = Field(None, description="Filename of the loaded model")
     vectorizer_name: str | None = Field(None, description="Filename of the loaded vectorizer")
     model_type: str | None = Field(None, description="Type of the model (e.g., 'SVC')")
-    vectorizer_type: str | None = Field(
-        None, description="Type of the vectorizer (e.g., 'TfidfVectorizer')"
-    )
+    vectorizer_type: str | None = Field(None, description="Type of the vectorizer (e.g., 'TfidfVectorizer')")
     vocabulary_size: int | None = Field(None, description="Number of features in the vocabulary")
-    supports_explanations: bool = Field(
-        False, description="Whether SHAP explanations are available"
-    )
+    supports_explanations: bool = Field(False, description="Whether SHAP explanations are available")
     api_version: str = Field("1.0.0", description="API version")
 
 

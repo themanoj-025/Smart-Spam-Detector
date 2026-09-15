@@ -87,9 +87,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 # Main Content - Tabs
 # ---------------------------------------------------------------------------
 
-tab1, tab2, tab3, tab4 = st.tabs(
-    ["🔍 Single Email", "📂 Batch Processing", "📊 Model Comparison", "📋 History"]
-)
+tab1, tab2, tab3, tab4 = st.tabs(["🔍 Single Email", "📂 Batch Processing", "📊 Model Comparison", "📋 History"])
 
 with tab1:
     render_single_email(pipeline, model_name, enable_explanation, enable_live, hm)
