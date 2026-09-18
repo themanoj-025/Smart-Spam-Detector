@@ -47,7 +47,7 @@ jobs:
           pip install pytest pytest-cov
 
       - name: Install linting tools
-        run: pip install ruff
+        run: pip install ruff==0.16.4
 
       - name: Lint with ruff (critical errors)
         run: |
@@ -120,7 +120,7 @@ jobs:
           cache: pip
           python-version: "3.11"
       - name: Install security tools
-        run: pip install bandit
+        run: pip install bandit==1.9.4
       - name: Run bandit security scan
         run: bandit -r src/ -ll
 
@@ -136,7 +136,7 @@ jobs:
           # and the trivy CVE gate, not hardcoded in the Dockerfile.
           # DL3005: apt-get upgrade IS the CVE fix for base-image packages.
           # DL3066 (info): USER appuser resolves via /etc/passwd (uid 10001).
-          failure-threshold: warning
+          failure-threshold: error
           ignore: DL3008,DL3013,DL3005
 
   docker:
@@ -191,7 +191,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install mypy
+          pip install mypy==2.3.1
       - name: Type check with mypy
         run: mypy . --ignore-missing-imports
 
@@ -261,4 +261,5 @@ jobs:
         run: |
           # Waste ceilings sized for the deliberate `apt-get upgrade` CVE fix,
           # which supersedes ~91MB of base-image libs in earlier layers.
-          CI=true dive dive-audit:latest --highestWastedBytes=120000000 --highestUserWastedPercent=0.15 --lowestEfficiency=0.5
+          # Thresholds live in .dive-ci (dive v0.12 removed the --ci-* / --highest* CLI flags).
+          CI=true dive dive-audit:latest
