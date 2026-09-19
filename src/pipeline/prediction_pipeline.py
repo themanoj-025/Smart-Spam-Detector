@@ -5,7 +5,6 @@ batch prediction with comprehensive result formatting,
 and SHAP-based explainability for word-level predictions.
 """
 
-import time
 from pathlib import Path
 from typing import Any
 
