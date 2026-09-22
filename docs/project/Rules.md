@@ -25,7 +25,7 @@
 - **Naming:** `snake_case` functions/vars, `UPPER_CASE` constants, descriptive module names.
 - **Structure:**
 
-```
+```text
 Smart-Spam-Detector/
 ├── api.py               # FastAPI server
 ├── app.py               # Streamlit UI

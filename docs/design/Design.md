@@ -63,7 +63,7 @@
 | Spam | Red pill: "SPAM — 99% confident" |
 | Uncertain | Amber pill: "UNCERTAIN — 54% confident" |
 
-```
+```text
 ┌───────────────────────────────┐
 │  [SPAM] 99% confident   [copy]│
 │  top tokens:  prize  win  free │

@@ -8,7 +8,7 @@
 
 ## 1. System Overview
 
-```
+```text
    INTERFACE LAYER (root entry points — thin, no business logic)
    ┌───────────────┐   ┌────────────────────┐   ┌───────────────┐
    │ api.py        │   │ app.py             │   │ classify.py   │
