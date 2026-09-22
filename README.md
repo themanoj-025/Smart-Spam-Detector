@@ -12,7 +12,7 @@
   <a href="https://github.com/themanoj-025/Smart-Spam-Detector/actions"><img src="https://img.shields.io/github/actions/workflow/status/themanoj-025/Smart-Spam-Detector/ci.yml?style=flat-square&label=CI" alt="CI Status" /></a>
   <a href="https://github.com/themanoj-025/Smart-Spam-Detector/blob/main/LICENSE"><img src="https://img.shields.io/github/license/themanoj-025/Smart-Spam-Detector?style=flat-square" alt="License" /></a>
   <a href="https://github.com/themanoj-025/Smart-Spam-Detector/stargazers"><img src="https://img.shields.io/github/stars/themanoj-025/Smart-Spam-Detector?style=social" alt="Stars" /></a>
-  <a href="#"><img src="https://img.shields.io/badge/Python-3.10+-blue?style=flat-square" alt="Python" /></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10+-blue?style=flat-square" alt="Python" /></a>
 </p>
 
 ---
@@ -124,7 +124,7 @@ python classify.py "Your email text here"
 
 ## 🏗️ Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                     User Interface                              │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
@@ -159,7 +159,7 @@ python classify.py "Your email text here"
 
 ## 📁 Project Structure
 
-```
+```text
 Smart-Spam-Detector/
 ├── src/
 │   ├── pipeline/          # Training and prediction pipelines
