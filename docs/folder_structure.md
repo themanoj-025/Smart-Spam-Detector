@@ -2,7 +2,7 @@
 
 Annotated tree of the **current (post-restructure)** layout, one-line purpose per entry.
 
-```
+```text
 Smart-Spam-Detector/
 ├── .github/
 │   ├── CODEOWNERS / dependabot.yml / labeler.yml / ISSUE_TEMPLATE/

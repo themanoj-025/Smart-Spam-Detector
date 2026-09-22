@@ -8,7 +8,7 @@ changes.**
 
 ## Before (2026-08-10)
 
-```
+```text
 Smart-Spam-Detector/
 ├── api.py · app.py · classify.py
 ├── src/ (config, components/, pipeline/, utils/)
@@ -31,7 +31,7 @@ Smart-Spam-Detector/
 
 ## After (2026-08-11)
 
-```
+```text
 Smart-Spam-Detector/
 ├── api.py · app.py · classify.py                      (unchanged — entry contract)
 ├── src/ · tests/ · data/ · outputs/                   (unchanged)

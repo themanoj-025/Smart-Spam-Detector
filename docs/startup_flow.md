@@ -2,7 +2,7 @@
 
 ## 1. API Boot (FastAPI, :8000)
 
-```
+```text
 uvicorn api:app --host 0.0.0.0 --port 8000      # Docker api target
 │
 ├─ 1. FastAPI app constructed (title, description)
@@ -15,7 +15,7 @@ uvicorn api:app --host 0.0.0.0 --port 8000      # Docker api target
 
 ## 2. Dashboard Boot (Streamlit, :8501)
 
-```
+```text
 streamlit run app.py                            # Docker app target / Cloud
 │
 ├─ 1. app.py imports src.pipeline.* + src.utils.*
@@ -27,14 +27,14 @@ streamlit run app.py                            # Docker app target / Cloud
 
 ## 3. CLI
 
-```
+```text
 python classify.py "text"      | stdin        | --file email.txt
 → PredictionPipeline.predict(text) → Spam/Ham + score
 ```
 
 ## 4. Training Flow (dashboard tab or `TrainingPipeline`)
 
-```
+```text
 TrainingPipeline.run():
   1. DataIngestion  — load data/dataset/dataset.csv
   2. DataTransformation — clean (email_utils) + vectorize + split
