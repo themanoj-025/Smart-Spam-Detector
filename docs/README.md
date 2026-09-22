@@ -9,7 +9,7 @@ an ML-powered SMS/email spam classifier with a web frontend.
 
 ## Structure
 
-```
+```text
 docs/
 ├── README.md                      ← this index
 ├── architecture.md                system architecture

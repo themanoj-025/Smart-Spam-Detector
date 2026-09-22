@@ -66,7 +66,7 @@
 
 ## 3. High-Level Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    Interfaces                                        │
 │                                                                     │
@@ -108,7 +108,7 @@
 
 ## 4. Complete Folder Structure Tree
 
-```
+```text
 Smart-Spam-Detector/
 ├── .dockerignore
 ├── .editorconfig
@@ -332,7 +332,7 @@ docker compose up -d
 
 ## 11. Dependency Graph Summary
 
-```
+```text
 app.py → src/pipeline/prediction_pipeline.py → src/components/*
 api.py → src/pipeline/prediction_pipeline.py
 classify.py → src/pipeline/prediction_pipeline.py

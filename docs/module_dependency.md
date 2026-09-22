@@ -6,7 +6,7 @@ pipelines → components/utils → config. All `src` modules import as a package
 
 ## 1. Dependency Graph
 
-```
+```text
   api.py ──┐      app.py ──┐       classify.py ──┐
            │              │                     │
            ▼              ▼                     ▼
