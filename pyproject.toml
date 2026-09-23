@@ -3,7 +3,7 @@ name = "spam-email-classifier"
 version = "1.0.0"
 description = "A production-grade machine learning system for classifying emails as Spam or Ham"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = "MIT"
 authors = [
     {name = "Spam Email Classifier Contributors"},
