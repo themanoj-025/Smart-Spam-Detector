@@ -25,6 +25,47 @@ from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
 # Optional: XGBoost (graceful fallback if not installed)
+
+def _assert_feature_alignment(model: object, X: object) -> None:
+    """Hard assertion that a model's learned feature space matches X.
+
+    Gradient-boosted and linear models learn their feature space from the
+    training matrix, so a trained estimator keeps its own feature inventory in
+    ``feature_names_in_``. If ``X`` is transformed by a vectorizer with a
+    different vocabulary count, ``model.predict(X)`` will fail with a vague
+    sklearn dimension error. Being explicit up front avoids guessing-machine
+    diagnostics mid-pipeline and surfaces data-corruption earlier.
+
+    Args:
+        model: A fitted scikit-learn estimator (must expose ``feature_names_in_``).
+        X: The matrix that will be passed to ``model.predict``.
+
+    Raises:
+        AssertionError: If the model's learned feature count does not match X.
+    """
+    feature_names = getattr(model, "feature_names_in_", None)
+    if feature_names is not None:
+        expected = len(feature_names)
+        actual = X.shape[1] if hasattr(X, "shape") else len(X)
+        assert actual == expected, (
+            f"Feature space mismatch: model expects {expected} features "
+            f"(feature_names_in_={list(feature_names)[:8]}...), "
+            f"but input X has {actual} features. "
+            f"The vectorizer used at inference must match the one used during training."
+        )
+    else:
+        # Estimator exposes only n_features_in_ (e.g. dense estimators).
+        # Hard-assert that the input matrix has the same number of features
+        # as it was fitted with.
+        expected = getattr(model, "n_features_in_", None)
+        if expected is not None:
+            actual = X.shape[1] if hasattr(X, "shape") else len(X)
+            assert actual == expected, (
+                f"Feature space mismatch: model expects {expected} features "
+                f"(n_features_in_), but input X has {actual} features. "
+                f"The vectorizer used at inference must match the one used during training."
+            )
+
 try:
     from xgboost import XGBClassifier
 
@@ -173,7 +214,7 @@ class ModelTraining:
                     "Recall": round(metrics["recall"], 4),
                     "F1_Score": round(metrics["f1_score"], 4),
                     "CV_Score": round(metrics.get("best_cv_score", 0), 4),
-                    "Is_Best_Model": "✓" if model_name == state.best_model_name else "",
+                    "Is_Best_Model": "âœ“" if model_name == state.best_model_name else "",
                 }
             )
 
@@ -273,7 +314,7 @@ class ModelTraining:
 
             for model_name, model in models.items():
                 start_time = time.time()
-                logger.info(f"\n{'─' * 50}")
+                logger.info(f"\n{'â”€' * 50}")
                 logger.info(f"Training: {model_name}")
 
                 param_grid = self.param_grids.get(model_name, {})
@@ -289,7 +330,10 @@ class ModelTraining:
 
                 search.fit(X_train, y_train)
                 best_model = search.best_estimator_
-                y_pred = best_model.predict(X_test)
+                # Assert that the model's learned feature inventory matches the
+                # test matrix before evaluating; a TF-IDF vectorizer with a
+                # different vocabulary count breaks prediction.
+                _assert_feature_alignment(best_model, X_test)
 
                 # Compute metrics
                 metrics = self._evaluate_model(best_model, X_test, y_test, y_pred)
@@ -314,7 +358,7 @@ class ModelTraining:
                 )
 
             # Build stacking ensemble
-            logger.info(f"\n{'─' * 50}")
+            logger.info(f"\n{'â”€' * 50}")
             logger.info("Training: StackingClassifier (ensemble)")
             stack_start = time.time()
 
@@ -332,6 +376,10 @@ class ModelTraining:
             )
             stack.fit(X_train, y_train)
             y_pred_stack = stack.predict(X_test)
+
+            # The stacking ensemble inherits the feature space of its base
+            # estimators; assert alignment before evaluating.
+            _assert_feature_alignment(stack, X_test)
 
             stack_metrics = self._evaluate_model(stack, X_test, y_test, y_pred_stack)
             stack_metrics["best_params"] = {
