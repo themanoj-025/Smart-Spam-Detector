@@ -1,3 +1,5 @@
+# 🛡️ Smart Spam Detector
+
 <p align="center">
   <img src="https://img.shields.io/badge/SmartSpamDetector-Spam%20Detection-red?style=for-the-badge" alt="SmartSpamDetector Logo" />
 </p>
@@ -17,34 +19,31 @@
 
 ---
 
-<p align="center">
-  <strong>Stop spam before it reaches your inbox.</strong>
-  <br />
-  ML-powered classification with SHAP explainability, drift detection, and automated retraining.
-</p>
-
----
-
 ## 📋 Table of Contents
 
+- [What it does](#what-it-does)
+- [📸 Screenshots](#-screenshots)
 - [✨ Features](#-features)
-- [🚀 Quick Start](#-quick-start)
-- [📋 Environment Variables](#-environment-variables)
+- [🚀 Quick start](#-quick-start)
+- [📋 Environment variables](#-environment-variables)
 - [🏗️ Architecture](#️-architecture)
-- [📁 Project Structure](#-project-structure)
-- [📡 API Endpoints](#-api-endpoints)
+- [📁 Project structure](#-project-structure)
+- [📡 API endpoints](#-api-endpoints)
 - [🧪 Testing](#-testing)
 - [🗺️ Roadmap](#️-roadmap)
 - [🤝 Contributing](#-contributing)
 - [📬 Support](#-support)
-- [📄 License](#-license)
-- [🙏 Acknowledgements](#-acknowledgements)
+- [License](#license)
 
 ---
 
-## 📸 Screenshots
+## What it does
 
-> _To add screenshots: run `streamlit run app.py`, capture your screen, save images to `docs/assets/`, and reference them below._
+Smart Spam Detector classifies emails as Spam or Ham using a production-grade MLOps pipeline: six models are trained, evaluated, and compared; SHAP provides per-prediction explainability; drift detection monitors model decay; and automated retraining fires when drift is detected. Users can explore results in a Streamlit dashboard, call the FastAPI REST API, or run the CLI.
+
+## Screenshots
+
+> To add screenshots: run `streamlit run app.py`, capture your screen, save images to `docs/assets/`, and reference them below.
 >
 > **Suggested screenshots:**
 > - Streamlit dashboard classification view
@@ -56,167 +55,144 @@
 ## ✨ Features
 
 | Feature | Description |
-|---------|-------------|
-| 🤖 **6 ML Models** | Logistic Regression, Random Forest, XGBoost, SGD, SVC, Stacking Ensemble |
-| 🔍 **SHAP Explainability** | Feature importance for every prediction |
-| 📊 **Drift Detection** | Monitor model performance degradation |
-| 🔄 **Auto Retraining** | Automated pipeline when drift detected |
-| 🖥️ **Interactive Dashboard** | Streamlit UI with 3 pages |
+| --- | --- |
+| 🖥️ **Interactive dashboard** | Streamlit UI with 3 pages (classification, SHAP, batch) |
+| 🔍 **SHAP explainability** | Feature importance for every prediction |
+| 📊 **Drift detection** | Monitor model performance degradation over time |
+| 🔄 **Auto retraining** | Automated pipeline when drift is detected |
+| 📦 **Batch processing** | Classify entire mailboxes from `.mbox` files |
+| ⚡ **CLI interface** | Command-line classification with confidence scores |
 | 🔌 **REST API** | FastAPI endpoints for programmatic access |
-| 📦 **Batch Processing** | Classify entire mailboxes from .mbox files |
-| ⚡ **CLI Interface** | Command-line classification with confidence scores |
+| 🔬 **6 ML models** | Logistic Regression, Random Forest, XGBoost, SGD, SVC, Stacking Ensemble |
 
----
-
-## 🚀 Quick Start
+## 🚀 Quick start
 
 ### Prerequisites
 
-- Python 3.10+
+- Python 3.10 or newer
+- A `.mbox` file for batch demos (or use the bundled sample)
 
-### Installation
+### Install & run
 
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/themanoj-025/Smart-Spam-Detector.git
 cd Smart-Spam-Detector
 
-# Create virtual environment
+# 2. Create and activate a virtual environment
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\Activate
 
-# Install dependencies
+# 3. Install dependencies
 pip install -r requirements.txt
 
-# Configure environment
+# 4. Configure environment
 cp .env.example .env
-```
 
-### Train Models
-
-```bash
+# 5. Train the models
 python -m src.pipeline.training_pipeline
-```
 
-### Run the App
-
-```bash
-# Streamlit dashboard
+# 6. Run the app
+#    Streamlit dashboard
 streamlit run app.py
 
-# API server
+#    API server
 python api.py
 
-# CLI classification
+#    CLI classification
 python classify.py "Your email text here"
 ```
 
----
-
-## 📋 Environment Variables
+## 📋 Environment variables
 
 | Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `SPAM_API_KEY` | API key for authentication | — | Optional |
-| `MLFLOW_TRACKING_URI` | MLflow tracking server | `sqlite:///mlflow.db` | ❌ |
-
----
+| --- | --- | --- | --- |
+| `SPAM_API_KEY` | API key for authentication | — | No |
+| `MLFLOW_TRACKING_URI` | MLflow tracking server | `sqlite:///mlflow.db` | No |
 
 ## 🏗️ Architecture
 
 ```text
-┌─────────────────────────────────────────────────────────────────┐
-│                     User Interface                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │  Streamlit   │  │   FastAPI    │  │     CLI      │          │
-│  │  Dashboard   │  │   REST API   │  │  classify.py │          │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘          │
-│         │                 │                 │                   │
-│         └─────────────────┼─────────────────┘                   │
-│                           │                                     │
-│                           ▼                                     │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │              ML Pipeline                                  │   │
-│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐    │   │
-│  │  │ Ingestion│ │Transform │ │ Training │ │Evaluation│    │   │
-│  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘    │   │
-│  └───────────────────────┬──────────────────────────────────┘   │
-│                          │                                      │
-│                          ▼                                      │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │              6 ML Models                                  │   │
-│  │  LR │ RF │ XGBoost │ SGD │ SVC │ Stacking                │   │
-│  └───────────────────────┬──────────────────────────────────┘   │
-│                          │                                      │
-│                          ▼                                      │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │              MLflow Tracking                              │   │
-│  └──────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 📁 Project Structure
-
-```text
 Smart-Spam-Detector/
 ├── src/
-│   ├── pipeline/          # Training and prediction pipelines
-│   ├── components/        # Pipeline components
-│   ├── utils/             # Logger, model comparison, reports
-│   └── config.py          # Configuration
-├── app.py                 # Streamlit dashboard
-├── api.py                 # FastAPI server
-├── classify.py            # CLI classifier
-├── tests/                 # Test suite
-├── data/                  # Dataset storage
-├── experiments/           # MLflow tracking
-├── docs/                  # Documentation
-├── requirements.txt       # Dependencies
-└── Dockerfile             # Docker build
+│   ├── pipeline/             # Training and prediction pipelines
+│   ├── components/           # Pipeline components
+│   ├── utils/                # Logger, model comparison, reports
+│   └── config.py             # Configuration
+├── app.py                    # Streamlit dashboard
+├── api.py                    # FastAPI server
+├── classify.py               # CLI classifier
+├── tests/                    # Test suite
+├── data/                     # Dataset storage
+├── experiments/              # MLflow tracking
+├── docs/                     # Documentation
+├── requirements.txt
+└── Dockerfile
 ```
 
----
+## 📁 Project structure
 
-## 📡 API Endpoints
+```
+Smart-Spam-Detector/
+├── src/
+│   ├── pipeline/             # Training + prediction pipelines
+│   ├── components/           # Pipeline components
+│   ├── utils/                # Logger, model comparison, reports
+│   └── config.py             # Configuration
+├── app.py                    # Streamlit dashboard
+├── api.py                    # FastAPI server
+├── classify.py               # CLI classifier
+├── tests/                    # Test suite
+├── data/                     # Dataset storage
+├── experiments/              # MLflow tracking
+├── docs/                     # Documentation
+├── requirements.txt
+└── Dockerfile
+```
+
+## 📡 API endpoints
 
 | Method | Path | Description |
-|--------|------|-------------|
+| --- | --- | --- |
 | `POST` | `/predict` | Classify a single email |
 | `POST` | `/predict/batch` | Classify multiple emails |
 | `GET` | `/health` | Health check |
 | `GET` | `/metrics` | Model performance metrics |
 
-### Example Usage
+### Example usage
 
 ```bash
-# Classify email
+# Classify a single email
 curl -X POST http://localhost:8000/predict \
   -H "Content-Type: application/json" \
-  -d '{"text": "Congratulations! You won a free iPhone!"}'
+  -d '{
+    "text": "Congratulations! You won a free iPhone!"
+  }'
 
 # Batch classify
 curl -X POST http://localhost:8000/predict/batch \
   -H "Content-Type: application/json" \
-  -d '{"emails": ["Spam text", "Legitimate text"]}'
+  -d '{
+    "emails": [
+      "Spam text",
+      "Legitimate text"
+    ]
+  }'
 ```
-
----
 
 ## 🧪 Testing
 
 ```bash
-# Run all tests
+# Run the full suite
 pytest tests/ -v
 
 # Run with coverage
 pytest tests/ --cov=src --cov-report=term-missing
 ```
 
----
-
 ## 🗺️ Roadmap
+
+> [!CAUTION] Checked items are built and verified. Unchecked items are tracked in the issue tracker.
 
 - [x] 6 ML models + stacking ensemble
 - [x] SHAP explainability
@@ -231,30 +207,9 @@ pytest tests/ --cov=src --cov-report=term-missing
 - [ ] Multi-language support
 - [ ] Active learning
 
----
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md).
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
-
----
-
-## 🙏 Acknowledgements
-
-- [scikit-learn](https://scikit-learn.org/) - ML framework
-- [XGBoost](https://xgboost.readthedocs.io/) - Gradient boosting
-- [SHAP](https://shap.readthedocs.io/) - Model explainability
-- [Streamlit](https://streamlit.io/) - Dashboard framework
-- [FastAPI](https://fastapi.tiangolo.com/) - REST API framework
-- [MLflow](https://mlflow.org/) - Experiment tracking
-
----
 
 ## 📬 Support
 
@@ -262,20 +217,6 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 - 💡 [Request a feature](https://github.com/themanoj-025/Smart-Spam-Detector/issues)
 - ⭐ [Star the repository](https://github.com/themanoj-025/Smart-Spam-Detector)
 
----
+## License
 
-<p align="center">
-  Made with ❤️ by <a href="https://github.com/themanoj-025">themanoj-025</a>
-</p>
-
-<p align="center">
-  If you find this project useful, please give it a ⭐ star!
-</p>
----
-
-## ⭐ Star History
-
-[![Last Commit](https://img.shields.io/github/last-commit/themanoj-025/Smart-Spam-Detector?style=flat-square)](https://github.com/themanoj-025/Smart-Spam-Detector)
-[![Contributors](https://img.shields.io/github/contributors/themanoj-025/Smart-Spam-Detector?style=flat-square)](https://github.com/themanoj-025/Smart-Spam-Detector/graphs/contributors)
-
-[![Star History Chart](https://api.star-history.com/svg?repos=themanoj-025/Smart-Spam-Detector&type=Date)](https://star-history.com/#Smart-Spam-Detector&Date)
+MIT License — see [LICENSE](LICENSE).
