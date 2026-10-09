@@ -1,0 +1,10 @@
+# dive CI thresholds (used when CI=true; replaces removed --ci-* CLI flags in dive v0.12)
+# Sized for the deliberate `apt-get upgrade` CVE fix, which supersedes ~91MB of
+# base-image libs in earlier layers — looser than the portfolio-default 50MB/0.5/0.9.
+rules:
+  # If the efficiency is measured below X%, mark as failed (0-1).
+  lowestEfficiency: 0.5
+  # If the amount of wasted space is at least X, mark as failed.
+  highestWastedBytes: 120MB
+  # If wasted space makes up X% or more of the image, mark as failed.
+  highestUserWastedPercent: 0.15

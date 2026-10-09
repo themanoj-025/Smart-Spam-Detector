@@ -1,0 +1,115 @@
+[project]
+name = "spam-email-classifier"
+version = "1.0.0"
+description = "A production-grade machine learning system for classifying emails as Spam or Ham"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    {name = "Spam Email Classifier Contributors"},
+]
+keywords = ["spam-detection", "machine-learning", "nlp", "email-classification"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Communications :: Email :: Filters",
+]
+
+dependencies = [
+    "scikit-learn>=1.3.0",
+    "pandas>=2.0.0",
+    "streamlit>=1.28.0",
+    "beautifulsoup4>=4.12.0",
+    "matplotlib>=3.7.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.23.0",
+    "slowapi>=0.1.9",
+    "shap>=0.45.0",
+    "plotly>=5.15.0",
+    "openpyxl>=3.1.0",
+    "xlsxwriter>=3.1.0",
+    "python-multipart>=0.0.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+"Source Code" = "https://github.com/themanoj-025/Smart-Spam-Detector"
+"Bug Tracker" = "https://github.com/themanoj-025/Smart-Spam-Detector/issues"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "BLE", "UP", "SIM", "C4", "RUF", "PLC", "PIE", "I"]
+ignore = [
+    "DTZ005",  # datetime.now() without tz
+    "DTZ006",  # datetime.fromtimestamp without tz
+    "RUF012",  # mutable class default
+    "SIM117",  # multiple with-statements
+    "B008",    # FastAPI Depends() in defaults
+    "RUF034",  # positional match
+    "SIM102",  # collapsible if
+    "E501",    # line too long
+    "BLE001",  # blind except — defensive coding
+    "UP031",   # printf formatting
+    "PLC0415", # import-outside-top-level — lazy imports
+    "F821",    # undefined name — false positives
+    "B904",    # raise-without-from — legacy code
+    "F401",    # unused import — re-export pattern
+    "RUF005",  # collection-literal-in-comparison
+    "E402",    # module-import-not-at-top — setup pattern
+    "B025",    # duplicate exception — intentional defensive coding
+    "SIM108",  # if-else → ternary — readability preference
+    "RUF100",  # unused noqa directives
+    "RUF001",  # ambiguous unicode — intentional
+    "B905",    # zip-without-strict
+    "B007",    # unused loop variable
+]
+
+[tool.ruff.lint.per-file-ignores]
+# .format() is required here: bandit B608's `# nosec` cannot attach inside
+# f-string text, so the dynamic WHERE clause must stay a format call.
+"src/utils/history_manager.py" = ["UP032"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow",
+    "integration: marks tests requiring external services",
+    "unit: marks pure unit tests",
+]
+addopts = "-m 'not slow' --cov --cov-fail-under=50"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.mypy]
+ignore_missing_imports = true
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+
+warn_unused_ignores = true
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 80
+skip_empty = true

@@ -1,0 +1,30 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.4
+    hooks:
+      # No explicit line-length: ruff reads [tool.ruff] line-length = 120
+      # from pyproject.toml, keeping hooks and CI/lint consistent.
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v2.3.1
+    hooks:
+      - id: mypy
+        args: [--config-file, mypy.ini]
+        entry: mypy api.py app.py classify.py src
+        language: python
+        pass_filenames: false
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^(data/|outputs/)
+      - id: end-of-file-fixer
+        exclude: ^(data/|outputs/)
+      - id: check-yaml
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-merge-conflict
+      - id: detect-private-key
