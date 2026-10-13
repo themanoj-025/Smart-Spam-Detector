@@ -26,6 +26,7 @@ from sklearn.tree import DecisionTreeClassifier
 
 # Optional: XGBoost (graceful fallback if not installed)
 
+
 def _assert_feature_alignment(model: object, X: object) -> None:
     """Hard assertion that a model's learned feature space matches X.
 
@@ -65,6 +66,7 @@ def _assert_feature_alignment(model: object, X: object) -> None:
                 f"(n_features_in_), but input X has {actual} features. "
                 f"The vectorizer used at inference must match the one used during training."
             )
+
 
 try:
     from xgboost import XGBClassifier

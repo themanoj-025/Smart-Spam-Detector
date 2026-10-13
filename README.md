@@ -130,26 +130,6 @@ Smart-Spam-Detector/
 └── Dockerfile
 ```
 
-## 📁 Project structure
-
-```
-Smart-Spam-Detector/
-├── src/
-│   ├── pipeline/             # Training + prediction pipelines
-│   ├── components/           # Pipeline components
-│   ├── utils/                # Logger, model comparison, reports
-│   └── config.py             # Configuration
-├── app.py                    # Streamlit dashboard
-├── api.py                    # FastAPI server
-├── classify.py               # CLI classifier
-├── tests/                    # Test suite
-├── data/                     # Dataset storage
-├── experiments/              # MLflow tracking
-├── docs/                     # Documentation
-├── requirements.txt
-└── Dockerfile
-```
-
 ## 📡 API endpoints
 
 | Method | Path | Description |

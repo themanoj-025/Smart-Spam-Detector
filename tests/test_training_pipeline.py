@@ -70,9 +70,7 @@ class TestFeatureAlignment:
         """A vectorizer with a different vocabulary count must fail fast."""
         model = LogisticRegression(random_state=model_training.config.random_state)
         model.fit(state.X_train_tfidf, state.y_train)
-        mismatched = np.zeros(
-            (state.X_test_tfidf.shape[0], state.X_test_tfidf.shape[1] + 1)
-        )
+        mismatched = np.zeros((state.X_test_tfidf.shape[0], state.X_test_tfidf.shape[1] + 1))
         with pytest.raises(AssertionError, match="Feature space mismatch"):
             _assert_feature_alignment(model, mismatched)
 
@@ -81,6 +79,7 @@ class TestFeatureAlignment:
         self, model_training: ModelTraining, state: TrainingState
     ) -> None:
         """Estimators without feature_names_in_ are compared against their shape."""
+
         class DummyClassifier:
             def fit(self, X, y):
                 self.n_features_in_ = X.shape[1]
