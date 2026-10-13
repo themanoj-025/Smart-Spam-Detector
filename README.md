@@ -22,7 +22,7 @@
 ## 📋 Table of Contents
 
 - [What it does](#what-it-does)
-- [📸 Screenshots](#-screenshots)
+- [📸 Screenshots](#screenshots)
 - [✨ Features](#-features)
 - [🚀 Quick start](#-quick-start)
 - [📋 Environment variables](#-environment-variables)
