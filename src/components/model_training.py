@@ -336,6 +336,7 @@ class ModelTraining:
                 _assert_feature_alignment(best_model, X_test)
 
                 # Compute metrics
+                y_pred = best_model.predict(X_test)
                 metrics = self._evaluate_model(best_model, X_test, y_test, y_pred)
                 metrics["best_params"] = search.best_params_
                 metrics["best_cv_score"] = search.best_score_
