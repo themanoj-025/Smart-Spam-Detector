@@ -27,7 +27,6 @@
 - [🚀 Quick start](#-quick-start)
 - [📋 Environment variables](#-environment-variables)
 - [🏗️ Architecture](#️-architecture)
-- [📁 Project structure](#-project-structure)
 - [📡 API endpoints](#-api-endpoints)
 - [🧪 Testing](#-testing)
 - [🗺️ Roadmap](#️-roadmap)
