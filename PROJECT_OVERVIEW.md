@@ -160,7 +160,7 @@ journey
 graph TD
     User["SOC Analyst / Enterprise User"] -->|"Web Browser HTTPS"| SpamDetector["Smart Spam Detector Boundary"]
     MailServer["Mail Transfer Agent (MTA)"] -->|"HTTP POST /predict"| SpamDetector
-    
+
     SpamDetector -->|"Exports Incident Reports"| PDF["ReportLab PDF Generator"]
     SpamDetector -->|"Scrapes Telemetry"| Prometheus["Prometheus Monitoring"]
 ```
@@ -634,55 +634,55 @@ Production deployment is achieved via containerized Docker environments hosting 
 
 ## <a id="exam"></a>§EXAM — Cold-Reader Verification Exam (25 Questions)
 
-1. **Q: What is the Python runtime requirement for Smart Spam Detector?**  
+1. **Q: What is the Python runtime requirement for Smart Spam Detector?**
    *A:* Python >= 3.10 (tested on 3.11). Reference: [`pyproject.toml`](pyproject.toml).
-2. **Q: How many total tracked files exist in the Smart-Spam-Detector repository?**  
+2. **Q: How many total tracked files exist in the Smart-Spam-Detector repository?**
    *A:* 175 files. Reference: [§APP](#app).
-3. **Q: How many automated test functions exist across how many test files?**  
+3. **Q: How many automated test functions exist across how many test files?**
    *A:* 164 test functions across 21 test files. Reference: [`tests/`](tests/).
-4. **Q: What are the 6 machine learning algorithms combined in the ensemble?**  
+4. **Q: What are the 6 machine learning algorithms combined in the ensemble?**
    *A:* Logistic Regression, Random Forest, XGBoost, SGD Classifier, Support Vector Classifier, and Stacking Classifier. Reference: [`README.md`](README.md).
-5. **Q: What heuristic checks are performed on embedded URLs?**  
+5. **Q: What heuristic checks are performed on embedded URLs?**
    *A:* IP hostnames, deceptive redirects, and high-risk top-level domains (TLDs). Reference: [`src/email_utils.py`](src/).
-6. **Q: How many tabs are featured in the interactive Streamlit dashboard?**  
+6. **Q: How many tabs are featured in the interactive Streamlit dashboard?**
    *A:* 4 tabs. Reference: [`README.md`](README.md).
-7. **Q: What framework powers the REST API microservice?**  
+7. **Q: What framework powers the REST API microservice?**
    *A:* FastAPI. Reference: [`api.py`](api.py).
-8. **Q: How many endpoints are exposed by `api.py`?**  
+8. **Q: How many endpoints are exposed by `api.py`?**
    *A:* 3 endpoints (`/health`, `/metrics`, `/predict`). Reference: [§API](#api).
-9. **Q: What explainability framework generates token-level attributions?**  
+9. **Q: What explainability framework generates token-level attributions?**
    *A:* SHAP (TreeSHAP and KernelSHAP). Reference: [`src/helpers.py`](src/).
-10. **Q: What total lines of code exist across the codebase?**  
+10. **Q: What total lines of code exist across the codebase?**
     *A:* 24,191 lines of code. Reference: [§META](#meta).
-11. **Q: What git commit hash was verified for this documentation?**  
+11. **Q: What git commit hash was verified for this documentation?**
     *A:* `379e6ac` (`379e6ac69f33977fc36509beb9ee92223f288e7f`). Reference: [§META](#meta).
-12. **Q: What git tree hash represents the verified codebase?**  
+12. **Q: What git tree hash represents the verified codebase?**
     *A:* `156acb2985b73bae0e121fe0b3416073be2533e0`. Reference: [§META](#meta).
-13. **Q: What test file executes prediction pipeline tests?**  
+13. **Q: What test file executes prediction pipeline tests?**
     *A:* `tests/test_prediction_pipeline.py`. Reference: [`tests/test_prediction_pipeline.py`](tests/test_prediction_pipeline.py).
-14. **Q: What endpoint exposes Prometheus operational telemetry?**  
+14. **Q: What endpoint exposes Prometheus operational telemetry?**
     *A:* `/metrics`. Reference: [`api.py`](api.py).
-15. **Q: What module implements audit history ledger persistence?**  
+15. **Q: What module implements audit history ledger persistence?**
     *A:* `src/history_manager.py`. Reference: [`src/history_manager.py`](src/history_manager.py).
-16. **Q: What library generates security incident PDF reports?**  
+16. **Q: What library generates security incident PDF reports?**
     *A:* ReportLab (`reportlab >= 4.0.0`). Reference: [`src/report_generator.py`](src/report_generator.py).
-17. **Q: What is the default decision threshold classifying an email as SPAM?**  
+17. **Q: What is the default decision threshold classifying an email as SPAM?**
     *A:* 0.50 (50% probability). Reference: [§STATE](#state).
-18. **Q: What script launches the standalone console CLI email triage?**  
+18. **Q: What script launches the standalone console CLI email triage?**
     *A:* `classify.py`. Reference: [`classify.py`](classify.py).
-19. **Q: What linter is configured for the codebase?**  
+19. **Q: What linter is configured for the codebase?**
     *A:* Ruff. Reference: [`pyproject.toml`](pyproject.toml).
-20. **Q: What is the target latency for single email text scoring?**  
+20. **Q: What is the target latency for single email text scoring?**
     *A:* Under 20 ms (measured 11.4 ms). Reference: [§PERF](#perf).
-21. **Q: What fallback occurs if SHAP kernel computation exceeds latency limits?**  
+21. **Q: What fallback occurs if SHAP kernel computation exceeds latency limits?**
     *A:* Safe degradation to linear model feature coefficients. Reference: [§RESILIENCE](#resilience).
-22. **Q: What vectorization technique prepares text features for classification?**  
+22. **Q: What vectorization technique prepares text features for classification?**
     *A:* TF-IDF Vectorization with word and character n-grams. Reference: [§PIPELINES](#pipelines).
-23. **Q: Does Smart Spam Detector require persistent SQL database tables?**  
+23. **Q: Does Smart Spam Detector require persistent SQL database tables?**
     *A:* No, it operates using serialized models and local JSON history ledgers. Reference: [§ERD](#erd).
-24. **Q: Where are runtime environment variable templates located?**  
+24. **Q: Where are runtime environment variable templates located?**
     *A:* In `.env.example`. Reference: [`.env.example`](.env.example).
-25. **Q: How many files are cataloged with 100% manifest coverage in Appendix A?**  
+25. **Q: How many files are cataloged with 100% manifest coverage in Appendix A?**
     *A:* All 175 tracked files. Reference: [§APP](#app).
 
 ---
