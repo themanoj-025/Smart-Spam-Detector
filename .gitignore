@@ -1,73 +1,102 @@
-# Byte-compiled / optimized / DLL files
+# ==============================================================================
+# Smart-Spam-Detector - Security & Production .gitignore
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. SECRETS & ENVIRONMENT VARIABLES (CRITICAL)
+# ------------------------------------------------------------------------------
+.env
+.env.*
+*.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.staging
+.env.production
+!.env.example
+!.env.template
+!.env.sample
+
+# Streamlit secrets (NEVER COMMIT)
+.streamlit/secrets.toml
+.streamlit/secrets.toml.local
+!.streamlit/secrets.toml.example
+!.streamlit/secrets.toml.template
+
+# Private keys, certificates & credentials
+*.pem
+*.key
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.pkcs12
+*.cer
+*.crt
+*.der
+*.id_rsa
+id_rsa*
+id_ed25519*
+id_ecdsa*
+id_dsa*
+
+# Cloud & service credentials
+credentials.json
+client_secret*.json
+service-account*.json
+service_account*.json
+serviceAccountKey*.json
+google-services.json
+GoogleService-Info.plist
+.aws/
+.azure/
+.gcp/
+gcloud/
+.act-secrets
+*.publishsettings
+
+# Authentication tokens & configs
+.netrc
+.pypirc
+.npmrc
+*token*.json
+token.pickle
+auth*.json
+
+# ------------------------------------------------------------------------------
+# 2. PYTHON RUNTIME, BUILDS & VIRTUAL ENVIRONMENTS
+# ------------------------------------------------------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+.Python
+dist/
+build/
+*.egg-info/
+*.egg
 
 # Virtual environments
 .venv/
 venv/
 ENV/
 env/
+.venv*/
+.venv2/
+env.bak/
+venv.bak/
 
-# IDE
-.vscode/*
-!.vscode/settings.json
-.idea/
-*.swp
-*.swo
-
-# Logs
-logs/
-*.log
-
-# Environment variables
-.env
-.env.local
-.env.production
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Temporary files
-*.tmp
-*.temp
-
-# Jupyter Notebook checkpoints
-.ipynb_checkpoints/
-*.ipynb
-
-# Model artifacts (auto-trained on first run)
-# Keep only the latest training run in outputs/
+# ------------------------------------------------------------------------------
+# 3. MACHINE LEARNING & OUTPUT ARTIFACTS
+# ------------------------------------------------------------------------------
 outputs/
 data/models/
-
-# Keep only the most recent run (manually un-ignore if needed)
-!outputs/
 outputs/*/
+!outputs/
 !outputs/2026-06-01_18-54-30/
 
-# Classification history (ephemeral on Streamlit Cloud)
-history/classifications.db
-
-# Coverage
-.coverage
-
-# Stray files
-=*
-
-# Virtual environments (uv)
-.venv2/
-
-# uv.lock is committed for reproducible installs (uv sync)
-
-.gemini/
-.cursorrules
-
-CLAUDE.md
-
-# === ML model artifacts (auto-generated, not committed) ===
+# ML models
 *.pkl
 *.joblib
 *.h5
@@ -76,25 +105,79 @@ CLAUDE.md
 *.parquet
 mlruns/
 
-# Node.js
-node_modules/
+# Classification history
+history/classifications.db
 
-# === Streamlit secrets (NEVER COMMIT) ===
-.streamlit/secrets.toml
-
-# ── Portfolio-standard ignores (sweep 2026-09) ──────────────
-radar_balance.txt
+# ------------------------------------------------------------------------------
+# 4. LOGS & DATABASE FILES
+# ------------------------------------------------------------------------------
+logs/
+*.log
+*.dump
+*.stackdump
 *.db
 *.db-shm
 *.db-wal
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# ------------------------------------------------------------------------------
+# 5. TESTING & CODE QUALITY
+# ------------------------------------------------------------------------------
+.cache/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
 .coverage.*
+htmlcov/
 coverage.xml
+radar_balance.txt
+
+# ------------------------------------------------------------------------------
+# 6. IDE, EDITORS & JUPYTER
+# ------------------------------------------------------------------------------
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.vscode/*.local.*
+.vscode/mcp.json
+.idea/
+*.swp
+*.swo
+*~
+.ipynb_checkpoints/
+*.ipynb
+=*
+
+# ------------------------------------------------------------------------------
+# 7. OS FILES & TEMPORARIES
+# ------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+*.tmp
+*.temp
+*.bak
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # =====================================================================
-# KEEP: AI provenance & transparency files — these must remain
-# visible to any repository viewer. Do not add rules above this block
-# that would shadow a directory these files live in without also
-# adding a negation here. Verified with `git check-ignore -v`.
+# KEEP: AI provenance & transparency files — must remain visible
 # =====================================================================
 !AI_DISCLOSURE.md
 !AI_USAGE.md
