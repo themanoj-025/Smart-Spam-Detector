@@ -12,7 +12,7 @@ Smart-Spam-Detector/
 ├── .pre-commit-config.yaml       # Pre-commit format/lint gates
 ├── .python-version               # Python version pin
 ├── .vscode/settings.json
-├── AGENTS.md · LICENSE · README.md · PROJECT_ANALYSIS.md · PROJECT_OVERVIEW.md
+├── LICENSE · README.md · PROJECT_ANALYSIS.md · PROJECT_OVERVIEW.md
 ├── api.py                        # FastAPI REST interface (entry: uvicorn api:app)
 ├── app.py                        # Streamlit dashboard interface (entry: streamlit run app.py)
 ├── classify.py                   # CLI interface (entry: python classify.py)

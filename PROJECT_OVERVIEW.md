@@ -787,7 +787,7 @@ Production deployment is achieved via containerized Docker environments hosting 
 | [`api_pkg/logging_config.py`](api_pkg/logging_config.py) | `.py` | 57 | 1995 | Root application runner, API, or utility |
 | [`api_pkg/models.py`](api_pkg/models.py) | `.py` | 120 | 5168 | Root application runner, API, or utility |
 | [`app.py`](app.py) | `.py` | 140 | 5734 | Root application runner, API, or utility |
-| [`audit/dependabot-agent/2026-08-15-run.md`](audit/dependabot-agent/2026-08-15-run.md) | `.md` | 19 | 1576 | Documentation asset |
+| [`docs/audit/dependabot-agent/2026-08-15-run.md`](docs/audit/dependabot-agent/2026-08-15-run.md) | `.md` | 19 | 1576 | Documentation asset |
 | [`classify.py`](classify.py) | `.py` | 93 | 2835 | Root application runner, API, or utility |
 | [`data/dataset/dataset.csv`](data/dataset/dataset.csv) | `.csv` | 5575 | 484911 | Dataset artifact or benchmark sample |
 | [`docker-compose.dev.yml`](docker-compose.dev.yml) | `.yml` | 34 | 1216 | Configuration or static asset |
@@ -907,3 +907,4 @@ Production deployment is achieved via containerized Docker environments hosting 
 | [`tests/test_url_analyzer.py`](tests/test_url_analyzer.py) | `.py` | 126 | 4344 | Automated test suite component |
 | [`tests/test_utils.py`](tests/test_utils.py) | `.py` | 118 | 3708 | Automated test suite component |
 | [`uv.lock`](uv.lock) | `.lock` | 2601 | 530517 | Dependency manifest or lockfile |
+
