@@ -746,7 +746,6 @@ Production deployment is achieved via containerized Docker environments hosting 
 | [`.github/ISSUE_TEMPLATE/bug_report.md`](.github/ISSUE_TEMPLATE/bug_report.md) | `.md` | 36 | 934 | GitHub Actions CI/CD automation workflow |
 | [`.github/ISSUE_TEMPLATE/feature_request.md`](.github/ISSUE_TEMPLATE/feature_request.md) | `.md` | 31 | 875 | GitHub Actions CI/CD automation workflow |
 | [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md) | `.md` | 50 | 1566 | GitHub Actions CI/CD automation workflow |
-| [`.github/copilot-instructions.md`](.github/copilot-instructions.md) | `.md` | 20 | 799 | GitHub Actions CI/CD automation workflow |
 | [`.github/dependabot.yml`](.github/dependabot.yml) | `.yml` | 38 | 859 | GitHub Actions CI/CD automation workflow |
 | [`.github/labeler.yml`](.github/labeler.yml) | `.yml` | 21 | 602 | GitHub Actions CI/CD automation workflow |
 | [`.github/scripts/check_lockfile.py`](.github/scripts/check_lockfile.py) | `.py` | 214 | 7174 | GitHub Actions CI/CD automation workflow |
@@ -774,8 +773,6 @@ Production deployment is achieved via containerized Docker environments hosting 
 | [`.python-version`](.python-version) | `no-ext` | 1 | 5 | Configuration or static asset |
 | [`.streamlit/config.toml`](.streamlit/config.toml) | `.toml` | 11 | 169 | Configuration or static asset |
 | [`.vscode/settings.json`](.vscode/settings.json) | `.json` | 17 | 465 | Configuration or static asset |
-| [`AGENTS.md`](AGENTS.md) | `.md` | 75 | 1888 | Documentation asset |
-| [`AI_DISCLOSURE.md`](AI_DISCLOSURE.md) | `.md` | 65 | 2503 | Documentation asset |
 | [`CHANGELOG.md`](CHANGELOG.md) | `.md` | 40 | 1378 | Documentation asset |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | `.md` | 28 | 1026 | Documentation asset |
 | [`Dockerfile`](Dockerfile) | `no-ext` | 132 | 5880 | Configuration or static asset |
@@ -785,7 +782,6 @@ Production deployment is achieved via containerized Docker environments hosting 
 | [`PROJECT_ANALYSIS.md`](PROJECT_ANALYSIS.md) | `.md` | 18 | 822 | Documentation asset |
 | [`README.md`](README.md) | `.md` | 299 | 12228 | Documentation asset |
 | [`SECURITY.md`](SECURITY.md) | `.md` | 25 | 995 | Documentation asset |
-| [`ai-provenance.json`](ai-provenance.json) | `.json` | 64 | 1665 | Configuration or static asset |
 | [`api.py`](api.py) | `.py` | 692 | 25949 | Root application runner, API, or utility |
 | [`api_pkg/__init__.py`](api_pkg/__init__.py) | `.py` | 1 | 71 | Root application runner, API, or utility |
 | [`api_pkg/logging_config.py`](api_pkg/logging_config.py) | `.py` | 57 | 1995 | Root application runner, API, or utility |
