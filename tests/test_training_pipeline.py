@@ -1,15 +1,10 @@
 """Tests for training pipeline."""
 
-from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import numpy as np
-import pandas as pd
 import pytest
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
-from sklearn.model_selection import GridSearchCV
-from sklearn.svm import SVC
 
 from src.components.model_training import ModelTraining, _assert_feature_alignment
 from src.pipeline.training_pipeline import TrainingPipeline
