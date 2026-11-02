@@ -26,7 +26,7 @@ attrs==26.1.0
     #   jsonschema
     #   referencing
 beautifulsoup4==4.12.0
-    # via -r Smart-Spam-Detector/requirements.txt
+    # via -r requirements.txt
 blinker==1.9.0
     # via flask
 cachetools==7.2.0
@@ -73,7 +73,7 @@ et-xmlfile==2.0.0
     # via openpyxl
 fastapi==0.162.0
     # via
-    #   -r Smart-Spam-Detector/requirements.txt
+    #   -r requirements.txt
     #   mlflow-skinny
 flask==3.1.3
     # via
@@ -116,7 +116,7 @@ h11==0.16.0
 httpcore==1.0.9
     # via httpx
 httpx==0.28.1
-    # via -r Smart-Spam-Detector/requirements.txt
+    # via -r requirements.txt
 huey==3.4.0
     # via mlflow
 idna==3.20
@@ -159,7 +159,7 @@ markupsafe==3.0.3
 matplotlib==3.11.2
     # via mlflow
 mlflow==3.17.2
-    # via -r Smart-Spam-Detector/requirements.txt
+    # via -r requirements.txt
 mlflow-skinny==3.17.2
     # via mlflow
 mlflow-tracing==3.17.2
@@ -174,7 +174,7 @@ numba==0.67.0
     # via shap
 numpy==2.4.6
     # via
-    #   -r Smart-Spam-Detector/requirements.txt
+    #   -r requirements.txt
     #   contourpy
     #   matplotlib
     #   mlflow
@@ -187,10 +187,10 @@ numpy==2.4.6
     #   skops
     #   streamlit
 openpyxl==3.1.0
-    # via -r Smart-Spam-Detector/requirements.txt
-opentelemetry-api==1.45.1
+    # via -r requirements.txt
+opentelemetry-api==1.45.2
     # via
-    #   -r Smart-Spam-Detector/requirements.txt
+    #   -r requirements.txt
     #   fastapi
     #   mlflow-skinny
     #   mlflow-tracing
@@ -200,40 +200,40 @@ opentelemetry-api==1.45.1
     #   opentelemetry-instrumentation-fastapi
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
-opentelemetry-exporter-otlp-common==0.66b1
+opentelemetry-exporter-otlp-common==0.66b2
     # via opentelemetry-exporter-otlp-proto-grpc
-opentelemetry-exporter-otlp-proto-common==1.45.1
+opentelemetry-exporter-otlp-proto-common==1.45.2
     # via opentelemetry-exporter-otlp-proto-grpc
-opentelemetry-exporter-otlp-proto-grpc==1.45.1
-    # via -r Smart-Spam-Detector/requirements.txt
-opentelemetry-instrumentation==0.66b1
+opentelemetry-exporter-otlp-proto-grpc==1.45.2
+    # via -r requirements.txt
+opentelemetry-instrumentation==0.66b2
     # via
     #   opentelemetry-instrumentation-asgi
     #   opentelemetry-instrumentation-fastapi
-opentelemetry-instrumentation-asgi==0.66b1
+opentelemetry-instrumentation-asgi==0.66b2
     # via opentelemetry-instrumentation-fastapi
-opentelemetry-instrumentation-fastapi==0.66b1
-    # via -r Smart-Spam-Detector/requirements.txt
-opentelemetry-proto==1.45.1
+opentelemetry-instrumentation-fastapi==0.66b2
+    # via -r requirements.txt
+opentelemetry-proto==1.45.2
     # via
     #   mlflow-skinny
     #   mlflow-tracing
     #   opentelemetry-exporter-otlp-proto-common
     #   opentelemetry-exporter-otlp-proto-grpc
-opentelemetry-sdk==1.45.1
+opentelemetry-sdk==1.45.2
     # via
-    #   -r Smart-Spam-Detector/requirements.txt
+    #   -r requirements.txt
     #   mlflow-skinny
     #   mlflow-tracing
     #   opentelemetry-exporter-otlp-common
     #   opentelemetry-exporter-otlp-proto-grpc
-opentelemetry-semantic-conventions==0.66b1
+opentelemetry-semantic-conventions==0.66b2
     # via
     #   opentelemetry-instrumentation
     #   opentelemetry-instrumentation-asgi
     #   opentelemetry-instrumentation-fastapi
     #   opentelemetry-sdk
-opentelemetry-util-http==0.66b1
+opentelemetry-util-http==0.66b2
     # via
     #   opentelemetry-instrumentation-asgi
     #   opentelemetry-instrumentation-fastapi
@@ -251,7 +251,7 @@ packaging==26.3
     #   streamlit
 pandas==2.0.0
     # via
-    #   -r Smart-Spam-Detector/requirements.txt
+    #   -r requirements.txt
     #   mlflow
     #   shap
     #   streamlit
@@ -260,11 +260,11 @@ pillow==12.3.0
     #   matplotlib
     #   streamlit
 plotly==5.15.0
-    # via -r Smart-Spam-Detector/requirements.txt
+    # via -r requirements.txt
 prettytable==3.18.0
     # via skops
 prometheus-client==0.26.0
-    # via -r Smart-Spam-Detector/requirements.txt
+    # via -r requirements.txt
 propcache==0.5.4
     # via
     #   aiohttp
@@ -307,7 +307,7 @@ python-dotenv==1.2.3
     # via mlflow-skinny
 python-multipart==0.0.32
     # via
-    #   -r Smart-Spam-Detector/requirements.txt
+    #   -r requirements.txt
     #   streamlit
 pytz==2026.3.post1
     # via pandas
@@ -329,7 +329,7 @@ rpds-py==2026.6.3
     #   referencing
 scikit-learn==1.3.0
     # via
-    #   -r Smart-Spam-Detector/requirements.txt
+    #   -r requirements.txt
     #   mlflow
     #   shap
     #   skops
@@ -340,7 +340,7 @@ scipy==1.17.1
     #   shap
     #   skops
 shap==0.45.0
-    # via -r Smart-Spam-Detector/requirements.txt
+    # via -r requirements.txt
 six==1.17.0
     # via python-dateutil
 skops==0.15.0
@@ -348,7 +348,7 @@ skops==0.15.0
 slicer==0.0.7
     # via shap
 slowapi==0.1.9
-    # via -r Smart-Spam-Detector/requirements.txt
+    # via -r requirements.txt
 smmap==5.0.3
     # via gitdb
 soupsieve==2.9.2
@@ -365,7 +365,7 @@ starlette==1.6.0
     #   mlflow-skinny
     #   streamlit
 streamlit==1.66.1
-    # via -r Smart-Spam-Detector/requirements.txt
+    # via -r requirements.txt
 tenacity==9.2.1
     # via plotly
 threadpoolctl==3.7.0
@@ -408,7 +408,7 @@ urllib3==2.8.0
     #   requests
 uvicorn==0.54.0
     # via
-    #   -r Smart-Spam-Detector/requirements.txt
+    #   -r requirements.txt
     #   mlflow-skinny
     #   streamlit
 watchdog==6.0.0
