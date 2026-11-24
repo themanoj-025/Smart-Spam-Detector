@@ -373,9 +373,12 @@ async def predict(request: Request, body: PredictRequest) -> PredictResponse:
         )
     except ValueError as e:
         raise HTTPException(status_code=422, detail={"error": "Validation error", "message": str(e)})
-    except (RuntimeError, KeyError, TypeError) as e:
+    except (RuntimeError, KeyError, TypeError):
         logger.exception("Prediction failed")
-        raise HTTPException(status_code=500, detail={"error": "Prediction failed", "message": str(e)})
+        raise HTTPException(
+            status_code=500,
+            detail={"error": "Prediction failed", "message": "Internal prediction error"},
+        )
 
 
 @v1_router.post("/predict/explain", response_model=PredictResponse, tags=["Prediction"])
@@ -440,9 +443,12 @@ async def predict_with_explanation(request: Request, body: PredictRequest) -> Pr
         )
     except ValueError as e:
         raise HTTPException(status_code=422, detail={"error": "Validation error", "message": str(e)})
-    except (RuntimeError, KeyError, TypeError) as e:
+    except (RuntimeError, KeyError, TypeError):
         logger.exception("Prediction with explanation failed")
-        raise HTTPException(status_code=500, detail={"error": "Prediction failed", "message": str(e)})
+        raise HTTPException(
+            status_code=500,
+            detail={"error": "Prediction failed", "message": "Internal prediction error"},
+        )
 
 
 @v1_router.post("/predict/batch", response_model=BatchPredictResponse, tags=["Prediction"])
@@ -535,11 +541,11 @@ async def predict_batch(request: Request, body: BatchPredictRequest) -> BatchPre
             results=results,
             processing_time_ms=elapsed,
         )
-    except (RuntimeError, ValueError, KeyError, TypeError) as e:
+    except (RuntimeError, ValueError, KeyError, TypeError):
         logger.exception("Batch prediction failed")
         raise HTTPException(
             status_code=500,
-            detail={"error": "Batch prediction failed", "message": str(e)},
+            detail={"error": "Batch prediction failed", "message": "Internal error during batch classification"},
         )
 
 
@@ -632,11 +638,11 @@ async def predict_file(
                 "processing_time_ms": elapsed,
             }
 
-    except (RuntimeError, ValueError, KeyError, TypeError) as e:
+    except (RuntimeError, ValueError, KeyError, TypeError):
         logger.exception("File prediction failed")
         raise HTTPException(
             status_code=500,
-            detail={"error": "File prediction failed", "message": str(e)},
+            detail={"error": "File prediction failed", "message": "Internal error processing uploaded file"},
         )
 
 

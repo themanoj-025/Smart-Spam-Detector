@@ -66,7 +66,7 @@ jobs:
 
       - name: Test with pytest
         run: |
-          pytest tests/ --cov=src/ --cov-report=term-missing --cov-fail-under=55 || echo "No tests found"
+          pytest tests/ --cov=src/ --cov-report=term-missing --cov-fail-under=55
 
       - name: Verify imports
         run: |
@@ -267,8 +267,8 @@ jobs:
           cache-from: type=gha
       - name: Install dive
         run: |
-          wget -q https://github.com/wagoodman/dive/releases/download/v0.12.0/dive_0.12.0_linux_amd64.deb
-          sudo dpkg -i dive_0.12.0_linux_amd64.deb
+          wget -q https://github.com/wagoodman/dive/releases/download/v0.13.1/dive_0.13.1_linux_amd64.deb
+          sudo dpkg -i dive_0.13.1_linux_amd64.deb
       - name: Run dive (efficiency check)
         run: |
           # Waste ceilings sized for the deliberate `apt-get upgrade` CVE fix,

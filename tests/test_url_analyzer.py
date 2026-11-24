@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 import pytest
 
 pytestmark = pytest.mark.integration
@@ -25,7 +27,7 @@ class TestExtractUrls:
     def test_single_url(self) -> None:
         urls = extract_urls("Check this out: https://example.com")
         assert len(urls) == 1
-        assert "example.com" in urls[0]
+        assert urlparse(urls[0]).hostname == "example.com"
 
     def test_multiple_urls(self) -> None:
         text = "Visit https://example.com and http://test.org for info"

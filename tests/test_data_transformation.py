@@ -15,8 +15,19 @@ class TestDataTransformation:
         state = TrainingState()
         state.training_data = pd.DataFrame(
             {
-                "Message": ["Buy now!!!", "Hey, how are you?", "Free money!", "Meeting tomorrow"],
-                "Category": ["spam", "ham", "spam", "ham"],
+                "Message": [
+                    "Buy now special offer!",
+                    "Hey, how are you today?",
+                    "Free money claim prize now!",
+                    "Team meeting tomorrow morning",
+                    "Win free cash prize offer!",
+                    "Project status meeting notes today",
+                    "Limited offer buy free prize!",
+                    "Lunch meeting tomorrow afternoon",
+                    "Claim free money offer now!",
+                    "See you in team meeting today",
+                ],
+                "Category": ["spam", "ham", "spam", "ham", "spam", "ham", "spam", "ham", "spam", "ham"],
             }
         )
         result = dt.transform_data(state)
@@ -45,8 +56,8 @@ class TestDataTransformation:
         state = TrainingState()
         state.training_data = pd.DataFrame(
             {
-                "Message": ["a", "b", "c", "d"],
-                "Category": ["spam", "ham", "spam", "ham"],
+                "Message": ["spam prize offer"] * 5 + ["regular team notes"] * 5,
+                "Category": ["spam"] * 5 + ["ham"] * 5,
             }
         )
         result = dt.transform_data(state)

@@ -110,7 +110,7 @@ class TestGenerateEmailReport:
         }
         html = generate_email_report("Check links", "Ham", url_analysis=url_analysis)
         assert "URL Analysis" in html
-        assert "example.com" in html
+        assert "<td>example.com</td>" in html
 
     def test_with_explanation(self) -> None:
         html = generate_email_report("Hello", "Spam", explanation_summary="Keyword 'free' detected")
