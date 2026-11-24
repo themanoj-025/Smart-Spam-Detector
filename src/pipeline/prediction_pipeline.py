@@ -261,7 +261,7 @@ class PredictionPipeline:
             except (ValueError, RuntimeError, TypeError) as e:
                 logger.error(f"SHAP explanation failed: {e}")
                 result["explanation"]["status"] = "error"
-                result["explanation"]["error_message"] = f"Explanation failed: {e!s}"
+                result["explanation"]["error_message"] = "Explanation generation failed due to an internal error."
 
         return result
 
