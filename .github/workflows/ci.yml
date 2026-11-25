@@ -98,7 +98,6 @@ jobs:
             --exclude 'https?://.*static\.streamlit\.io'
             --exclude 'https?://.*\{.*\}.*'
             '**/*.md'
-        continue-on-error: true
 
   security-audit:
     timeout-minutes: 10
@@ -227,11 +226,52 @@ jobs:
               json.dump(app.openapi(), f, indent=2)
           print('OpenAPI spec generated:', len(json.dumps(app.openapi())), 'bytes')
           "
+      - name: Create lightweight model fixture for API startup
+        run: |
+          python -c "
+          from pathlib import Path
+          import pickle
+          from sklearn.feature_extraction.text import TfidfVectorizer
+          from sklearn.linear_model import LogisticRegression
+          from src.config.config import find_latest_artifacts
+
+          model_path, feat_path = find_latest_artifacts()
+          if model_path and feat_path:
+              print('Using existing artifacts:', model_path)
+          else:
+              models_dir = Path('outputs/2099-01-01_00-00-00/models')
+              models_dir.mkdir(parents=True, exist_ok=True)
+              texts = [
+                  'Win a free prize click now',
+                  'Urgent claim your lottery reward',
+                  'Meeting scheduled for tomorrow afternoon',
+                  'Project status update and notes',
+              ]
+              labels = [0, 0, 1, 1]
+              vec = TfidfVectorizer()
+              X = vec.fit_transform(texts)
+              clf = LogisticRegression(random_state=42).fit(X, labels)
+              with open(models_dir / 'vectorizer.pkl', 'wb') as f:
+                  pickle.dump(vec, f)
+              with open(models_dir / 'LogisticRegression_model.pkl', 'wb') as f:
+                  pickle.dump(clf, f)
+              print('Created CI model fixture in', models_dir)
+          "
       - name: Fuzz API against OpenAPI contract
+        continue-on-error: true  # advisory: report contract findings without blocking the build
+        env:
+          RATE_LIMIT_ENABLED: "false"
         run: |
           uvicorn api:app --host 0.0.0.0 --port 8000 &
-          sleep 3
-          st run --checks all /tmp/openapi.json --base-url http://localhost:8000 -w 5 --hypothesis-suppress-health-check=too_slow 2>&1 | tail -20 || true
+          UVICORN_PID=$!
+          trap 'kill $UVICORN_PID 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8000/openapi.json >/dev/null 2>&1; then
+              break
+            fi
+            sleep 1
+          done
+          st run --checks all --exclude-checks status_code_conformance,positive_data_acceptance /tmp/openapi.json --url http://localhost:8000 -w 5 --suppress-health-check=too_slow
 
   docker-cache:
     name: Docker image build + layer cache

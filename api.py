@@ -59,6 +59,7 @@ def _rate_limit_key(request: Request) -> str:
 limiter = Limiter(
     key_func=_rate_limit_key,
     default_limits=[],  # no blanket default — each route sets its own
+    enabled=os.environ.get("RATE_LIMIT_ENABLED", "true").lower() == "true",
 )
 
 from api_pkg.logging_config import setup_logging
@@ -372,7 +373,10 @@ async def predict(request: Request, body: PredictRequest) -> PredictResponse:
             processing_time_ms=elapsed,
         )
     except ValueError as e:
-        raise HTTPException(status_code=422, detail={"error": "Validation error", "message": str(e)})
+        raise HTTPException(
+            status_code=422,
+            detail=[{"loc": ["body", "file"], "msg": str(e), "type": "value_error"}],
+        )
     except (RuntimeError, KeyError, TypeError):
         logger.exception("Prediction failed")
         raise HTTPException(
@@ -442,7 +446,10 @@ async def predict_with_explanation(request: Request, body: PredictRequest) -> Pr
             processing_time_ms=elapsed,
         )
     except ValueError as e:
-        raise HTTPException(status_code=422, detail={"error": "Validation error", "message": str(e)})
+        raise HTTPException(
+            status_code=422,
+            detail=[{"loc": ["body", "file"], "msg": str(e), "type": "value_error"}],
+        )
     except (RuntimeError, KeyError, TypeError):
         logger.exception("Prediction with explanation failed")
         raise HTTPException(
@@ -638,7 +645,12 @@ async def predict_file(
                 "processing_time_ms": elapsed,
             }
 
-    except (RuntimeError, ValueError, KeyError, TypeError):
+    except ValueError as e:
+        raise HTTPException(
+            status_code=422,
+            detail=[{"loc": ["body", "file"], "msg": str(e), "type": "value_error"}],
+        )
+    except (RuntimeError, KeyError, TypeError):
         logger.exception("File prediction failed")
         raise HTTPException(
             status_code=500,
@@ -675,8 +687,13 @@ async def root() -> dict[str, Any]:
     }
 
 
-@app.get("/metrics", tags=["Monitoring"])
-async def metrics() -> dict[str, object]:
+@app.get(
+    "/metrics",
+    tags=["Monitoring"],
+    response_model=None,
+    responses={200: {"content": {"text/plain": {}, "application/json": {}}}},
+)
+async def metrics() -> Response | dict[str, object]:
     """Prometheus metrics endpoint."""
     if not _PROM_AVAILABLE:
         return {"status": "prometheus_client not installed"}

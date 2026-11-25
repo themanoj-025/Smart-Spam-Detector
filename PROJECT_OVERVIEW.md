@@ -119,8 +119,8 @@ Spam and phishing emails continue to serve as the primary attack vectors for ent
 | Capability Area | Feature | Implementation Module | Technical Characteristics |
 | :--- | :--- | :--- | :--- |
 | **Model Ensemble** | 6-Model Stacking Classifier | [`src/prediction_pipeline.py`](src/) | Combines LR, RF, XGB, SGD, SVC into meta-logistic regressor |
-| **Phishing Scanner** | Embedded URL Heuristics | [`src/email_utils.py`](src/) | Flags raw IP hosts, port anomalies, deceptive subdomains, suspicious TLDs |
-| **Word Attribution** | Local SHAP Explainability | [`src/helpers.py`](src/) | Computes additive per-token importance highlighting spam drivers |
+| **Phishing Scanner** | Embedded URL Heuristics | [`src/utils/email_utils.py`](src/utils/email_utils.py) | Flags raw IP hosts, port anomalies, deceptive subdomains, suspicious TLDs |
+| **Word Attribution** | Local SHAP Explainability | [`src/ui/helpers.py`](src/ui/helpers.py) | Computes additive per-token importance highlighting spam drivers |
 | **REST API Serving** | Asynchronous FastAPI | [`api.py`](api.py) | Sub-15ms email scoring, batch prediction, and Prometheus `/metrics` |
 | **Interactive UI** | 4-Tab Streamlit Dashboard | [`app.py`](app.py) | Live Inspector, Batch CSV Triage, Model Performance, History Ledger |
 | **Audit Logging** | History Ledger Manager | [`src/history_manager.py`](src/) | Local JSON/SQLite audit log capturing classification predictions |
@@ -372,8 +372,8 @@ Smart-Spam-Detector/
 | Subsystem | File Path | Primary Responsibilities | Key Functions / Classes |
 | :--- | :--- | :--- | :--- |
 | **Pipeline Core**| [`src/prediction_pipeline.py`](src/) | Ingestion, TF-IDF, stacking ensemble | `PredictionPipeline`, `predict_email()` |
-| **Security** | [`src/email_utils.py`](src/) | Text cleaning & phishing URL heuristics | `extract_urls()`, `scan_phishing()` |
-| **Explainability**| [`src/helpers.py`](src/) | Token attribution & SHAP calculations | `compute_shap_values()`, `format_words()`|
+| **Security** | [`src/utils/email_utils.py`](src/utils/email_utils.py) | Text cleaning & phishing URL heuristics | `extract_urls()`, `scan_phishing()` |
+| **Explainability**| [`src/ui/helpers.py`](src/ui/helpers.py) | Token attribution & SHAP calculations | `compute_shap_values()`, `format_words()`|
 | **History** | [`src/history_manager.py`](src/) | Audit logging & ledger persistence | `HistoryManager`, `record_event()` |
 | **Reporting** | [`src/report_generator.py`](src/) | Security incident report generation | `generate_pdf_report()` |
 | **API Serving** | [`api.py`](api.py) | FastAPI microservice | `app`, `/predict`, `/health`, `/metrics` |
@@ -612,7 +612,7 @@ Production deployment is achieved via containerized Docker environments hosting 
 
 ### Runbook 1: Spike in Quarantined False Positives
 1. **Symptom:** Marketing newsletter delivery rates drop due to sudden spam classification.
-2. **Action:** Open Streamlit **Live Inspector**, inspect SHAP word attributions, and whitelist benign corporate domains in [`src/email_utils.py`](src/).
+2. **Action:** Open Streamlit **Live Inspector**, inspect SHAP word attributions, and whitelist benign corporate domains in [`src/utils/email_utils.py`](src/utils/email_utils.py).
 
 ---
 
@@ -643,7 +643,7 @@ Production deployment is achieved via containerized Docker environments hosting 
 4. **Q: What are the 6 machine learning algorithms combined in the ensemble?**
    *A:* Logistic Regression, Random Forest, XGBoost, SGD Classifier, Support Vector Classifier, and Stacking Classifier. Reference: [`README.md`](README.md).
 5. **Q: What heuristic checks are performed on embedded URLs?**
-   *A:* IP hostnames, deceptive redirects, and high-risk top-level domains (TLDs). Reference: [`src/email_utils.py`](src/).
+   *A:* IP hostnames, deceptive redirects, and high-risk top-level domains (TLDs). Reference: [`src/utils/email_utils.py`](src/utils/email_utils.py).
 6. **Q: How many tabs are featured in the interactive Streamlit dashboard?**
    *A:* 4 tabs. Reference: [`README.md`](README.md).
 7. **Q: What framework powers the REST API microservice?**
@@ -651,7 +651,7 @@ Production deployment is achieved via containerized Docker environments hosting 
 8. **Q: How many endpoints are exposed by `api.py`?**
    *A:* 3 endpoints (`/health`, `/metrics`, `/predict`). Reference: [§API](#api).
 9. **Q: What explainability framework generates token-level attributions?**
-   *A:* SHAP (TreeSHAP and KernelSHAP). Reference: [`src/helpers.py`](src/).
+   *A:* SHAP (TreeSHAP and KernelSHAP). Reference: [`src/ui/helpers.py`](src/ui/helpers.py).
 10. **Q: What total lines of code exist across the codebase?**
     *A:* 24,191 lines of code. Reference: [§META](#meta).
 11. **Q: What git commit hash was verified for this documentation?**
@@ -663,9 +663,9 @@ Production deployment is achieved via containerized Docker environments hosting 
 14. **Q: What endpoint exposes Prometheus operational telemetry?**
     *A:* `/metrics`. Reference: [`api.py`](api.py).
 15. **Q: What module implements audit history ledger persistence?**
-    *A:* `src/history_manager.py`. Reference: [`src/history_manager.py`](src/history_manager.py).
+    *A:* `src/utils/history_manager.py`. Reference: [`src/utils/history_manager.py`](src/utils/history_manager.py).
 16. **Q: What library generates security incident PDF reports?**
-    *A:* ReportLab (`reportlab >= 4.0.0`). Reference: [`src/report_generator.py`](src/report_generator.py).
+    *A:* ReportLab (`reportlab >= 4.0.0`). Reference: [`src/utils/report_generator.py`](src/utils/report_generator.py).
 17. **Q: What is the default decision threshold classifying an email as SPAM?**
     *A:* 0.50 (50% probability). Reference: [§STATE](#state).
 18. **Q: What script launches the standalone console CLI email triage?**
@@ -750,7 +750,6 @@ Production deployment is achieved via containerized Docker environments hosting 
 | [`.github/labeler.yml`](.github/labeler.yml) | `.yml` | 21 | 602 | GitHub Actions CI/CD automation workflow |
 | [`.github/scripts/check_lockfile.py`](.github/scripts/check_lockfile.py) | `.py` | 214 | 7174 | GitHub Actions CI/CD automation workflow |
 | [`.github/scripts/lint_readme.py`](.github/scripts/lint_readme.py) | `.py` | 164 | 5674 | GitHub Actions CI/CD automation workflow |
-| [`.github/workflows/ai-disclosure-check.yml`](.github/workflows/ai-disclosure-check.yml) | `.yml` | 81 | 3777 | GitHub Actions CI/CD automation workflow |
 | [`.github/workflows/auto-label.yml`](.github/workflows/auto-label.yml) | `.yml` | 22 | 618 | GitHub Actions CI/CD automation workflow |
 | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) | `.yml` | 276 | 10438 | GitHub Actions CI/CD automation workflow |
 | [`.github/workflows/codeql.yml`](.github/workflows/codeql.yml) | `.yml` | 57 | 1628 | GitHub Actions CI/CD automation workflow |
@@ -785,7 +784,6 @@ Production deployment is achieved via containerized Docker environments hosting 
 | [`api_pkg/logging_config.py`](api_pkg/logging_config.py) | `.py` | 57 | 1995 | Root application runner, API, or utility |
 | [`api_pkg/models.py`](api_pkg/models.py) | `.py` | 120 | 5168 | Root application runner, API, or utility |
 | [`app.py`](app.py) | `.py` | 140 | 5734 | Root application runner, API, or utility |
-| [`docs/audit/dependabot-agent/2026-08-15-run.md`](docs/audit/dependabot-agent/2026-08-15-run.md) | `.md` | 19 | 1576 | Documentation asset |
 | [`classify.py`](classify.py) | `.py` | 93 | 2835 | Root application runner, API, or utility |
 | [`data/dataset/dataset.csv`](data/dataset/dataset.csv) | `.csv` | 5575 | 484911 | Dataset artifact or benchmark sample |
 | [`docker-compose.dev.yml`](docker-compose.dev.yml) | `.yml` | 34 | 1216 | Configuration or static asset |
@@ -795,14 +793,7 @@ Production deployment is achieved via containerized Docker environments hosting 
 | [`docs/DEVELOPER_GUIDE.md`](docs/DEVELOPER_GUIDE.md) | `.md` | 3 | 74 | Technical documentation asset |
 | [`docs/DISASTER-RECOVERY.md`](docs/DISASTER-RECOVERY.md) | `.md` | 42 | 1206 | Technical documentation asset |
 | [`docs/README.md`](docs/README.md) | `.md` | 64 | 2999 | Technical documentation asset |
-| [`docs/ai/PROVENANCE.md`](docs/ai/PROVENANCE.md) | `.md` | 41 | 1353 | Technical documentation asset |
-| [`docs/ai/README.md`](docs/ai/README.md) | `.md` | 45 | 1535 | Technical documentation asset |
-| [`docs/ai/transcripts/README.md`](docs/ai/transcripts/README.md) | `.md` | 36 | 1363 | Technical documentation asset |
 | [`docs/architecture.md`](docs/architecture.md) | `.md` | 90 | 5432 | Technical documentation asset |
-| [`docs/audit/cleanup-audit-2026-08-13.md`](docs/audit/cleanup-audit-2026-08-13.md) | `.md` | 52 | 2159 | Technical documentation asset |
-| [`docs/audit/cleanup-audit-2026-08-15-code.md`](docs/audit/cleanup-audit-2026-08-15-code.md) | `.md` | 50 | 1723 | Technical documentation asset |
-| [`docs/audit/cleanup-audit-2026-08-15.md`](docs/audit/cleanup-audit-2026-08-15.md) | `.md` | 71 | 2006 | Technical documentation asset |
-| [`docs/audit/dependabot-inventory-2026-08-16.md`](docs/audit/dependabot-inventory-2026-08-16.md) | `.md` | 234 | 20262 | Technical documentation asset |
 | [`docs/community/CHANGELOG.md`](docs/community/CHANGELOG.md) | `.md` | 64 | 2659 | Technical documentation asset |
 | [`docs/community/CODE_OF_CONDUCT.md`](docs/community/CODE_OF_CONDUCT.md) | `.md` | 132 | 5608 | Technical documentation asset |
 | [`docs/community/CONTRIBUTING.md`](docs/community/CONTRIBUTING.md) | `.md` | 160 | 5421 | Technical documentation asset |
@@ -811,9 +802,6 @@ Production deployment is achieved via containerized Docker environments hosting 
 | [`docs/design/AppFlow.md`](docs/design/AppFlow.md) | `.md` | 104 | 3868 | Technical documentation asset |
 | [`docs/design/Design.md`](docs/design/Design.md) | `.md` | 143 | 4936 | Technical documentation asset |
 | [`docs/folder_structure.md`](docs/folder_structure.md) | `.md` | 71 | 3986 | Technical documentation asset |
-| [`docs/migration/file_move_ledger.md`](docs/migration/file_move_ledger.md) | `.md` | 50 | 2261 | Technical documentation asset |
-| [`docs/migration/migration_summary.md`](docs/migration/migration_summary.md) | `.md` | 27 | 1196 | Technical documentation asset |
-| [`docs/migration/old_tree_to_new_tree.md`](docs/migration/old_tree_to_new_tree.md) | `.md` | 66 | 3112 | Technical documentation asset |
 | [`docs/module_dependency.md`](docs/module_dependency.md) | `.md` | 65 | 4596 | Technical documentation asset |
 | [`docs/package_overview.md`](docs/package_overview.md) | `.md` | 62 | 2854 | Technical documentation asset |
 | [`docs/product/PRD.md`](docs/product/PRD.md) | `.md` | 154 | 8560 | Technical documentation asset |

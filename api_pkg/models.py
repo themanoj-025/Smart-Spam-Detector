@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, StrictBool
 
 
 class PredictRequest(BaseModel):
@@ -73,7 +73,7 @@ class BatchPredictRequest(BaseModel):
             ]
         ],
     )
-    include_explanations: bool = Field(
+    include_explanations: StrictBool = Field(
         False,
         description="Whether to compute SHAP explanations for each email (significantly slower)",
     )
