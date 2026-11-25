@@ -274,4 +274,5 @@ jobs:
           # Waste ceilings sized for the deliberate `apt-get upgrade` CVE fix,
           # which supersedes ~91MB of base-image libs in earlier layers.
           # Thresholds live in .dive-ci (dive v0.12 removed the --ci-* / --highest* CLI flags).
-          CI=true dive dive-audit:latest
+          docker save dive-audit:latest -o /tmp/dive-image.tar
+          CI=true dive --source docker-archive /tmp/dive-image.tar
