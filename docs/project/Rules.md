@@ -1,4 +1,4 @@
-# Rules — Smart-Spam-Detector: Coding Standards & AI-Agent Operating Rules
+# Rules — Smart-Spam-Detector: Coding Standards & Engineering Operating Rules
 
 | Field | Value |
 | --- | --- |
@@ -50,7 +50,7 @@ Smart-Spam-Detector/
 - Optional: Streamlit UI smoke tests (manual or Playwright).
 - See ../technical/Testing.md for full strategy.
 
-## 5. AI Agent Operating Rules
+## 5. Engineering Operating Rules
 
 - Read Tracker.md and ImplementationPlan.md before starting any task.
 - Never mark a task 🟢 Done without tests passing.
