@@ -145,7 +145,7 @@ Top risks summarized from ../project/RiskRegister.md:
 | [Schema.md](../technical/Schema.md) | Data model for datasets, artifacts, and history |
 | [ImplementationPlan.md](../project/ImplementationPlan.md) | Phased build plan mapping to REQ IDs |
 | [Tracker.md](../project/Tracker.md) | Live status of every feature/task |
-| [Rules.md](../project/Rules.md) | Coding standards and AI-agent operating rules |
+| [Rules.md](../project/Rules.md) | Coding standards and operating rules |
 | [API.md](../technical/API.md) | Every endpoint contract |
 | [SecurityAndCompliance.md](../technical/SecurityAndCompliance.md) | Threat model and data protection |
 | [Testing.md](../technical/Testing.md) | Test strategy and coverage targets |
